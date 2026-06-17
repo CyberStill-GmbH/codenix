@@ -22,7 +22,7 @@
 
   body {
     min-height: 100vh;
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
     font-size: var(--text-base);
     font-weight: var(--font-normal);
     line-height: var(--leading-normal);
@@ -86,7 +86,7 @@
   h1,
   h2,
   h3 {
-    letter-spacing: -0.03em;
+    letter-spacing: var(--tracking-tight);
   }
 
   /* Los tokens --text-4xl/5xl/6xl ya son fluidos (clamp) desde
@@ -163,11 +163,6 @@
   :focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 3px;
-  }
-
-  /* Utilidades custom (tailwind v4) */
-  .font-display {
-    font-family: var(--font-display);
   }
 
   @keyframes codenix-social-scroll {
@@ -369,5 +364,20 @@
     .codenix-auth-route-enter {
       animation: none;
     }
+  }
+}
+
+@layer utilities {
+  .font-body,
+  .font-sans {
+    font-family: var(--font-body);
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
   }
 }

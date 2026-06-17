@@ -62,7 +62,7 @@ function FeatureRow({
     <article className="group flex flex-col gap-5 py-8 sm:flex-row sm:items-start sm:gap-8 lg:gap-12">
       {/* Número + ícono */}
       <div className="flex shrink-0 items-center gap-4 sm:w-16 sm:flex-col sm:items-center sm:gap-3">
-        <span className="font-mono text-xs font-semibold tabular-nums text-[var(--color-text-subtle)]">
+        <span className="font-mono text-xs font-medium tabular-nums text-[var(--color-text-subtle)]">
           {String(index + 1).padStart(2, '0')}
         </span>
         <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] text-[var(--color-primary)] transition duration-200 group-hover:border-[var(--color-primary)] group-hover:bg-[var(--color-primary-soft)]">

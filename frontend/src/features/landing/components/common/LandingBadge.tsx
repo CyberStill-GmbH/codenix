@@ -22,7 +22,7 @@ export function LandingBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 py-1.5 text-sm font-medium ${textClass}`}
+      className={`font-display inline-flex items-center gap-2 rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 py-1.5 text-sm font-medium ${textClass}`}
     >
       {icon && (
         <span className="text-[var(--color-primary)]" aria-hidden="true">

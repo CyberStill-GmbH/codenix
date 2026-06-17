@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes } from 'react'
+import { landingTokens } from '@/features/landing/theme/tokens'
 
 type AuthCheckboxProps = {
   label: string | React.ReactNode
@@ -7,15 +8,15 @@ type AuthCheckboxProps = {
 
 export function AuthCheckbox({ label, error, id, ...props }: AuthCheckboxProps) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className={landingTokens.auth.fieldWrap}>
       <label
         htmlFor={id}
-        className="flex cursor-pointer items-start gap-2.5 text-sm text-[var(--color-text-muted)]"
+        className={landingTokens.auth.checkboxLabel}
       >
         <input
           id={id}
           type="checkbox"
-          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-[var(--color-border)] bg-[var(--color-surface)] accent-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          className={`${landingTokens.auth.checkbox} ${landingTokens.focus}`}
           {...props}
         />
         <span>{label}</span>

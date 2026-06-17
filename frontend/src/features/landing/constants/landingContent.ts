@@ -1,19 +1,12 @@
-// ================================================
-// Codenix Landing — Data estática centralizada
-// Sin JSX. Los íconos se mapean en cada componente.
-// ================================================
-
 import type {
-  NavItem,
-  HeroStat,
-  PreviewProblem,
   FeatureItem,
-  VisionCard,
-  RoadmapItem,
   FooterGroup,
+  HeroStat,
+  NavItem,
+  PreviewProblem,
+  RoadmapItem,
+  VisionCard,
 } from '@/features/landing/types/landing.types'
-
-// ── Navbar ──────────────────────────────────────
 
 export const navItems: NavItem[] = [
   { label: 'Problemas', href: '#problems' },
@@ -21,8 +14,6 @@ export const navItems: NavItem[] = [
   { label: 'Comunidad', href: '#community' },
   { label: 'Contests', href: '#roadmap', badge: 'Próximamente' },
 ]
-
-// ── Hero ─────────────────────────────────────────
 
 export const heroStats: HeroStat[] = [
   { value: 'V1', label: 'Plataforma en desarrollo' },
@@ -35,8 +26,6 @@ export const previewProblems: PreviewProblem[] = [
   { title: 'Binary Search', difficulty: 'Medio', tag: 'Búsqueda Binaria' },
   { title: 'Dynamic Paths', difficulty: 'Difícil', tag: 'DP' },
 ]
-
-// ── Features ─────────────────────────────────────
 
 export const features: FeatureItem[] = [
   {
@@ -67,25 +56,23 @@ export const features: FeatureItem[] = [
   },
 ]
 
-// ── Vision ───────────────────────────────────────
-
 export const visionCards: VisionCard[] = [
   {
     title: 'Plataforma propia',
     description:
-      'Codenix nace como una iniciativa de IEEE Computer Society UNI para tener un espacio propio de práctica, progreso y comunidad.',
+      'Un espacio diseñado desde la comunidad, no adaptado de otra herramienta.',
     icon: 'git-branch',
   },
   {
     title: 'Práctica algorítmica',
     description:
-      'El centro de la plataforma es resolver problemas, entrenar estructuras de datos y mejorar la forma de pensar soluciones.',
+      'Resolver problemas, entrenar estructuras de datos y mejorar el razonamiento.',
     icon: 'code2',
   },
   {
     title: 'Progreso técnico',
     description:
-      'La visión es centralizar el avance del usuario para que entrenar no sea solo resolver problemas sueltos, sino construir constancia.',
+      'Centralizar el avance para que entrenar sea constante, no disperso.',
     icon: 'line-chart',
   },
 ]
@@ -106,18 +93,16 @@ export const roadmapItems: RoadmapItem[] = [
   {
     title: 'Contests y ranking',
     description:
-      'Preparación futura para competencias internas, retos de comunidad y clasificación de participantes.',
+      'La siguiente capa activa: retos internos, ranking y señales de progreso competitivo.',
     status: 'Próximamente',
   },
   {
     title: 'Aprendizaje estructurado',
     description:
-      'Visión de rutas y cursos que acompañen la práctica con una guía ordenada por temas.',
+      'Rutas y cursos para acompañar la práctica con una guía ordenada por temas.',
     status: 'Visión',
   },
 ]
-
-// ── Footer ───────────────────────────────────────
 
 export const footerGroups: FooterGroup[] = [
   {

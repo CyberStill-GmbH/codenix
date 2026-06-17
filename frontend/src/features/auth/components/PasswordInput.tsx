@@ -2,27 +2,39 @@ import { useState } from 'react'
 import type { InputHTMLAttributes } from 'react'
 import { Eye, EyeOff, LockKeyhole } from 'lucide-react'
 
+import { landingTokens } from '@/features/landing/theme/tokens'
+
 type PasswordInputProps = {
   label: string
   error?: string
-  /** Pass forgotHref to show the "¿Olvidaste tu contraseña?" link. Omit in Register. */
   forgotHref?: string
 } & InputHTMLAttributes<HTMLInputElement>
 
-export function PasswordInput({ label, error, forgotHref, id, ...props }: PasswordInputProps) {
+const cx = (...classes: Array<string | false | undefined>) =>
+  classes.filter(Boolean).join(' ')
+
+export function PasswordInput({
+  label,
+  error,
+  forgotHref,
+  id,
+  disabled,
+  className,
+  ...props
+}: PasswordInputProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className={landingTokens.auth.fieldWrap}>
       <div className="flex items-center justify-between gap-2">
-        <label htmlFor={id} className="text-sm font-medium text-[var(--color-text)]">
+        <label htmlFor={id} className={landingTokens.auth.label}>
           {label}
         </label>
 
         {forgotHref && (
           <a
             href={forgotHref}
-            className="text-xs font-medium text-[var(--color-primary)] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-primary)] rounded"
+            className={`${landingTokens.auth.textLink} ${landingTokens.focus}`}
           >
             ¿Olvidaste tu contraseña?
           </a>
@@ -30,25 +42,27 @@ export function PasswordInput({ label, error, forgotHref, id, ...props }: Passwo
       </div>
 
       <div
-        className={[
-          'relative flex items-center rounded-xl border transition duration-200 bg-[var(--color-surface)]',
+        className={cx(
+          landingTokens.auth.inputShell,
           error
-            ? 'border-[var(--color-error)] shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
-            : 'border-[var(--color-border)] focus-within:border-[var(--color-primary)] focus-within:shadow-[0_0_0_3px_rgba(11,127,195,0.14)]',
-        ].join(' ')}
+            ? landingTokens.auth.inputShellError
+            : landingTokens.auth.inputShellDefault,
+          disabled && landingTokens.auth.inputShellDisabled,
+        )}
       >
         <LockKeyhole
-          className={[
-            'ml-3.5 h-4 w-4 shrink-0 transition-colors',
-            error ? 'text-[var(--color-error)]' : 'text-[var(--color-text-subtle)]',
-          ].join(' ')}
+          className={cx(
+            landingTokens.auth.inputIcon,
+            error && landingTokens.auth.inputIconError,
+          )}
           aria-hidden="true"
         />
 
         <input
           id={id}
           type={isVisible ? 'text' : 'password'}
-          className="h-11 w-full bg-transparent px-3 pr-11 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-subtle)]"
+          disabled={disabled}
+          className={cx(landingTokens.auth.inputWithAction, className)}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
           {...props}
@@ -56,10 +70,10 @@ export function PasswordInput({ label, error, forgotHref, id, ...props }: Passwo
 
         <button
           type="button"
-          className="absolute right-2.5 inline-flex h-7 w-7 items-center justify-center rounded-lg text-[var(--color-text-subtle)] transition hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
+          className={`${landingTokens.auth.iconButton} ${landingTokens.focus}`}
           aria-label={isVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
           aria-pressed={isVisible}
-          onClick={() => setIsVisible((v) => !v)}
+          onClick={() => setIsVisible((value) => !value)}
         >
           {isVisible ? (
             <EyeOff className="h-4 w-4" aria-hidden="true" />
@@ -73,7 +87,7 @@ export function PasswordInput({ label, error, forgotHref, id, ...props }: Passwo
         id={`${id}-error`}
         role="alert"
         aria-live="polite"
-        className="min-h-[1rem] text-xs text-[var(--color-error)]"
+        className={landingTokens.auth.fieldError}
       >
         {error}
       </div>

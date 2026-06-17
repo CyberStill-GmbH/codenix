@@ -42,11 +42,11 @@ type LandingButtonProps =
   })
 
 const BASE =
-  'inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]'
+  'inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]'
 
 const VARIANTS: Record<LandingButtonVariant, string> = {
   primary:
-    'border border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-text-inverse)] shadow-[var(--shadow-glow)] hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
+    'border border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-text-inverse)] shadow-[var(--shadow-glow-primary)] hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
 
   ghost:
     'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-soft)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]',
@@ -69,7 +69,7 @@ export function LandingButton(props: LandingButtonProps) {
   const composedClassName = [
     BASE,
     VARIANTS[variant],
-    fullWidth ? 'w-full' : '',
+    fullWidth ? 'w-full' : 'w-full',
     'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60',
     'aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:opacity-60',
     'sm:w-auto',

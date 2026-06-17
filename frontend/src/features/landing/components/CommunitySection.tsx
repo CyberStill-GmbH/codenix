@@ -35,9 +35,22 @@ export function CommunitySection() {
   return (
     <section
       id="community"
-      className="overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] py-12"
+      className="overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] py-14"
       aria-label="Canales de comunidad Codenix"
     >
+      <div className="mx-auto mb-8 max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+        <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-primary)]">
+          Comunidad
+        </p>
+        <h2 className="mt-2 text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl">
+          Únete a la comunidad en tus canales habituales.
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-muted)]">
+          Sigue novedades, retos y conversaciones de práctica competitiva desde
+          los espacios donde IEEE CS UNI ya se mueve.
+        </p>
+      </div>
+
       <div className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[var(--color-bg)] to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[var(--color-bg)] to-transparent" />
