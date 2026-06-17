@@ -121,14 +121,21 @@
   --color-verdict-pending-soft: var(--color-primary-soft);
 
   /* Dificultad de problemas */
-  --color-difficulty-easy: #00c896;
-  --color-difficulty-easy-soft: rgba(0, 200, 150, 0.14);
+  --color-difficulty-easy: #4cb3d4;
+  --color-difficulty-easy-soft: rgba(76, 179, 212, 0.14);
 
-  --color-difficulty-medium: #fbbf24;
-  --color-difficulty-medium-soft: rgba(251, 191, 36, 0.14);
+  --color-difficulty-medium: #cba358;
+  --color-difficulty-medium-soft: rgba(203, 163, 88, 0.14);
 
-  --color-difficulty-hard: #ff4d6a;
-  --color-difficulty-hard-soft: rgba(255, 77, 106, 0.14);
+  --color-difficulty-hard: #d26e73;
+  --color-difficulty-hard-soft: rgba(210, 110, 115, 0.14);
+
+  /* Heatmap — 4 visually distinct levels (verified distinguishable on dark bg) */
+  --heat-0: rgba(255, 255, 255, 0.04);  /* empty: barely-there bg */
+  --heat-1: rgba(56, 189, 248, 0.22);   /* 1–2 submissions: faint teal */
+  --heat-2: rgba(56, 189, 248, 0.50);   /* 3–5: medium cyan */
+  --heat-3: #38bdf8;                    /* 6–10: bright sky blue */
+  --heat-4: #0ea5e9;                    /* 11+: saturated primary blue */
 
   /* =========================
      2. TIPOGRAFÍA
@@ -215,6 +222,8 @@
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-2xl: 1.25rem;
+  --radius-card: 0.5rem;
+  --radius-pill: 0.25rem;
   --radius-mockup: 1.5rem;
   --radius-full: 9999px;
 

@@ -360,6 +360,50 @@
     animation: codenix-auth-route-enter 220ms ease-out both;
   }
 
+  .codenix-app-shell {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .codenix-user-main {
+    padding-block: 2rem 3rem;
+  }
+
+  .codenix-user-grid {
+    display: grid;
+    grid-template-columns: 22.5rem minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(1.5rem, 2vw, 2rem);
+  }
+
+  .codenix-user-stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 2vw, 2rem);
+  }
+
+  @media (max-width: 1023px) {
+    .codenix-app-shell {
+      max-width: 48rem;
+      padding-inline: 1rem;
+    }
+
+    .codenix-user-main {
+      padding-block: 1rem 2.5rem;
+    }
+
+    .codenix-user-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .codenix-user-stack {
+      gap: 1rem;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .codenix-auth-route-enter {
       animation: none;
