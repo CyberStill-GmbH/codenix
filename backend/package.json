@@ -8,6 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
+    "seed:problems": "tsx prisma/seed-problems.ts",
+    "seed:admin": "tsx prisma/seed-admin.ts",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
