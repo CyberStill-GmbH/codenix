@@ -7,6 +7,9 @@ import { authRoutes } from "./modules/auth/auth.routes";
 import { errorHandler } from "./shared/errors/error-handler";
 import { notFoundHandler } from "./shared/middleware/not-found.middleware";
 import { requestIdMiddleware } from "./shared/middleware/request-id.middleware";
+import { problemsRoutes } from "./modules/problems/problems.routes";
+import { submissionsRoutes } from "./modules/submissions/submissions.routes";
+import { adminProblemsRoutes } from "./modules/admin/problems/admin-problems.routes";
 
 export const app = express();
 
@@ -30,6 +33,9 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/problems", problemsRoutes);
+app.use("/api/submissions", submissionsRoutes);
+app.use("/api/admin/problems", adminProblemsRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
