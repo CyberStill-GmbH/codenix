@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "problems" ADD COLUMN     "memoryLimitMb" INTEGER NOT NULL DEFAULT 256,
+ADD COLUMN     "outputType" TEXT NOT NULL DEFAULT 'object',
+ADD COLUMN     "parameters" JSONB NOT NULL DEFAULT '[]',
+ADD COLUMN     "timeLimitMs" INTEGER NOT NULL DEFAULT 2000;

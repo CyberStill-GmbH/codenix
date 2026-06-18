@@ -93,6 +93,11 @@ model Problem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  parameters    Json    @default("[]")
+  outputType    String  @default("object")
+  timeLimitMs   Int     @default(2000)
+  memoryLimitMb Int     @default(256)
+
   examples      ProblemExample[]
   codeTemplates ProblemCodeTemplate[]
   topics        ProblemTopic[]
