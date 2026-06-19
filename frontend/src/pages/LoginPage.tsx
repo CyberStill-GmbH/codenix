@@ -1,27 +1,39 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { LogIn, Mail } from 'lucide-react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { AuthCheckbox } from '@/features/auth/components/AuthCheckbox'
 import { AuthFormShell } from '@/features/auth/components/AuthFormShell'
 import { AuthInput } from '@/features/auth/components/AuthInput'
 import { AuthSubmitButton } from '@/features/auth/components/AuthSubmitButton'
 import { PasswordInput } from '@/features/auth/components/PasswordInput'
-import {
-  loginMockService,
-  redirectToOAuthMock,
-} from '@/features/auth/services/authMockService'
+import { useAuth } from '@/features/auth/context/useAuth'
+import { buildOAuthRedirectUrl } from '@/features/auth/services/authApi'
 import type {
   LoginFormErrors,
   LoginFormValues,
   OAuthProvider,
 } from '@/features/auth/types/auth.types'
+import {
+  getApiErrorMessage,
+  getApiFieldErrors,
+} from '@/features/auth/utils/authApiErrors'
 import { validateLoginForm } from '@/features/auth/utils/authValidation'
 import { landingTokens } from '@/features/landing/theme/tokens'
 
 const initialValues: LoginFormValues = { email: '', password: '', remember: false }
 
+type LocationState = {
+  returnTo?: string
+}
+
 export function LoginPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const locationState = location.state as LocationState | null
+  const returnTo = locationState?.returnTo ?? '/problems'
+  const { login } = useAuth()
   const [values, setValues] = useState<LoginFormValues>(initialValues)
   const [errors, setErrors] = useState<LoginFormErrors>({})
   const [serverError, setServerError] = useState('')
@@ -46,31 +58,32 @@ export function LoginPage() {
     setServerError('')
 
     try {
-      await loginMockService(values)
-      // TODO(backend): Redirigir al usuario al dashboard después del login exitoso.
-      // e.g. navigate('/problems')
+      await login(values)
+      navigate(returnTo, { replace: true })
     } catch (error) {
-      // TODO(backend): Mostrar errores reales devueltos por el backend REST API (401, 422).
-      setServerError(error instanceof Error ? error.message : 'Correo o contraseña incorrectos.')
+      setErrors((current) => ({
+        ...current,
+        ...getApiFieldErrors(error, ['email', 'password'] as const),
+      }))
+      setServerError(getApiErrorMessage(error, 'Correo o contrasena incorrectos.'))
     } finally {
       setIsLoading(false)
     }
   }
 
   function handleOAuth(provider: OAuthProvider) {
-    redirectToOAuthMock(provider)
-    // TODO(backend): Redirigir a ventana OAuth del backend: window.location.href = `/api/auth/${provider}/redirect`
+    window.location.href = buildOAuthRedirectUrl(provider, returnTo)
   }
 
   return (
     <AuthFormShell
       eyebrow="Bienvenido de vuelta"
-      title="Inicia sesión"
-      description="Continúa tu progreso dentro de Codenix."
+      title="Inicia sesion"
+      description="Continua tu progreso dentro de Codenix."
       onSubmit={handleSubmit}
       onOAuth={handleOAuth}
-      dividerText="o continúa con"
-      footerText="¿No tienes cuenta?"
+      dividerText="o continua con"
+      footerText="No tienes cuenta?"
       footerLinkLabel="Crea una gratis"
       footerLinkTo="/register"
     >
@@ -91,13 +104,13 @@ export function LoginPage() {
       <PasswordInput
         id="login-password"
         name="password"
-        label="Contraseña"
-        placeholder="••••••••"
+        label="Contrasena"
+        placeholder="********"
         autoComplete="current-password"
         value={values.password}
         error={errors.password}
         disabled={isLoading}
-        forgotHref="#"
+        forgotHref="/forgot-password"
         onChange={(event) => update('password', event.target.value)}
       />
 
@@ -120,7 +133,7 @@ export function LoginPage() {
         isLoading={isLoading}
         loadingText="Ingresando..."
       >
-        Iniciar sesión
+        Iniciar sesion
       </AuthSubmitButton>
     </AuthFormShell>
   )

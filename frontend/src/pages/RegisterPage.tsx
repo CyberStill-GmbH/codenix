@@ -1,21 +1,24 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Mail, User, UserPlus } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 import { AuthCheckbox } from '@/features/auth/components/AuthCheckbox'
 import { AuthFormShell } from '@/features/auth/components/AuthFormShell'
 import { AuthInput } from '@/features/auth/components/AuthInput'
 import { AuthSubmitButton } from '@/features/auth/components/AuthSubmitButton'
 import { PasswordInput } from '@/features/auth/components/PasswordInput'
-import {
-  redirectToOAuthMock,
-  registerMockService,
-} from '@/features/auth/services/authMockService'
+import { useAuth } from '@/features/auth/context/useAuth'
+import { buildOAuthRedirectUrl } from '@/features/auth/services/authApi'
 import type {
   OAuthProvider,
   RegisterFormErrors,
   RegisterFormValues,
 } from '@/features/auth/types/auth.types'
+import {
+  getApiErrorMessage,
+  getApiFieldErrors,
+} from '@/features/auth/utils/authApiErrors'
 import { validateRegisterForm } from '@/features/auth/utils/authValidation'
 import { landingTokens } from '@/features/landing/theme/tokens'
 
@@ -28,6 +31,8 @@ const initialValues: RegisterFormValues = {
 }
 
 export function RegisterPage() {
+  const navigate = useNavigate()
+  const { register } = useAuth()
   const [values, setValues] = useState<RegisterFormValues>(initialValues)
   const [errors, setErrors] = useState<RegisterFormErrors>({})
   const [serverError, setServerError] = useState('')
@@ -55,32 +60,33 @@ export function RegisterPage() {
     setServerError('')
 
     try {
-      await registerMockService(values)
-      // TODO(backend): Decidir flujo post-registro.
-      // Opciones: login automático y redirigir a /problems, o redirigir a /login pidiendo confirmar email.
+      await register(values)
+      navigate('/problems', { replace: true })
     } catch (error) {
-      // TODO(backend): Mostrar errores reales del backend REST API (409 Email en uso).
-      setServerError(error instanceof Error ? error.message : 'Error al crear la cuenta. Inténtalo de nuevo.')
+      setErrors((current) => ({
+        ...current,
+        ...getApiFieldErrors(error, ['name', 'email', 'password'] as const),
+      }))
+      setServerError(getApiErrorMessage(error, 'Error al crear la cuenta. Intentalo de nuevo.'))
     } finally {
       setIsLoading(false)
     }
   }
 
   function handleOAuth(provider: OAuthProvider) {
-    redirectToOAuthMock(provider)
-    // TODO(backend): Redirigir a ventana OAuth del backend: window.location.href = `/api/auth/${provider}/redirect`
+    window.location.href = buildOAuthRedirectUrl(provider, '/problems')
   }
 
   return (
     <AuthFormShell
-      eyebrow="Únete a Codenix"
+      eyebrow="Unete a Codenix"
       title="Crea tu cuenta"
       description="Empieza a practicar y medir tu progreso."
       onSubmit={handleSubmit}
       onOAuth={handleOAuth}
-      dividerText="o regístrate con"
-      footerText="¿Ya tienes cuenta?"
-      footerLinkLabel="Inicia sesión"
+      dividerText="o registrate con"
+      footerText="Ya tienes cuenta?"
+      footerLinkLabel="Inicia sesion"
       footerLinkTo="/login"
       compact
     >
@@ -115,8 +121,8 @@ export function RegisterPage() {
       <PasswordInput
         id="register-password"
         name="password"
-        label="Contraseña"
-        placeholder="Mínimo 8 caracteres"
+        label="Contrasena"
+        placeholder="Minimo 8 caracteres"
         autoComplete="new-password"
         value={values.password}
         error={errors.password}
@@ -127,8 +133,8 @@ export function RegisterPage() {
       <PasswordInput
         id="register-confirm-password"
         name="confirmPassword"
-        label="Confirmar contraseña"
-        placeholder="Repite tu contraseña"
+        label="Confirmar contrasena"
+        placeholder="Repite tu contrasena"
         autoComplete="new-password"
         value={values.confirmPassword}
         error={errors.confirmPassword}
@@ -145,7 +151,7 @@ export function RegisterPage() {
               href="#"
               className={`${landingTokens.auth.footerLink} ${landingTokens.focus}`}
             >
-              términos
+              terminos
             </a>{' '}
             y la{' '}
             <a

@@ -1,18 +1,23 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Search } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
 
 import logo from '@/assets/icons/logo.png'
-import { mockUser } from '@/features/user/constants/userMockData'
+import { useAuth } from '@/features/auth/context/useAuth'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
 import { UserMenu } from '@/features/user/components/UserMenu'
 import { landingTokens } from '@/features/landing/theme/tokens'
+import { getLastAdminPath } from '@/shared/utils/adminConsolePath'
+import { preloadRoute, type PreloadRouteKey } from '@/routes/routePreload'
+import { ProblemSearchBox } from '@/shared/components/navigation/ProblemSearchBox'
 
 const appNavItems = [
-  { label: 'Problems', href: '/problems' },
-  { label: 'Submissions', href: '/submissions' },
-  { label: 'Profile', href: '/profile' },
-]
+  { label: 'Problemas', href: '/problems', preload: 'problems' },
+  { label: 'Envios', href: '/submissions', preload: 'submissions' },
+  { label: 'Perfil', href: '/profile', preload: 'profile' },
+] satisfies Array<{ label: string; href: string; preload: PreloadRouteKey }>
+
+const preloadAdminRoute = () => preloadRoute('adminProblems')
 
 const cx = (...classes: Array<string | false | undefined>) =>
   classes.filter(Boolean).join(' ')
@@ -21,18 +26,26 @@ const cx = (...classes: Array<string | false | undefined>) =>
 // Keep it separate from the public landing NavbarSection.
 export function AppNavbar() {
   const location = useLocation()
+  const { user } = useAuth()
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const userMenuButtonRef = useRef<HTMLButtonElement>(null)
+  const adminHref = getLastAdminPath()
 
   const activePath = useMemo(() => {
     const currentPath = location.pathname
     return appNavItems.find((item) => currentPath.startsWith(item.href))?.href
   }, [location.pathname])
+  const isProfileRoute = location.pathname.startsWith('/profile')
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-border-soft)] bg-[var(--color-navbar-bg)] shadow-[var(--shadow-navbar)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 bg-[var(--color-navbar-bg)] shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl">
       <nav
-        className="codenix-app-shell flex h-16 items-center justify-between gap-6 px-6"
+        className={cx(
+          'mx-auto flex h-[50px] w-full items-center justify-between gap-6 px-6',
+          isProfileRoute
+            ? 'md:max-w-[888px] lg:max-w-screen-xl'
+            : 'max-w-[90rem]',
+        )}
         aria-label="Navegacion interna de Codenix"
       >
         <div className="flex min-w-0 items-center gap-8">
@@ -65,6 +78,8 @@ export function AppNavbar() {
                 <Link
                   key={item.href}
                   to={item.href}
+                  onMouseEnter={() => preloadRoute(item.preload)}
+                  onFocus={() => preloadRoute(item.preload)}
                   className={cx(
                     'relative rounded-[var(--radius-lg)] px-1 py-2 text-sm font-semibold tracking-normal transition duration-200',
                     isActive
@@ -82,21 +97,19 @@ export function AppNavbar() {
         </div>
 
         <div className="flex shrink-0 items-center gap-4">
-          <div className="hidden min-w-0 w-[22rem] lg:block">
-            <label className="relative block">
-              <span className="sr-only">Buscar problemas</span>
-              <Search
-                className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-auth-icon)]"
-                aria-hidden="true"
-              />
-              <input
-                type="search"
-                placeholder="Search problems"
-                // TODO: API - GET /api/problems/search?q=
-                className="h-11 w-full rounded-full border border-slate-700/60 bg-slate-950/70 pl-11 pr-4 text-sm font-medium text-[var(--color-text)] outline-none placeholder:text-[var(--color-auth-placeholder)] transition duration-200 hover:border-slate-600/80 focus:border-[var(--color-primary)] focus:shadow-[var(--shadow-auth-focus)]"
-              />
-            </label>
-          </div>
+          {user?.role === 'admin' && (
+            <Link
+              to={adminHref}
+              onMouseEnter={preloadAdminRoute}
+              onFocus={preloadAdminRoute}
+              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--color-primary)]/30 bg-[var(--color-primary-soft)] px-2.5 text-xs font-semibold text-[var(--color-accent-muted)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+            >
+              <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+              Administrar
+            </Link>
+          )}
+
+          <ProblemSearchBox />
 
           <div className="relative">
             <button
@@ -111,17 +124,17 @@ export function AppNavbar() {
               aria-expanded={isUserMenuOpen}
               onClick={() => setIsUserMenuOpen((current) => !current)}
             >
-              <UserAvatar src={mockUser.avatarUrl} name={mockUser.name} size="sm" />
+              <UserAvatar src={user?.avatarUrl} name={user?.name ?? 'Usuario'} size="sm" />
             </button>
 
-            {isUserMenuOpen && (
+            {isUserMenuOpen && user && (
               <div
                 className="absolute right-0 top-12"
                 role="menu"
                 aria-label="Menu de usuario"
               >
                 <UserMenu
-                  user={mockUser}
+                  user={user}
                   onClose={() => setIsUserMenuOpen(false)}
                 />
               </div>
