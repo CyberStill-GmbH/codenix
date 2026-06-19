@@ -7,6 +7,7 @@ export type JudgeStatus =
   | 'time_limit_exceeded'
   | 'compilation_error'
   | 'memory_limit_exceeded'
+  | 'internal_error'
   | 'pending'
 
 export type CodingTestcase = {
@@ -72,12 +73,13 @@ export type ProblemSubmission = {
   result: string
   language: string
   submittedAt: string
-  executionTimeMs?: number
-  memoryKb?: number
+  executionTimeMs?: number | null
+  memoryKb?: number | null
   sourceCode?: string
 }
 
 export type SubmissionDetail = ProblemSubmission & {
+  resultCode?: string
   problemTitle: string
   problemSlug: string
   difficulty: string

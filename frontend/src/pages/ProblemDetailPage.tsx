@@ -243,7 +243,6 @@ export function ProblemDetailPage() {
               key={`${problem.slug}:${codeLoadState.version}`}
               problemId={problem.apiId ?? problem.id}
               codeTemplates={problem.codeTemplates}
-              testcases={testcases}
               initialCodeLoad={codeLoadState.request}
               onRunResultsChange={setRunResults}
               onAcceptedSubmit={() =>
@@ -293,7 +292,6 @@ export function ProblemDetailPage() {
                 key={`${problem.slug}:${codeLoadState.version}`}
                 problemId={problem.apiId ?? problem.id}
                 codeTemplates={problem.codeTemplates}
-                testcases={testcases}
                 initialCodeLoad={codeLoadState.request}
                 onRunResultsChange={setRunResults}
                 onAcceptedSubmit={() =>

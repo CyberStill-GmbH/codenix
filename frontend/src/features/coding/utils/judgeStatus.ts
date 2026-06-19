@@ -34,6 +34,11 @@ export const judgeStatusMeta: Record<
     className:
       'border-[var(--color-warning)]/35 bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
   },
+  internal_error: {
+    label: 'Internal Error',
+    className:
+      'border-[var(--color-error)]/35 bg-[var(--color-error-soft)] text-[var(--color-error)]',
+  },
   pending: {
     label: 'Pending',
     className: 'border-slate-600/50 bg-slate-900/70 text-[var(--color-text-muted)]',

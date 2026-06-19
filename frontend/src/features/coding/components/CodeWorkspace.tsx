@@ -17,7 +17,6 @@ import {
   submitProblemCode,
 } from '@/features/coding/services/codingApi'
 import type {
-  CodingTestcase,
   RunCodeResponse,
   SubmitCodeResponse,
   TestcaseRunResult,
@@ -39,7 +38,6 @@ type CodeLoadRequest = {
 type CodeWorkspaceProps = {
   problemId: string | number
   codeTemplates: ProblemCodeTemplate[]
-  testcases: CodingTestcase[]
   initialCodeLoad?: CodeLoadRequest | null
   onRunResultsChange: (results: TestcaseRunResult[]) => void
   onAcceptedSubmit: () => void
@@ -110,7 +108,6 @@ function CodeWorkspace(
   {
     problemId,
     codeTemplates,
-    testcases,
     initialCodeLoad,
     onRunResultsChange,
     onAcceptedSubmit,
@@ -205,15 +202,10 @@ function CodeWorkspace(
       const response = await runProblemCode(problemId, {
         language,
         sourceCode: code,
-        testcases: testcases.map(({ input, expectedOutput }) => ({
-          input,
-          expectedOutput,
-        })),
       })
-      const finalResponse =
-        isPendingResponse(response) && response.id
-          ? await pollRunResult(response.id)
-          : response
+      const finalResponse = isPendingResponse(response)
+        ? await pollRunResult(response.id)
+        : await getRunResult(response.id)
 
       setRunResult(finalResponse)
       onRunResultsChange(finalResponse.testcases ?? [])
@@ -231,7 +223,6 @@ function CodeWorkspace(
     onRunResultsChange,
     pollRunResult,
     problemId,
-    testcases,
   ])
 
   const handleSubmit = useCallback(async () => {
@@ -249,10 +240,9 @@ function CodeWorkspace(
         language,
         sourceCode: code,
       })
-      const finalResponse =
-        isPendingResponse(response) && response.id
-          ? await pollSubmissionResult(response.id)
-          : response
+      const finalResponse = isPendingResponse(response)
+        ? await pollSubmissionResult(response.id)
+        : await getSubmissionResult(response.id)
 
       setSubmitResult(finalResponse)
 

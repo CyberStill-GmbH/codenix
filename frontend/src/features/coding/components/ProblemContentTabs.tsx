@@ -319,7 +319,7 @@ export function ProblemContentTabs({
           <section className="space-y-3">
             {isLoadingSubmissions && <SkeletonRows />}
             {submissionsError && !isLoadingSubmissions && (
-              <EmptyPanel>{submissionsError}. Backend de submissions pendiente.</EmptyPanel>
+              <EmptyPanel>{submissionsError}</EmptyPanel>
             )}
             {!isLoadingSubmissions && !submissionsError && submissions.length === 0 && (
               <EmptyPanel>Aun no tienes submissions para este problema.</EmptyPanel>
@@ -361,6 +361,10 @@ export function ProblemContentTabs({
 
         {activeTab === 'testcases' && (
           <section className="space-y-3">
+            {/* TODO: API-PENDING - el backend acepta stdin, pero todavia no lo ejecuta. */}
+            <p className="text-xs text-[var(--color-text-subtle)]">
+              Run evalua los casos de muestra almacenados en el servidor.
+            </p>
             {testcases.map((testcase, index) => {
               const result = resultByCaseId.get(testcase.id)
               return (
