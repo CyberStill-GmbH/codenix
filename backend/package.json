@@ -17,9 +17,9 @@
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force",
-    "test": "cross-env NODE_ENV=test vitest run --fileParallelism=false",
-    "test:watch": "cross-env NODE_ENV=test vitest",
-    "test:coverage": "cross-env NODE_ENV=test vitest run --fileParallelism=false --coverage"
+    "test": "cross-env NODE_ENV=test DOTENV_CONFIG_PATH=.env.test tsx src/tests/migrate-test-db.ts && cross-env NODE_ENV=test DOTENV_CONFIG_PATH=.env.test vitest run --fileParallelism=false",
+    "test:watch": "cross-env NODE_ENV=test DOTENV_CONFIG_PATH=.env.test tsx src/tests/migrate-test-db.ts && cross-env NODE_ENV=test DOTENV_CONFIG_PATH=.env.test vitest",
+    "test:coverage": "cross-env NODE_ENV=test DOTENV_CONFIG_PATH=.env.test tsx src/tests/migrate-test-db.ts && cross-env NODE_ENV=test DOTENV_CONFIG_PATH=.env.test vitest run --fileParallelism=false --coverage"
   },
   "keywords": [],
   "author": "",

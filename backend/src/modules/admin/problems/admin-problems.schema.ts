@@ -81,7 +81,17 @@ export const adminProblemBodySchema = z
     output_type: outputTypeSchema,
     testcases: z.array(testcaseSchema).max(200),
     supported_languages: z
-      .array(z.enum(["typescript", "javascript", "python", "java", "cpp"]))
+      .array(
+        z.enum([
+          "typescript",
+          "javascript",
+          "python",
+          "java",
+          "cpp",
+          "c",
+          "rust"
+        ])
+      )
       .max(10),
     starter_code: z.record(z.string(), z.string().max(50_000)),
     time_limit_ms: z.coerce.number().int().min(100).max(30_000).default(2000),

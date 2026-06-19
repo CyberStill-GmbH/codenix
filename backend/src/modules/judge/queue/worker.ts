@@ -5,12 +5,7 @@ import { prisma } from "../../../db/prisma";
 import { compareOutput } from "../comparators";
 import { getVerdict } from "../verdicts";
 import { CompileError } from "../sandbox/runners/base.runner";
-import type { BaseRunner } from "../sandbox/runners/base.runner";
-import { CRunner } from "../sandbox/runners/c.runner";
-import { JavascriptRunner } from "../sandbox/runners/javascript.runner";
-import { PythonRunner } from "../sandbox/runners/python.runner";
-import { RustRunner } from "../sandbox/runners/rust.runner";
-import { TypescriptRunner } from "../sandbox/runners/typescript.runner";
+import { createRunner } from "../sandbox/runner-factory";
 import { JUDGE_QUEUE_NAME, type JudgeJobPayload } from "./types";
 
 type FinalVerdict = Exclude<SubmissionResult, "pending">;
@@ -24,29 +19,6 @@ interface TestcaseResultData {
   passed: boolean;
   executionTimeMs: number;
   memoryKb: number;
-}
-
-function getRunner(payload: JudgeJobPayload): BaseRunner {
-  const config = {
-    sourceCode: payload.sourceCode,
-    timeLimitMs: payload.timeLimitMs,
-    memoryLimitMb: payload.memoryLimitMb
-  };
-
-  switch (payload.language) {
-    case "python":
-      return new PythonRunner(config);
-    case "javascript":
-      return new JavascriptRunner(config);
-    case "typescript":
-      return new TypescriptRunner(config);
-    case "c":
-      return new CRunner(config);
-    case "rust":
-      return new RustRunner(config);
-    default:
-      throw new Error(`Unsupported language: ${String(payload.language)}`);
-  }
 }
 
 async function persistInternalError(payload: JudgeJobPayload, message: string) {
@@ -139,7 +111,11 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
     throw new Error("A judge job must identify exactly one run or submission.");
   }
 
-  const runner = getRunner(payload);
+  const runner = createRunner(payload.language, {
+    sourceCode: payload.sourceCode,
+    timeLimitMs: payload.timeLimitMs,
+    memoryLimitMb: payload.memoryLimitMb
+  });
   let compileOutput = "";
   const results: TestcaseResultData[] = [];
   let overallVerdict: FinalVerdict = "accepted";

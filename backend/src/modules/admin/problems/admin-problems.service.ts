@@ -5,6 +5,10 @@ import type {
 import { prisma } from "../../../db/prisma";
 import { AppError } from "../../../shared/errors/app-error";
 import {
+  isSupportedJudgeLanguage,
+  SUPPORTED_JUDGE_LANGUAGES
+} from "../../judge/supported-languages";
+import {
   toAdminLegacyTestcaseItem,
   toAdminProblemDetails,
   toAdminProblemListItem
@@ -141,6 +145,24 @@ function buildCodeTemplates(input: AdminProblemBodyInput) {
   }));
 }
 
+function validateSupportedLanguages(input: AdminProblemBodyInput) {
+  const unsupportedLanguages = input.supported_languages.filter(
+    (language) => !isSupportedJudgeLanguage(language)
+  );
+
+  if (unsupportedLanguages.length === 0) return;
+
+  throw new AppError(
+    422,
+    "UNSUPPORTED_LANGUAGE",
+    "One or more languages do not have an available judge runner.",
+    {
+      unsupportedLanguages,
+      supportedLanguages: [...SUPPORTED_JUDGE_LANGUAGES]
+    }
+  );
+}
+
 function buildTestcases(input: AdminProblemBodyInput) {
   return input.testcases.map((testcase, index) => {
     const visibility: TestcaseVisibility = testcase.is_sample
@@ -246,37 +268,34 @@ async function validatePublishable(problemId: string) {
     (testcase) => testcase.visibility === "sample"
   );
 
-  const hasHidden = problem.testcases.some(
-    (testcase) => testcase.visibility === "hidden"
-  );
-
   const hasLanguage = problem.codeTemplates.length > 0;
-
-  const missingStarterCode = problem.codeTemplates.some(
-    (template) => !template.starterCode.trim()
-  );
-
-  const errors: string[] = [];
+  const missing: string[] = [];
 
   if (!hasSample) {
-    errors.push("At least one sample testcase is required.");
+    missing.push("sampleTestcases");
   }
 
-  if (!hasHidden) {
-    errors.push("At least one hidden testcase is required.");
+  if (problem.testcases.length === 0) {
+    missing.push("testcases");
   }
 
   if (!hasLanguage) {
-    errors.push("At least one supported language is required.");
+    missing.push("languages");
   }
 
-  if (missingStarterCode) {
-    errors.push("Starter code is required for every supported language.");
+  for (const template of problem.codeTemplates) {
+    if (!isSupportedJudgeLanguage(template.language)) {
+      missing.push(`runners.${template.language}`);
+    }
+
+    if (!template.starterCode.trim()) {
+      missing.push(`templates.${template.language}`);
+    }
   }
 
-  if (errors.length > 0) {
-    throw new AppError(400, "VALIDATION_ERROR", "Problem cannot be published.", {
-      issues: errors
+  if (missing.length > 0) {
+    throw new AppError(422, "INCOMPLETE_PROBLEM", "Problem cannot be published.", {
+      missing
     });
   }
 }
@@ -364,6 +383,7 @@ export const adminProblemsService = {
   },
 
   async create(input: AdminProblemBodyInput) {
+    validateSupportedLanguages(input);
     const numericId = await getNextNumericId();
     const topics = await buildProblemTopics(input);
 
@@ -375,7 +395,7 @@ export const adminProblemsService = {
           slug: input.slug,
           difficulty: input.difficulty,
           acceptance: 0,
-          status: input.status,
+          status: input.status === "published" ? "draft" : input.status,
           statement: input.description_markdown,
           inputFormat: input.parameters
             .map((parameter) => `${parameter.name}: ${parameter.type}`)
@@ -406,6 +426,10 @@ export const adminProblemsService = {
 
       if (input.status === "published") {
         await validatePublishable(problem.id);
+        await prisma.problem.update({
+          where: { id: problem.id },
+          data: { status: "published" }
+        });
       }
 
       return findAdminProblemDetails(problem.id);
@@ -419,6 +443,7 @@ export const adminProblemsService = {
   },
 
   async update(identifier: string, input: AdminProblemBodyInput) {
+    validateSupportedLanguages(input);
     const existingProblem = await findProblemOrThrow(identifier);
     const topics = await buildProblemTopics(input);
 
@@ -431,7 +456,7 @@ export const adminProblemsService = {
           title: input.title,
           slug: input.slug,
           difficulty: input.difficulty,
-          status: input.status,
+          status: input.status === "published" ? "draft" : input.status,
           statement: input.description_markdown,
           inputFormat: input.parameters
             .map((parameter) => `${parameter.name}: ${parameter.type}`)
@@ -463,6 +488,10 @@ export const adminProblemsService = {
 
       if (input.status === "published") {
         await validatePublishable(existingProblem.id);
+        await prisma.problem.update({
+          where: { id: existingProblem.id },
+          data: { status: "published" }
+        });
       }
 
       return findAdminProblemDetails(existingProblem.id);

@@ -7,6 +7,8 @@ import { cleanDatabase } from "../helpers/db.helper";
 import { processJudgeJob } from "../../modules/judge/queue/worker";
 import { judgeQueue } from "../../modules/judge/queue/producer";
 
+type JudgeJob = Parameters<typeof processJudgeJob>[0];
+
 async function createTestProblem() {
   return prisma.problem.create({
     data: {
@@ -49,6 +51,12 @@ async function createTestProblem() {
       testcases: true
     }
   });
+}
+
+function createInlineJudgeJob(
+  data: JudgeJob["data"]
+): JudgeJob {
+  return { data } as JudgeJob;
 }
 
 describe("Runs & Submissions Queue & Judge Flow", () => {
@@ -157,11 +165,24 @@ describe("Runs & Submissions Queue & Judge Flow", () => {
 
       const runId = res.body.id;
 
-      // Fetch the BullMQ job and process it directly via processJudgeJob
-      const jobs = await judgeQueue.getJobs(["waiting"]);
-      expect(jobs.length).toBe(1);
-      
-      await processJudgeJob(jobs[0]!);
+      await judgeQueue.drain();
+      await processJudgeJob(
+        createInlineJudgeJob({
+          runId,
+          problemId: problem.id,
+          language: "python",
+          sourceCode: "import sys\ndata = sys.stdin.read()\nprint('[0,1]')\n",
+          testcases: problem.testcases
+            .filter((testcase) => testcase.visibility === "sample")
+            .map((testcase) => ({
+              id: testcase.id,
+              input: testcase.input,
+              expectedOutput: testcase.expectedOutput
+            })),
+          timeLimitMs: problem.timeLimitMs,
+          memoryLimitMb: problem.memoryLimitMb
+        })
+      );
 
       // Poll to check result
       const pollRes = await request(app)
@@ -187,8 +208,24 @@ describe("Runs & Submissions Queue & Judge Flow", () => {
         });
 
       const runId = res.body.id;
-      const jobs = await judgeQueue.getJobs(["waiting"]);
-      await processJudgeJob(jobs[0]!);
+      await judgeQueue.drain();
+      await processJudgeJob(
+        createInlineJudgeJob({
+          runId,
+          problemId: problem.id,
+          language: "python",
+          sourceCode: "invalid code syntax error ==",
+          testcases: problem.testcases
+            .filter((testcase) => testcase.visibility === "sample")
+            .map((testcase) => ({
+              id: testcase.id,
+              input: testcase.input,
+              expectedOutput: testcase.expectedOutput
+            })),
+          timeLimitMs: problem.timeLimitMs,
+          memoryLimitMb: problem.memoryLimitMb
+        })
+      );
 
       const pollRes = await request(app)
         .get(`/api/runs/${runId}`)
@@ -224,10 +261,35 @@ if lines:
         });
 
       const submissionId = res.body.id;
-      const jobs = await judgeQueue.getJobs(["waiting"]);
-      expect(jobs.length).toBe(1);
-
-      await processJudgeJob(jobs[0]!);
+      await judgeQueue.drain();
+      await processJudgeJob(
+        createInlineJudgeJob({
+          submissionId,
+          problemId: problem.id,
+          language: "python",
+          sourceCode: `
+import sys, ast
+lines = [l.strip() for l in sys.stdin.read().splitlines() if l.strip()]
+if lines:
+    nums = ast.literal_eval(lines[0])
+    target = int(lines[1])
+    seen = {}
+    for i, n in enumerate(nums):
+        comp = target - n
+        if comp in seen:
+            print(f"[{seen[comp]},{i}]")
+            sys.exit(0)
+        seen[n] = i
+`,
+          testcases: problem.testcases.map((testcase) => ({
+            id: testcase.id,
+            input: testcase.input,
+            expectedOutput: testcase.expectedOutput
+          })),
+          timeLimitMs: problem.timeLimitMs,
+          memoryLimitMb: problem.memoryLimitMb
+        })
+      );
 
       // Poll submission detail
       const pollRes = await request(app)

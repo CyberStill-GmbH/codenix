@@ -1,4 +1,4 @@
-import { SupportedLanguage } from "../../../generated/prisma/client";
+import type { SupportedJudgeLanguage } from "../supported-languages";
 
 export const JUDGE_QUEUE_NAME = "judge-queue";
 
@@ -12,7 +12,7 @@ export interface JudgeJobPayload {
   runId?: string;
   submissionId?: string;
   problemId: string;
-  language: SupportedLanguage;
+  language: SupportedJudgeLanguage;
   sourceCode: string;
   testcases: TestcasePayload[];
   timeLimitMs: number;
