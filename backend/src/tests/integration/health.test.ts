@@ -8,5 +8,7 @@ describe("GET /api/health", () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ status: "ok" });
+    expect(res.headers["cache-control"]).toBe("no-store");
+    expect(res.headers.etag).toBeUndefined();
   });
 });
