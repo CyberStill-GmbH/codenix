@@ -1,9 +1,12 @@
-﻿import type { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { problemService } from "./problems.service";
 import type {
   ProblemSlugParamsInput,
   ProblemsQueryInput,
-  ProblemsSearchQueryInput
+  ProblemsSearchQueryInput,
+  ProblemIdentifierParamsInput,
+  RunCodeRequestInput,
+  CreateSubmissionRequestInput
 } from "./problems.schema";
 
 function getValidatedQuery<T>(res: Response): T {
@@ -40,5 +43,31 @@ export const problemController = {
     const problem = await problemService.findBySlug(slug, req.user?.id);
 
     return res.status(200).json(problem);
+  },
+
+  async runCode(req: Request, res: Response) {
+    const { problemId } = res.locals.validatedParams as ProblemIdentifierParamsInput;
+    const body = res.locals.validatedBody as RunCodeRequestInput;
+    const userId = req.user?.id || (req as any).userId;
+
+    if (!userId) {
+      return res.status(401).json({ code: "UNAUTHORIZED", message: "Unauthorized" });
+    }
+
+    const response = await problemService.runCode(problemId, body, userId);
+    return res.status(200).json(response);
+  },
+
+  async submitCode(req: Request, res: Response) {
+    const { problemId } = res.locals.validatedParams as ProblemIdentifierParamsInput;
+    const body = res.locals.validatedBody as CreateSubmissionRequestInput;
+    const userId = req.user?.id || (req as any).userId;
+
+    if (!userId) {
+      return res.status(401).json({ code: "UNAUTHORIZED", message: "Unauthorized" });
+    }
+
+    const response = await problemService.submitCode(problemId, body, userId);
+    return res.status(200).json(response);
   }
 };

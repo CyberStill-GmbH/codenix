@@ -1,12 +1,16 @@
-﻿import { Router } from "express";
+import { Router } from "express";
 import { problemController } from "./problems.controller";
 import {
   problemSlugParamsSchema,
   problemsQuerySchema,
-  problemsSearchQuerySchema
+  problemsSearchQuerySchema,
+  problemIdentifierParamsSchema,
+  runCodeRequestSchema,
+  createSubmissionRequestSchema
 } from "./problems.schema";
 import { asyncHandler } from "../../shared/middleware/async-handler";
 import { optionalAuthMiddleware } from "../../shared/middleware/optional-auth.middleware";
+import { authMiddleware } from "../../shared/middleware/auth.middleware";
 import { validate } from "../../shared/middleware/validate.middleware";
 
 export const problemsRoutes = Router();
@@ -27,6 +31,26 @@ problemsRoutes.get(
 problemsRoutes.get(
   "/topics",
   asyncHandler(problemController.listTopics)
+);
+
+problemsRoutes.post(
+  "/:problemId/run",
+  asyncHandler(authMiddleware),
+  validate({
+    params: problemIdentifierParamsSchema,
+    body: runCodeRequestSchema
+  }),
+  asyncHandler(problemController.runCode)
+);
+
+problemsRoutes.post(
+  "/:problemId/submissions",
+  asyncHandler(authMiddleware),
+  validate({
+    params: problemIdentifierParamsSchema,
+    body: createSubmissionRequestSchema
+  }),
+  asyncHandler(problemController.submitCode)
 );
 
 problemsRoutes.get(

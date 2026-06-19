@@ -1,4 +1,4 @@
-﻿import express from "express";
+import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -15,6 +15,7 @@ import { problemsRoutes } from "./modules/problems/problems.routes";
 import { submissionsRoutes } from "./modules/submissions/submissions.routes";
 import { adminProblemsRoutes } from "./modules/admin/problems/admin-problems.routes";
 import { usersRoutes } from "./modules/users/users.routes";
+import { runsRoutes } from "./modules/runs/runs.routes";
 
 export const app = express();
 
@@ -45,6 +46,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/problems", problemsRoutes);
 app.use("/api/submissions", submissionsRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/runs", runsRoutes);
 app.use("/api/admin/problems", adminProblemsRoutes);
 app.use("/api/admin/uploads", adminUploadsRoutes);
 
