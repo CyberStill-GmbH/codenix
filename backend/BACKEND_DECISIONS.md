@@ -1,5 +1,58 @@
 # Backend Decisions
 
+## Judge Language Contract
+
+The judge runners are the single source of truth for executable languages. The
+canonical list lives in `src/modules/judge/supported-languages.ts` and contains:
+
+- `python`
+- `javascript`
+- `typescript`
+- `c`
+- `rust`
+
+Public request validation and admin problem validation consume this contract.
+The broader Prisma enum remains a persistence compatibility detail and must not
+be used to advertise executable languages.
+
+## Problem Publication Integrity
+
+A problem can be published only when it has at least one sample testcase, at
+least one testcase in total, at least one supported language, and non-empty
+starter code for every advertised language. Languages without a judge runner
+also block publication. Validation failures use `INCOMPLETE_PROBLEM` and return
+the exact missing requirements.
+
+## Empty Custom Testcases
+
+For `POST /api/problems/:problemId/run`, an omitted `testcases` field and
+`testcases: []` intentionally have the same meaning: execute the sample
+testcases stored for the problem. This keeps the client contract simple. The
+API does not distinguish between these two representations.
+
+## Seeded Problem Verification
+
+`Two Sum` and `Valid Parentheses` are seeded with two sample testcases, six
+hidden testcases, and starter code for every canonical judge language. Starter
+code does not contain the solution.
+
+Reference solutions are isolated in `prisma/reference-solutions.ts`. The
+verification suite compiles and executes them through the same Docker runner
+factory used by the queue worker, against every sample and hidden testcase.
+
+| Problem | Language | Result |
+| --- | --- | --- |
+| Two Sum | Python | Accepted (8/8) |
+| Two Sum | JavaScript | Accepted (8/8) |
+| Two Sum | TypeScript | Accepted (8/8) |
+| Two Sum | C | Accepted (8/8) |
+| Two Sum | Rust | Accepted (8/8) |
+| Valid Parentheses | Python | Accepted (8/8) |
+| Valid Parentheses | JavaScript | Accepted (8/8) |
+| Valid Parentheses | TypeScript | Accepted (8/8) |
+| Valid Parentheses | C | Accepted (8/8) |
+| Valid Parentheses | Rust | Accepted (8/8) |
+
 ## Scope
 
 This work resolves backend gaps that do not depend on the future code judge integration:
