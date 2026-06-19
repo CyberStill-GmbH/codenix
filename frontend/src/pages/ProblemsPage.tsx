@@ -1,12 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { ProblemFilters } from '@/features/problems/components/ProblemFilters'
-import { ProblemHeroCards } from '@/features/problems/components/ProblemHeroCards'
-import { ProblemList } from '@/features/problems/components/ProblemList'
-import { TopicChips } from '@/features/problems/components/TopicChips'
-import { problemsMock, problemTopics } from '@/features/problems/data/problems.mock'
+import { ProblemsView } from '@/features/problems/components/ProblemsView'
+import { getProblems, getProblemTopics } from '@/features/problems/services/problemsApi'
 import type {
   Difficulty,
+  Problem,
   ProblemSort,
   ProblemStatusFilter,
 } from '@/features/problems/types/problem.types'
@@ -20,15 +18,58 @@ const difficultyOrder: Record<Difficulty, number> = {
 
 export function ProblemsPage() {
   const [query, setQuery] = useState('')
-  const [selectedTopic, setSelectedTopic] = useState('All Topics')
+  const [selectedTopic, setSelectedTopic] = useState('all')
   const [difficulty, setDifficulty] = useState<Difficulty | 'All'>('All')
   const [status, setStatus] = useState<ProblemStatusFilter>('all')
   const [sort, setSort] = useState<ProblemSort>('id-asc')
+  const [problems, setProblems] = useState<Problem[]>([])
+  const [topics, setTopics] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [loadError, setLoadError] = useState('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadProblems() {
+      try {
+        setIsLoading(true)
+        setLoadError('')
+        const apiTopic = selectedTopic === 'all' ? 'All Topics' : selectedTopic
+        const [nextProblems, nextTopics] = await Promise.all([
+          getProblems({ query, difficulty, topic: apiTopic, sort }),
+          getProblemTopics(),
+        ])
+
+        if (isMounted) {
+          setProblems(nextProblems)
+          setTopics(nextTopics)
+        }
+      } catch (error) {
+        if (isMounted) {
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : 'No pudimos cargar los problemas.',
+          )
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadProblems()
+
+    return () => {
+      isMounted = false
+    }
+  }, [difficulty, query, selectedTopic, sort])
 
   const filteredProblems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
 
-    return problemsMock
+    return problems
       .filter((problem) => {
         const matchesQuery =
           normalizedQuery.length === 0 ||
@@ -36,7 +77,7 @@ export function ProblemsPage() {
           problem.topics.some((topic) => topic.toLowerCase().includes(normalizedQuery))
 
         const matchesTopic =
-          selectedTopic === 'All Topics' || problem.topics.includes(selectedTopic)
+          selectedTopic === 'all' || problem.topics.includes(selectedTopic)
 
         const matchesDifficulty =
           difficulty === 'All' || problem.difficulty === difficulty
@@ -56,40 +97,30 @@ export function ProblemsPage() {
         }
         return a.id - b.id
       })
-  }, [difficulty, query, selectedTopic, sort, status])
-
-  const solvedCount = problemsMock.filter((problem) => problem.solved).length
+  }, [problems, difficulty, query, selectedTopic, sort, status])
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <AppNavbar />
 
       <main className="codenix-app-shell codenix-user-main">
-        <div className="flex flex-col gap-6">
-          <ProblemHeroCards problems={problemsMock} />
-
-          <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
-            <TopicChips
-              topics={problemTopics}
-              selectedTopic={selectedTopic}
-              onSelectTopic={setSelectedTopic}
-            />
-            <ProblemFilters
-              query={query}
-              difficulty={difficulty}
-              status={status}
-              sort={sort}
-              solvedCount={solvedCount}
-              totalCount={problemsMock.length}
-              onQueryChange={setQuery}
-              onDifficultyChange={setDifficulty}
-              onStatusChange={setStatus}
-              onSortChange={setSort}
-            />
-          </section>
-
-          <ProblemList problems={filteredProblems} />
-        </div>
+        <ProblemsView
+          problems={filteredProblems}
+          allProblems={problems}
+          topics={topics}
+          query={query}
+          selectedTopic={selectedTopic}
+          difficulty={difficulty}
+          status={status}
+          sort={sort}
+          isLoading={isLoading}
+          error={loadError}
+          onSearch={setQuery}
+          onTopicChange={setSelectedTopic}
+          onDifficultyChange={setDifficulty}
+          onStatusChange={setStatus}
+          onSortChange={setSort}
+        />
       </main>
     </div>
   )

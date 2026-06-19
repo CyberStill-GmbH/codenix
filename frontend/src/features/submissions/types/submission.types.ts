@@ -9,7 +9,7 @@ export type SubmissionResult =
 
 export type Submission = {
   id: string
-  problemId: number
+  problemId: string | number
   problemTitle: string
   problemSlug: string
   difficulty: Difficulty
