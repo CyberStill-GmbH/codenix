@@ -36,19 +36,35 @@ export const problemIdentifierParamsSchema = z
   })
   .strict();
 
+const judgeLanguageSchema = z.enum([
+  "python",
+  "javascript",
+  "typescript",
+  "c",
+  "rust"
+]);
+
+const customTestcaseSchema = z
+  .object({
+    input: z.string().max(64 * 1024),
+    expectedOutput: z.string().max(64 * 1024)
+  })
+  .strict();
+
 export const runCodeRequestSchema = z
   .object({
-    language: z.string(),
-    sourceCode: z.string().min(1),
-    stdin: z.string().optional(),
-    testcaseIds: z.array(z.string()).optional()
+    language: judgeLanguageSchema,
+    sourceCode: z.string().min(1).max(64 * 1024),
+    testcases: z.array(customTestcaseSchema).max(20).optional(),
+    stdin: z.string().max(64 * 1024).optional(),
+    testcaseIds: z.array(z.string().uuid()).max(20).optional()
   })
   .strict();
 
 export const createSubmissionRequestSchema = z
   .object({
-    language: z.string(),
-    sourceCode: z.string().min(1)
+    language: judgeLanguageSchema,
+    sourceCode: z.string().min(1).max(64 * 1024)
   })
   .strict();
 

@@ -2,7 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 import os from "os";
 import { randomUUID } from "crypto";
-import { BaseRunner, RunnerConfig, CompileError } from "./base.runner";
+import { BaseRunner, CompileError } from "./base.runner";
+import type { RunnerConfig } from "./base.runner";
 import { runDockerContainer, type DockerExecutionResult } from "../docker-runner";
 
 export class CRunner extends BaseRunner {
@@ -32,6 +33,7 @@ export class CRunner extends BaseRunner {
       timeLimitMs: 10000,
       networkNone: true,
       dropCapabilities: true,
+      readOnlyRootfs: true,
       user: "1000:1000"
     });
 

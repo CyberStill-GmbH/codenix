@@ -1,7 +1,9 @@
 import { SupportedLanguage } from "../../../generated/prisma/client";
 
+export const JUDGE_QUEUE_NAME = "judge-queue";
+
 export interface TestcasePayload {
-  id: string;
+  id?: string;
   input: string;
   expectedOutput?: string | null;
 }

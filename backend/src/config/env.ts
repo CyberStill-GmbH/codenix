@@ -10,6 +10,16 @@ const envSchema = z.object({
   
   REDIS_URL: z.string().url().default("redis://localhost:6379"),
 
+  JUDGE_MODE: z.enum(["docker", "mock"]).default("docker"),
+
+  JUDGE_QUEUE_ENABLED: z.preprocess((val) => {
+    if (typeof val === "string") {
+      if (val.toLowerCase() === "true" || val === "1") return true;
+      if (val.toLowerCase() === "false" || val === "0") return false;
+    }
+    return val;
+  }, z.boolean().default(true)),
+
   FRONTEND_URL: z.string().url().default("http://localhost:5173"),
 
   JWT_ACCESS_SECRET: z

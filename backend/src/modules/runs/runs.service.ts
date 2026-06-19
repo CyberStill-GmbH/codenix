@@ -21,8 +21,23 @@ export class RunsService {
     }
 
     if (run.userId !== userId) {
-      throw new AppError(403, "FORBIDDEN", "You don't have permission to view this run");
+      throw new AppError(404, "RUN_NOT_FOUND", "Code run not found");
     }
+
+    const testcaseResults = run.testcaseResults.map((testcase, index) => ({
+      id: testcase.id,
+      index: index + 1,
+      testcaseId: testcase.testcaseId,
+      input: testcase.input,
+      expectedOutput: testcase.expectedOutput ?? undefined,
+      actualOutput: testcase.actualOutput ?? undefined,
+      stdout: testcase.actualOutput ?? undefined,
+      stderr: testcase.error ?? undefined,
+      error: testcase.error ?? undefined,
+      passed: testcase.passed,
+      executionTimeMs: testcase.executionTimeMs ?? undefined,
+      memoryKb: testcase.memoryKb ?? undefined
+    }));
 
     return {
       id: run.id,
@@ -30,26 +45,18 @@ export class RunsService {
       problemTitle: run.problem.title,
       problemSlug: run.problem.slug,
       language: run.language,
-      sourceCode: run.sourceCode,
       status: run.status,
       stdout: run.stdout,
       stderr: run.stderr,
-      error: run.error,
+      error: run.error
+        ? { message: run.error, stderr: run.stderr ?? undefined }
+        : undefined,
       executionTimeMs: run.executionTimeMs,
       memoryKb: run.memoryKb,
       createdAt: run.createdAt.toISOString(),
       updatedAt: run.updatedAt.toISOString(),
-      testcaseResults: run.testcaseResults.map((tc) => ({
-        id: tc.id,
-        testcaseId: tc.testcaseId,
-        input: tc.input,
-        expectedOutput: tc.expectedOutput,
-        actualOutput: tc.actualOutput,
-        error: tc.error,
-        passed: tc.passed,
-        executionTimeMs: tc.executionTimeMs,
-        memoryKb: tc.memoryKb,
-      })),
+      testcases: testcaseResults,
+      testcaseResults
     };
   }
 }

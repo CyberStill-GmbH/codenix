@@ -1,4 +1,7 @@
-import { spawn } from "child_process";
+import { spawn } from "node:child_process";
+import { randomUUID } from "node:crypto";
+
+const MAX_OUTPUT_BYTES = 1024 * 1024;
 
 export interface DockerExecutionResult {
   stdout: string;
@@ -7,6 +10,7 @@ export interface DockerExecutionResult {
   memoryKb: number;
   isTLE: boolean;
   isOOM: boolean;
+  isOutputLimitExceeded: boolean;
   exitCode: number | null;
 }
 
@@ -24,85 +28,145 @@ export interface DockerRunOptions {
   user?: string;
 }
 
-export async function runDockerContainer(options: DockerRunOptions): Promise<DockerExecutionResult> {
-  const args = ["run", "--rm", "-i"];
+function runDockerCommand(args: string[]): Promise<{ stdout: string; exitCode: number | null }> {
+  return new Promise((resolve) => {
+    const child = spawn("docker", args, { windowsHide: true });
+    let stdout = "";
+    child.stdout.on("data", (chunk: Buffer) => {
+      stdout += chunk.toString("utf8");
+    });
+    child.on("error", () => resolve({ stdout: "", exitCode: null }));
+    child.on("close", (exitCode) => resolve({ stdout, exitCode }));
+  });
+}
+
+export function buildDockerArgs(
+  options: DockerRunOptions,
+  containerName: string
+): string[] {
+  const args = [
+    "run",
+    "--name",
+    containerName,
+    "--pull",
+    "never",
+    "--log-driver",
+    "none",
+    "--ipc",
+    "none",
+    "--pids-limit",
+    "64",
+    "--ulimit",
+    "nofile=64:64",
+    "--memory",
+    `${options.memoryLimitMb}m`,
+    "--memory-swap",
+    `${options.memoryLimitMb}m`,
+    "--cpus",
+    "1",
+    "-i"
+  ];
 
   if (options.networkNone) args.push("--network", "none");
-  if (options.dropCapabilities) args.push("--cap-drop", "ALL", "--security-opt", "no-new-privileges");
-  if (options.readOnlyRootfs) args.push("--read-only", "--tmpfs", "/tmp:rw,size=50m,mode=1777");
+  if (options.dropCapabilities) {
+    args.push("--cap-drop", "ALL", "--security-opt", "no-new-privileges");
+  }
+  if (options.readOnlyRootfs) {
+    args.push(
+      "--read-only",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=50m,mode=1777"
+    );
+  }
   if (options.user) args.push("--user", options.user);
-  
-  args.push(`--memory=${options.memoryLimitMb}m`);
-  args.push(`--cpus=1`);
-  args.push(`--pids-limit=64`);
-  
-  if (options.bindMounts) {
-    for (const mount of options.bindMounts) {
-      args.push("-v", `${mount.hostPath}:${mount.containerPath}${mount.readOnly ? ":ro" : ""}`);
-    }
+
+  for (const mount of options.bindMounts ?? []) {
+    args.push(
+      "--mount",
+      `type=bind,src=${mount.hostPath},dst=${mount.containerPath}${mount.readOnly ? ",readonly" : ""}`
+    );
   }
 
-  args.push("-w", options.workdir);
-  args.push(options.image);
-  args.push(...options.command);
+  args.push("-w", options.workdir, options.image, ...options.command);
+  return args;
+}
 
-  return new Promise((resolve) => {
-    const startTime = Date.now();
-    const child = spawn("docker", args);
+export async function runDockerContainer(
+  options: DockerRunOptions
+): Promise<DockerExecutionResult> {
+  const containerName = `codenix-judge-${randomUUID()}`;
+  const args = buildDockerArgs(options, containerName);
+  const startTime = Date.now();
+  let stdout = "";
+  let stderr = "";
+  let outputBytes = 0;
+  let isTLE = false;
+  let isOutputLimitExceeded = false;
+  let killRequested = false;
 
-    let stdout = "";
-    let stderr = "";
-    let isTLE = false;
-    let isOOM = false;
+  const killContainer = () => {
+    if (killRequested) return;
+    killRequested = true;
+    void runDockerCommand(["kill", containerName]);
+  };
 
-    // Limit output to prevent memory exhaustion
-    const MAX_OUTPUT_SIZE = 10 * 1024 * 1024; // 10MB
+  const exitCode = await new Promise<number | null>((resolve, reject) => {
+    const child = spawn("docker", args, {
+      windowsHide: true,
+      env: { PATH: process.env.PATH ?? "" }
+    });
 
-    const wallClockTimeoutMs = options.timeLimitMs + 2000;
-    
+    const capture = (chunk: Buffer, stream: "stdout" | "stderr") => {
+      const remaining = Math.max(0, MAX_OUTPUT_BYTES - outputBytes);
+      const accepted = chunk.subarray(0, remaining);
+      outputBytes += chunk.length;
+
+      if (stream === "stdout") stdout += accepted.toString("utf8");
+      else stderr += accepted.toString("utf8");
+
+      if (outputBytes > MAX_OUTPUT_BYTES) {
+        isOutputLimitExceeded = true;
+        killContainer();
+      }
+    };
+
+    child.stdout.on("data", (chunk: Buffer) => capture(chunk, "stdout"));
+    child.stderr.on("data", (chunk: Buffer) => capture(chunk, "stderr"));
+    child.on("error", reject);
+    child.on("close", resolve);
+
+    child.stdin.end(options.input ?? "");
+
     const timeout = setTimeout(() => {
       isTLE = true;
-      child.kill("SIGKILL");
-    }, wallClockTimeoutMs);
-
-    if (options.input) {
-      child.stdin.write(options.input);
-      child.stdin.end();
-    } else {
-      child.stdin.end();
-    }
-
-    child.stdout.on("data", (data) => {
-      stdout += data.toString();
-      if (stdout.length > MAX_OUTPUT_SIZE) {
-        child.kill("SIGKILL");
-      }
-    });
-
-    child.stderr.on("data", (data) => {
-      stderr += data.toString();
-      if (stderr.length > MAX_OUTPUT_SIZE) {
-        child.kill("SIGKILL");
-      }
-    });
-
-    child.on("close", (code) => {
-      clearTimeout(timeout);
-      const executionTimeMs = Date.now() - startTime;
-      
-      if (code === 137 && !isTLE) {
-        isOOM = true;
-      }
-
-      resolve({
-        stdout,
-        stderr,
-        executionTimeMs,
-        memoryKb: 0,
-        isTLE,
-        isOOM,
-        exitCode: code
-      });
-    });
+      killContainer();
+    }, options.timeLimitMs + 1000);
+    timeout.unref();
+    child.once("close", () => clearTimeout(timeout));
+  }).catch(async (error: unknown) => {
+    await runDockerCommand(["rm", "--force", containerName]);
+    throw error;
   });
+
+  const inspect = await runDockerCommand([
+    "inspect",
+    "--format",
+    "{{.State.OOMKilled}}",
+    containerName
+  ]);
+  const isOOM = inspect.stdout.trim().toLowerCase() === "true";
+  await runDockerCommand(["rm", "--force", containerName]);
+
+  return {
+    stdout,
+    stderr: isOutputLimitExceeded
+      ? `${stderr}\nOutput limit exceeded (1 MiB).`.trim()
+      : stderr,
+    executionTimeMs: Date.now() - startTime,
+    memoryKb: 0,
+    isTLE,
+    isOOM,
+    isOutputLimitExceeded,
+    exitCode
+  };
 }

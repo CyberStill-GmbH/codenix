@@ -47,7 +47,6 @@ enum SubmissionResult {
 enum CodeRunStatus {
   pending
   running
-  completed
   accepted
   wrong_answer
   runtime_error
@@ -210,7 +209,6 @@ model Submission {
 
   language      SupportedLanguage
   sourceCode    String            @db.Text
-  status        CodeRunStatus     @default(pending)
   result        SubmissionResult  @default(pending)
   compileOutput String?           @db.Text
 
@@ -343,14 +341,3 @@ model CodeRunTestcaseResult {
   @@map("code_run_testcase_results")
 }
 
-model UserProblem {
-  userId    String
-  problemId String
-  isSolved  Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@id([userId, problemId])
-  @@map("user_problems")
-}

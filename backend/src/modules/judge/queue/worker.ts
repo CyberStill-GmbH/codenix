@@ -1,17 +1,30 @@
 import { Worker, type Job } from "bullmq";
+import type { SubmissionResult } from "../../../generated/prisma/client";
 import { env } from "../../../config/env";
-import { JUDGE_QUEUE_NAME } from "./producer";
-import type { JudgeJobPayload } from "./types";
-import { CompileError } from "../sandbox/runners/base.runner";
-import { PythonRunner } from "../sandbox/runners/python.runner";
-import { JavascriptRunner } from "../sandbox/runners/javascript.runner";
-import { TypescriptRunner } from "../sandbox/runners/typescript.runner";
-import { CRunner } from "../sandbox/runners/c.runner";
-import { RustRunner } from "../sandbox/runners/rust.runner";
+import { prisma } from "../../../db/prisma";
 import { compareOutput } from "../comparators";
 import { getVerdict } from "../verdicts";
-import { prisma } from "../../../db/prisma";
+import { CompileError } from "../sandbox/runners/base.runner";
 import type { BaseRunner } from "../sandbox/runners/base.runner";
+import { CRunner } from "../sandbox/runners/c.runner";
+import { JavascriptRunner } from "../sandbox/runners/javascript.runner";
+import { PythonRunner } from "../sandbox/runners/python.runner";
+import { RustRunner } from "../sandbox/runners/rust.runner";
+import { TypescriptRunner } from "../sandbox/runners/typescript.runner";
+import { JUDGE_QUEUE_NAME, type JudgeJobPayload } from "./types";
+
+type FinalVerdict = Exclude<SubmissionResult, "pending">;
+
+interface TestcaseResultData {
+  testcaseId?: string;
+  input: string;
+  expectedOutput: string | null;
+  actualOutput: string;
+  error: string;
+  passed: boolean;
+  executionTimeMs: number;
+  memoryKb: number;
+}
 
 function getRunner(payload: JudgeJobPayload): BaseRunner {
   const config = {
@@ -21,169 +34,195 @@ function getRunner(payload: JudgeJobPayload): BaseRunner {
   };
 
   switch (payload.language) {
-    case "python": return new PythonRunner(config);
-    case "javascript": return new JavascriptRunner(config);
-    case "typescript": return new TypescriptRunner(config);
-    case "c": return new CRunner(config);
-    case "rust": return new RustRunner(config);
-    default: throw new Error(`Unsupported language: ${String(payload.language)}`);
+    case "python":
+      return new PythonRunner(config);
+    case "javascript":
+      return new JavascriptRunner(config);
+    case "typescript":
+      return new TypescriptRunner(config);
+    case "c":
+      return new CRunner(config);
+    case "rust":
+      return new RustRunner(config);
+    default:
+      throw new Error(`Unsupported language: ${String(payload.language)}`);
   }
 }
 
-export const judgeWorker = new Worker<JudgeJobPayload>(JUDGE_QUEUE_NAME, async (job: Job<JudgeJobPayload>) => {
-  const payload = job.data;
-  const isSubmission = !!payload.submissionId;
-  const recordId = payload.submissionId || payload.runId;
-  
-  if (!recordId) throw new Error("No runId or submissionId provided");
-
-  const runner = getRunner(payload);
-  
-  // Set initial status to RUNNING
-  if (isSubmission) {
-    await prisma.submission.update({
-      where: { id: payload.submissionId! },
-      data: { status: "running" }
+async function persistInternalError(payload: JudgeJobPayload, message: string) {
+  if (payload.submissionId) {
+    await prisma.submission.updateMany({
+      where: { id: payload.submissionId, result: "pending" },
+      data: { result: "internal_error", compileOutput: message }
     });
-  } else {
-    await prisma.codeRun.update({
-      where: { id: payload.runId! },
-      data: { status: "running" }
+  } else if (payload.runId) {
+    await prisma.codeRun.updateMany({
+      where: { id: payload.runId, status: { in: ["pending", "running"] } },
+      data: { status: "internal_error", error: message }
     });
   }
+}
 
-  let compileOutput = "";
-  let compileError = false;
-  
-  try {
-    const prepResult = await runner.prepare();
-    if (prepResult.compileOutput) {
-      compileOutput = prepResult.compileOutput;
-    }
-  } catch (error) {
-    compileError = true;
-    compileOutput = error instanceof CompileError ? error.compileOutput : String(error);
-  }
-
-  interface TestcaseResultData {
-    testcaseId: string;
-    testcaseInput: string;
-    expectedOutput: string | null;
-    verdict: "accepted" | "wrong_answer" | "runtime_error" | "time_limit_exceeded" | "memory_limit_exceeded" | "compilation_error" | "internal_error" | "pending";
-    actualOutput: string;
-    error: string;
-    passed: boolean;
-    executionTimeMs: number;
-    memoryKb: number;
-  }
-
-  const results: TestcaseResultData[] = [];
-  let overallVerdict: "accepted" | "wrong_answer" | "runtime_error" | "time_limit_exceeded" | "memory_limit_exceeded" | "compilation_error" | "internal_error" | "pending" = "accepted";
-  let totalTimeMs = 0;
-  let maxMemoryKb = 0;
-  
-  if (compileError) {
-    overallVerdict = "compilation_error";
-  } else {
-    for (const tc of payload.testcases) {
-      const execResult = await runner.run(tc.input);
-      
-      const isCorrect = tc.expectedOutput != null ? compareOutput(execResult.stdout, tc.expectedOutput) : true;
-      const verdict = getVerdict(execResult.isTLE, execResult.isOOM, execResult.exitCode, isCorrect);
-      
-      totalTimeMs += execResult.executionTimeMs;
-      maxMemoryKb = Math.max(maxMemoryKb, execResult.memoryKb);
-      
-      results.push({
-        testcaseId: tc.id,
-        testcaseInput: tc.input,
-        expectedOutput: tc.expectedOutput ?? null,
-        verdict,
-        actualOutput: execResult.stdout,
-        error: execResult.stderr,
-        passed: verdict === "accepted",
-        executionTimeMs: execResult.executionTimeMs,
-        memoryKb: execResult.memoryKb
-      });
-      
-      if (verdict !== "accepted" && overallVerdict === "accepted") {
-        overallVerdict = verdict;
-      }
-    }
-  }
-
-  await runner.cleanup();
-
-  if (isSubmission) {
+async function persistResult(
+  payload: JudgeJobPayload,
+  verdict: FinalVerdict,
+  compileOutput: string,
+  results: TestcaseResultData[],
+  totalTimeMs: number,
+  maxMemoryKb: number
+) {
+  if (payload.submissionId) {
+    const submissionId = payload.submissionId;
     await prisma.$transaction(async (tx) => {
       await tx.submission.update({
-        where: { id: payload.submissionId! },
+        where: { id: submissionId },
         data: {
-          status: "completed",
-          result: overallVerdict,
+          result: verdict,
           compileOutput: compileOutput || null,
           executionTimeMs: totalTimeMs,
-          memoryKb: maxMemoryKb,
+          memoryKb: maxMemoryKb
         }
       });
-      
-      for (const res of results) {
-        await tx.submissionTestcaseResult.create({
-          data: {
-            submissionId: payload.submissionId!,
-            testcaseId: res.testcaseId,
-            actualOutput: res.actualOutput || null,
-            error: res.error || null,
-            passed: res.passed,
-            executionTimeMs: res.executionTimeMs,
-            memoryKb: res.memoryKb
-          }
-        });
-      }
-
-      if (overallVerdict === "accepted") {
-        const sub = await tx.submission.findUnique({ where: { id: payload.submissionId! }, select: { userId: true, problemId: true } });
-        if (sub) {
-          await tx.userProblem.upsert({
-            where: { userId_problemId: { userId: sub.userId, problemId: sub.problemId } },
-            create: { userId: sub.userId, problemId: sub.problemId, isSolved: true },
-            update: { isSolved: true }
-          });
-        }
-      }
-    });
-  } else {
-    await prisma.$transaction(async (tx) => {
-      await tx.codeRun.update({
-        where: { id: payload.runId! },
-        data: {
-          status: "completed",
-          compileOutput: compileOutput || null,
-          executionTimeMs: totalTimeMs,
-          memoryKb: maxMemoryKb,
-        }
-      });
-
-      for (const res of results) {
-        await tx.codeRunTestcaseResult.create({
-          data: {
-            runId: payload.runId!,
-            testcaseId: res.testcaseId,
-            input: res.testcaseInput,
-            expectedOutput: res.expectedOutput,
-            actualOutput: res.actualOutput || null,
-            error: res.error || null,
-            passed: res.passed,
-            executionTimeMs: res.executionTimeMs,
-            memoryKb: res.memoryKb
-          }
+      await tx.submissionTestcaseResult.deleteMany({ where: { submissionId } });
+      if (results.length > 0) {
+        await tx.submissionTestcaseResult.createMany({
+          data: results.map((result) => ({
+            submissionId,
+            testcaseId: result.testcaseId!,
+            actualOutput: result.actualOutput || null,
+            error: result.error || null,
+            passed: result.passed,
+            executionTimeMs: result.executionTimeMs,
+            memoryKb: result.memoryKb
+          }))
         });
       }
     });
+    return;
   }
-}, {
-  connection: {
-    url: env.REDIS_URL
-  },
-  concurrency: 5
-});
+
+  const runId = payload.runId!;
+  await prisma.$transaction(async (tx) => {
+    await tx.codeRun.update({
+      where: { id: runId },
+      data: {
+        status: verdict,
+        compileOutput: compileOutput || null,
+        stdout: results.map((result) => result.actualOutput).join("\n") || null,
+        stderr: results.map((result) => result.error).filter(Boolean).join("\n") || null,
+        executionTimeMs: totalTimeMs,
+        memoryKb: maxMemoryKb
+      }
+    });
+    await tx.codeRunTestcaseResult.deleteMany({ where: { runId } });
+    if (results.length > 0) {
+      await tx.codeRunTestcaseResult.createMany({
+        data: results.map((result) => ({
+          runId,
+          ...(result.testcaseId ? { testcaseId: result.testcaseId } : {}),
+          input: result.input,
+          expectedOutput: result.expectedOutput,
+          actualOutput: result.actualOutput || null,
+          error: result.error || null,
+          passed: result.passed,
+          executionTimeMs: result.executionTimeMs,
+          memoryKb: result.memoryKb
+        }))
+      });
+    }
+  });
+}
+
+export async function processJudgeJob(job: Job<JudgeJobPayload>) {
+  const payload = job.data;
+  if ((payload.runId ? 1 : 0) + (payload.submissionId ? 1 : 0) !== 1) {
+    throw new Error("A judge job must identify exactly one run or submission.");
+  }
+
+  const runner = getRunner(payload);
+  let compileOutput = "";
+  const results: TestcaseResultData[] = [];
+  let overallVerdict: FinalVerdict = "accepted";
+  let totalTimeMs = 0;
+  let maxMemoryKb = 0;
+
+  try {
+    if (payload.runId) {
+      await prisma.codeRun.update({
+        where: { id: payload.runId },
+        data: { status: "running" }
+      });
+    }
+
+    try {
+      const prepared = await runner.prepare();
+      compileOutput = prepared.compileOutput ?? "";
+    } catch (error) {
+      if (error instanceof CompileError) {
+        overallVerdict = "compilation_error";
+        compileOutput = error.compileOutput;
+      } else {
+        throw error;
+      }
+    }
+
+    if (overallVerdict !== "compilation_error") {
+      for (const testcase of payload.testcases) {
+        const execution = await runner.run(testcase.input);
+        const isCorrect =
+          testcase.expectedOutput == null ||
+          compareOutput(execution.stdout, testcase.expectedOutput);
+        const verdict = getVerdict(
+          execution.isTLE,
+          execution.isOOM,
+          execution.isOutputLimitExceeded,
+          execution.exitCode,
+          isCorrect
+        );
+
+        totalTimeMs += execution.executionTimeMs;
+        maxMemoryKb = Math.max(maxMemoryKb, execution.memoryKb);
+        results.push({
+          ...(testcase.id ? { testcaseId: testcase.id } : {}),
+          input: testcase.input,
+          expectedOutput: testcase.expectedOutput ?? null,
+          actualOutput: execution.stdout,
+          error: execution.stderr,
+          passed: verdict === "accepted",
+          executionTimeMs: execution.executionTimeMs,
+          memoryKb: execution.memoryKb
+        });
+
+        if (overallVerdict === "accepted" && verdict !== "accepted") {
+          overallVerdict = verdict;
+        }
+      }
+    }
+
+    await persistResult(
+      payload,
+      overallVerdict,
+      compileOutput,
+      results,
+      totalTimeMs,
+      maxMemoryKb
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown judge error";
+    await persistInternalError(payload, message);
+    throw error;
+  } finally {
+    try {
+      await runner.cleanup();
+    } catch (error) {
+      console.error("Judge sandbox cleanup failed", error);
+    }
+  }
+}
+
+export function createJudgeWorker() {
+  return new Worker<JudgeJobPayload>(JUDGE_QUEUE_NAME, processJudgeJob, {
+    connection: { url: env.REDIS_URL },
+    concurrency: 5
+  });
+}
