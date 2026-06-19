@@ -2,7 +2,7 @@ import { app } from "./app";
 import { env } from "./config/env";
 import { prisma } from "./db/prisma";
 import { ensureImagesUploadDir } from "./modules/admin/uploads/admin-uploads.service";
-import { judgeWorker } from "./modules/judge/queue/worker";
+import { judgeProducer } from "./modules/judge/queue/producer";
 
 let server: ReturnType<typeof app.listen>;
 
@@ -18,13 +18,13 @@ async function shutdown(signal: string) {
   console.log(`${signal} received. Shutting down...`);
 
   if (!server) {
-    await judgeWorker.close();
+    await judgeProducer.close();
     await prisma.$disconnect();
     process.exit(0);
   }
 
   server.close(async () => {
-    await judgeWorker.close();
+    await judgeProducer.close();
     await prisma.$disconnect();
     process.exit(0);
   });
