@@ -10,7 +10,7 @@ VITE_API_BASE_URL=http://localhost:4000/api
 ```
 
 Autenticacion: JWT por header `Authorization: Bearer <accessToken>`.
-El backend tiene CORS con `origin: FRONTEND_URL` y `credentials: true`, pero el contrato actual no usa cookie httpOnly para sesion.
+El backend tiene CORS con `origin: FRONTEND_URL` y `credentials: false`; la sesion actual no usa cookies httpOnly.
 
 ## Auditoria backend vs frontend
 
@@ -33,7 +33,7 @@ El backend tiene CORS con `origin: FRONTEND_URL` y `credentials: true`, pero el 
 | `GET /api/problems/:slug` | No | `slug` | `ProblemDetail` | Integrado |
 | `GET /api/submissions` | Si | `problemId?, result?, difficulty?, topic?, page?, pageSize?, sort?` | `{ data, meta }` | Integrado |
 | `GET /api/submissions/:submissionId` | Si | `submissionId` UUID | `SubmissionDetail` con `sourceCode` y `testcaseResults` | Integrado en Mis Submissions |
-| `GET /api/users/me/stats` | Si | - | `{ totalSubmissions, acceptedSubmissions, attemptedProblems, solvedProblems, acceptanceRate, currentStreak, rank }` | Integrado en Profile |
+| `GET /api/users/me/stats` | Si | - | `{ totalSubmissions, acceptedSubmissions, attemptedProblems, solvedProblems, acceptanceRate, currentStreak, rank, percentile, totalUsers, distribution }` | Integrado en Profile |
 | `GET /api/users/me/progress` | Si | - | `{ data: [{ difficulty, solved, total }], totals }` | Integrado en Profile |
 | `GET /api/users/me/activity` | Si | `year?` | `{ year, data: [{ date, count, accepted }] }` | Integrado en Profile |
 | `GET /api/admin/problems` | Admin | filtros admin | `{ data, meta }` | Integrado |
@@ -47,6 +47,9 @@ El backend tiene CORS con `origin: FRONTEND_URL` y `credentials: true`, pero el 
 | `PUT /api/admin/problems/:problemId/testcases/:testcaseId` | Admin | testcase legacy o moderno | `Testcase` | Integrado |
 | `DELETE /api/admin/problems/:problemId/testcases/:testcaseId` | Admin | - | `204` | Integrado |
 | `POST /api/admin/uploads/images` | Admin | `multipart/form-data`, campo `file` | `{ url }` | Integrado en editor Markdown admin |
+| `POST /api/problems/:problemId/run` | Si | `{ language, sourceCode, stdin?, testcaseIds? }` | `{ id, status }` | Integrado; consulta el detalle del run |
+| `GET /api/runs/:runId` | Si | UUID del run | Run con stdout, stderr, error, tiempo, memoria y `testcaseResults` | Integrado |
+| `POST /api/problems/:problemId/submissions` | Si | `{ language, sourceCode }` | `{ id, result, resultCode, submittedAt }` | Integrado; consulta el detalle de submission |
 
 ## Cambios de integracion realizados
 
@@ -56,15 +59,15 @@ El backend tiene CORS con `origin: FRONTEND_URL` y `credentials: true`, pero el 
 - El tab `Mis Submissions` carga el detalle real con `GET /api/submissions/:submissionId` para recuperar `sourceCode`.
 - El editor Markdown admin sube imagenes con `POST /api/admin/uploads/images`.
 - `apiRequest` soporta `FormData` sin crear un segundo cliente HTTP.
+- Run y Submit consumen los endpoints reales y normalizan sus receipts/detalles al modelo del panel de resultados.
+- Admin Problems ya no usa fallback a memoria: listado, formulario, publicación y testcases dependen de la API real.
+- Se eliminaron los tres archivos de mock data de Admin Problems.
 
 ## Pendientes `TODO: API-PENDING`
 
-- `POST /api/problems/:problemId/run`: ejecutar codigo desde el editor.
-- `GET /api/runs/:runId`: polling de ejecucion asincrona, si el judge se implementa asi.
-- `POST /api/problems/:problemId/submissions`: submit real desde el editor.
-- Endpoint de resultado async de submit: hoy `GET /api/submissions/:submissionId` devuelve detalle historico, no estado de evaluacion en vivo.
-- Ranking avanzado de perfil: backend aun no devuelve percentil, total de usuarios ni distribucion para el grafico.
-- Estado `solved` real en listado de problemas: backend lo devuelve siempre como `false`.
+- Ejecucion real de `stdin`/casos custom: el schema de Run acepta `stdin`, pero el servicio actual no lo usa y ejecuta testcases almacenados.
+- Distribucion y percentil de runtime por lenguaje para submissions aceptadas: el backend no devuelve estos datos; el grafico conserva un placeholder identificado visualmente.
+- El judge actual del backend es una implementacion mock determinista. La interfaz consume su contrato real, pero todavia no ejecuta codigo en un sandbox.
 
 ## Validacion pendiente
 
@@ -73,10 +76,12 @@ El backend tiene CORS con `origin: FRONTEND_URL` y `credentials: true`, pero el 
 - Probar busqueda del navbar con al menos dos caracteres.
 - Probar carga de codigo desde `Mis Submissions` con una submission que tenga `sourceCode`.
 - Probar upload admin con JPEG, PNG, WEBP/GIF y archivo mayor a 2MB para validar errores backend.
+- Probar Run y Submit autenticados con los marcadores soportados por el mock judge (`__CE_WA__`, `__CE_TLE__`, `__CE_RUNTIME_ERROR__`, `__CE_FAIL_COMPILE__`).
+- Sustituir el judge mock del backend por el ejecutor aislado antes de considerar los veredictos aptos para produccion.
 
 ## Inconsistencias detectadas
 
-- El backend soporta `credentials: true` en CORS, pero la sesion actual es Bearer token en `localStorage`.
-- `GET /api/problems` incluye `solved`, pero el mapper backend lo fija en `false`.
-- `GET /api/users/me/stats` devuelve `rank`, pero no devuelve datos suficientes para percentil/distribucion de ranking.
-- Los endpoints de judge/run/submit aun no existen en backend, por eso el editor conserva llamadas preparadas y marcadas como pendientes.
+- CORS y sesion son coherentes: `credentials: false` y JWT Bearer en header.
+- Run declara `stdin`, pero el servicio backend no lo aplica al judge actual.
+- Run/Submit son sincronos internamente aunque devuelven primero un receipt; el frontend recupera despues el detalle por id.
+- El judge backend actual decide resultados mediante marcadores en `sourceCode`, no mediante ejecucion real del lenguaje.
