@@ -1,0 +1,343 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum OAuthProvider {
+  google
+  github
+}
+
+enum ProblemDifficulty {
+  easy
+  medium
+  hard
+}
+
+enum ProblemStatus {
+  draft
+  published
+}
+
+enum TestcaseVisibility {
+  sample
+  hidden
+}
+
+enum SubmissionResult {
+  accepted
+  wrong_answer
+  runtime_error
+  time_limit_exceeded
+  memory_limit_exceeded
+  compilation_error
+  internal_error
+  pending
+}
+
+enum CodeRunStatus {
+  pending
+  running
+  accepted
+  wrong_answer
+  runtime_error
+  time_limit_exceeded
+  memory_limit_exceeded
+  compilation_error
+  internal_error
+}
+
+enum SupportedLanguage {
+  python
+  java
+  cpp
+  c
+  rust
+  typescript
+  javascript
+}
+
+model User {
+  id           String @id @default(uuid())
+  name         String
+  username     String @unique
+  email        String @unique
+  passwordHash String
+  avatarUrl    String @default("")
+  degree       String @default("")
+  githubUrl    String @default("")
+  linkedinUrl  String @default("")
+  role         Role   @default(user)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  submissions Submission[]
+  codeRuns    CodeRun[]
+
+  oauthAccounts OAuthAccount[]
+
+  passwordResetTokens PasswordResetToken[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model Problem {
+  id         String            @id @default(uuid())
+  numericId  Int               @unique @default(autoincrement())
+  title      String
+  slug       String            @unique
+  difficulty ProblemDifficulty
+  status     ProblemStatus     @default(draft)
+
+  statement    String @db.Text
+  inputFormat  String @db.Text
+  outputFormat String @db.Text
+  constraints  String @db.Text
+
+  acceptance Float @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parameters    Json    @default("[]")
+  outputType    String  @default("object")
+  timeLimitMs   Int     @default(2000)
+  memoryLimitMb Int     @default(256)
+
+  examples      ProblemExample[]
+  codeTemplates ProblemCodeTemplate[]
+  topics        ProblemTopic[]
+  testcases     Testcase[]
+  submissions   Submission[]
+  codeRuns      CodeRun[]
+
+  @@index([status])
+  @@index([difficulty])
+  @@index([status, difficulty])
+  @@index([numericId])
+  @@map("problems")
+}
+
+model ProblemExample {
+  id          String  @id @default(uuid())
+  problemId   String
+  input       String  @db.Text
+  output      String  @db.Text
+  explanation String? @db.Text
+  orderIndex  Int     @default(0)
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@index([problemId])
+  @@map("problem_examples")
+}
+
+model ProblemCodeTemplate {
+  id          String            @id @default(uuid())
+  problemId   String
+  language    SupportedLanguage
+  starterCode String            @db.Text
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([problemId, language])
+  @@index([problemId])
+  @@map("problem_code_templates")
+}
+
+model Topic {
+  id   String @id @default(uuid())
+  name String @unique
+  slug String @unique
+
+  problems ProblemTopic[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("topics")
+}
+
+model ProblemTopic {
+  problemId String
+  topicId   String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  topic   Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([problemId, topicId])
+  @@index([topicId])
+  @@map("problem_topics")
+}
+
+model Testcase {
+  id             String             @id @default(uuid())
+  problemId      String
+  input          String             @db.Text
+  expectedOutput String             @db.Text
+  visibility     TestcaseVisibility
+  weight         Float              @default(1)
+  orderIndex     Int                @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  problem Problem                    @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  results SubmissionTestcaseResult[]
+  codeRunResults CodeRunTestcaseResult[]
+
+  @@index([problemId])
+  @@index([problemId, visibility])
+  @@map("testcases")
+}
+
+model Submission {
+  id        String @id @default(uuid())
+  userId    String
+  problemId String
+
+  language      SupportedLanguage
+  sourceCode    String            @db.Text
+  result        SubmissionResult  @default(pending)
+  compileOutput String?           @db.Text
+
+  executionTimeMs Int?
+  memoryKb        Int?
+
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user            User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem         Problem                    @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  testcaseResults SubmissionTestcaseResult[]
+
+  @@index([userId])
+  @@index([problemId])
+  @@index([result])
+  @@index([submittedAt])
+  @@index([userId, submittedAt])
+  @@index([userId, problemId])
+  @@map("submissions")
+}
+
+model SubmissionTestcaseResult {
+  id           String @id @default(uuid())
+  submissionId String
+  testcaseId   String
+
+  passed          Boolean
+  actualOutput    String? @db.Text
+  error           String? @db.Text
+  executionTimeMs Int?
+  memoryKb        Int?
+
+  createdAt DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  testcase   Testcase   @relation(fields: [testcaseId], references: [id], onDelete: Cascade)
+
+  @@unique([submissionId, testcaseId])
+  @@index([submissionId])
+  @@index([testcaseId])
+  @@map("submission_testcase_results")
+}
+
+model OAuthAccount {
+  id                String        @id @default(uuid())
+  userId            String
+  provider          OAuthProvider
+  providerAccountId String
+
+  email         String?
+  emailVerified Boolean?
+  username      String?
+  avatarUrl     String?
+  profileUrl    String?
+
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@index([provider])
+  @@index([email])
+  @@map("oauth_accounts")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  createdAt DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+model CodeRun {
+  id              String            @id @default(uuid())
+  userId          String
+  problemId       String
+  language        SupportedLanguage
+  sourceCode      String            @db.Text
+  status          CodeRunStatus     @default(pending)
+  compileOutput   String?           @db.Text
+  stdout          String?           @db.Text
+  stderr          String?           @db.Text
+  error           String?           @db.Text
+  executionTimeMs Int?
+  memoryKb        Int?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user            User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem         Problem                 @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  testcaseResults CodeRunTestcaseResult[]
+
+  @@index([userId])
+  @@index([problemId])
+  @@index([status])
+  @@map("code_runs")
+}
+
+model CodeRunTestcaseResult {
+  id              String   @id @default(uuid())
+  runId           String
+  testcaseId      String?
+  input           String   @db.Text
+  expectedOutput  String?  @db.Text
+  actualOutput    String?  @db.Text
+  error           String?  @db.Text
+  passed          Boolean  @default(false)
+  executionTimeMs Int?
+  memoryKb        Int?
+  createdAt       DateTime @default(now())
+
+  run      CodeRun   @relation(fields: [runId], references: [id], onDelete: Cascade)
+  testcase Testcase? @relation(fields: [testcaseId], references: [id], onDelete: SetNull)
+
+  @@index([runId])
+  @@index([testcaseId])
+  @@map("code_run_testcase_results")
+}
+
