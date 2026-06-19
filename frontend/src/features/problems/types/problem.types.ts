@@ -1,6 +1,6 @@
 export type Difficulty = 'Easy' | 'Medium' | 'Hard'
 
-export type ProblemCodeLanguage = 'typescript' | 'javascript' | 'python' | 'java' | 'cpp'
+export type ProblemCodeLanguage = 'typescript' | 'javascript' | 'python' | 'c' | 'rust'
 
 export type ProblemCodeTemplate = {
   language: ProblemCodeLanguage

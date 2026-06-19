@@ -96,16 +96,16 @@ const languageLabel: Record<ProblemCodeLanguage, string> = {
   typescript: 'TypeScript',
   javascript: 'JavaScript',
   python: 'Python',
-  java: 'Java',
-  cpp: 'C++',
+  c: 'C',
+  rust: 'Rust',
 }
 
 const supportedLanguages: ProblemCodeLanguage[] = [
   'typescript',
   'javascript',
   'python',
-  'java',
-  'cpp',
+  'c',
+  'rust',
 ]
 
 export async function getProblems(query: ProblemsQuery): Promise<Problem[]> {
@@ -213,7 +213,6 @@ function mapCodeTemplates(
 
 function normalizeLanguage(language: string): ProblemCodeLanguage | null {
   const normalized = language.toLowerCase()
-  if (normalized === 'c++') return 'cpp'
   if (supportedLanguages.includes(normalized as ProblemCodeLanguage)) {
     return normalized as ProblemCodeLanguage
   }

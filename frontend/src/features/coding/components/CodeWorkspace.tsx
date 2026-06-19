@@ -4,8 +4,10 @@ import {
   useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { CodeEditor } from '@/features/coding/components/CodeEditor'
 import { ResizableSplitPane } from '@/features/coding/components/ResizableSplitPane'
@@ -17,10 +19,12 @@ import {
   submitProblemCode,
 } from '@/features/coding/services/codingApi'
 import type {
+  CodingTestcase,
   RunCodeResponse,
   SubmitCodeResponse,
   TestcaseRunResult,
 } from '@/features/coding/types/coding.types'
+import { useJudgePolling } from '@/features/coding/hooks/useJudgePolling'
 import { readStoredSplitPercent } from '@/features/coding/utils/splitPaneStorage'
 import { useAuth } from '@/features/auth/context/useAuth'
 import { ApiError } from '@/shared/api/apiClient'
@@ -38,6 +42,7 @@ type CodeLoadRequest = {
 type CodeWorkspaceProps = {
   problemId: string | number
   codeTemplates: ProblemCodeTemplate[]
+  testcases: CodingTestcase[]
   initialCodeLoad?: CodeLoadRequest | null
   onRunResultsChange: (results: TestcaseRunResult[]) => void
   onAcceptedSubmit: () => void
@@ -62,9 +67,6 @@ const fallbackTemplate: ProblemCodeTemplate = {
   starterCode: 'function solve(input: string): string {\n  return ""\n}\n',
 }
 
-const POLL_INTERVAL_MS = 1000
-const POLL_TIMEOUT_MS = 30000
-
 function getTemplates(codeTemplates: ProblemCodeTemplate[]) {
   return codeTemplates.length > 0 ? codeTemplates : [fallbackTemplate]
 }
@@ -85,22 +87,52 @@ function createDraftKey(
   return `codenix:draft:${userId ?? 'guest'}:${problemId}:${language}`
 }
 
-function isPendingResponse(response: RunCodeResponse | SubmitCodeResponse) {
-  return response.status === 'pending' && Boolean(response.id)
+function isTerminalResponse(response: RunCodeResponse | SubmitCodeResponse) {
+  return response.status !== 'pending' && response.status !== 'running'
 }
 
-function delay(ms: number) {
-  return new Promise((resolve) => window.setTimeout(resolve, ms))
+function isAbortError(error: unknown) {
+  return error instanceof DOMException && error.name === 'AbortError'
 }
 
-function getApiUnavailableMessage(error: unknown, action: 'Run' | 'Submit') {
-  if (error instanceof ApiError && error.status === 404) {
-    return `El backend de ${action} todavia no esta disponible. La interfaz ya esta lista para consumir el endpoint real.`
+function getApiErrorMessage(error: unknown, action: 'run' | 'submit') {
+  if (error instanceof ApiError) {
+    if (error.status === 400 || error.status === 422) return error.message
+    if (error.status === 401) return 'Tu sesion expiro. Vuelve a iniciar sesion para continuar.'
+    if (error.status === 429) return 'Has hecho demasiados envios, espera unos segundos.'
+    if (error.status >= 500) {
+      return action === 'run'
+        ? 'Hubo un problema al ejecutar tu codigo, intenta de nuevo.'
+        : 'Hubo un problema al enviar tu solucion, intenta de nuevo.'
+    }
+
+    return error.message
+  }
+
+  if (error instanceof Error && error.name === 'InvalidJudgeResponseError') {
+    return 'El servidor devolvio una respuesta inesperada. Intenta de nuevo.'
   }
 
   return error instanceof Error
     ? error.message
-    : `No pudimos completar ${action}. Intenta de nuevo.`
+    : 'No pudimos completar la accion. Intenta de nuevo.'
+}
+
+function canRetryAfterError(error: unknown) {
+  return error instanceof ApiError
+    ? error.status === 429 || error.status >= 500
+    : error instanceof Error && error.name === 'InvalidJudgeResponseError'
+}
+
+function createPendingResults(testcases: CodingTestcase[]): TestcaseRunResult[] {
+  return testcases.map((testcase, index) => ({
+    id: testcase.id,
+    index: index + 1,
+    passed: null,
+    status: 'pending',
+    input: testcase.input,
+    expectedOutput: testcase.expectedOutput,
+  }))
 }
 
 export const CodeWorkspace = forwardRef<CodeWorkspaceHandle, CodeWorkspaceProps>(
@@ -108,6 +140,7 @@ function CodeWorkspace(
   {
     problemId,
     codeTemplates,
+    testcases,
     initialCodeLoad,
     onRunResultsChange,
     onAcceptedSubmit,
@@ -116,6 +149,10 @@ function CodeWorkspace(
   ref,
 ) {
   const { user } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const actionSequenceRef = useRef(0)
+  const { cancelPolling, pollUntilTerminal } = useJudgePolling()
   const templates = useMemo(() => getTemplates(codeTemplates), [codeTemplates])
   const initialTemplate = useMemo(
     () => getInitialTemplate(codeTemplates),
@@ -140,6 +177,7 @@ function CodeWorkspace(
   const [isRunning, setIsRunning] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [canRetry, setCanRetry] = useState(false)
   const [editorPanelPercent, setEditorPanelPercent] = useState(() =>
     readStoredSplitPercent('codenix_split_vertical', 88),
   )
@@ -163,75 +201,78 @@ function CodeWorkspace(
     window.localStorage.setItem(createDraftKey(user?.id, problemId, language), code)
   }, [code, language, problemId, user?.id])
 
-  const pollRunResult = useCallback(async (runId: string) => {
-    const startedAt = Date.now()
-
-    while (Date.now() - startedAt < POLL_TIMEOUT_MS) {
-      await delay(POLL_INTERVAL_MS)
-      const response = await getRunResult(runId)
-      if (!isPendingResponse(response)) return response
-    }
-
-    throw new Error('El servidor tardo demasiado, intenta de nuevo.')
-  }, [])
-
-  const pollSubmissionResult = useCallback(async (submissionId: string) => {
-    const startedAt = Date.now()
-
-    while (Date.now() - startedAt < POLL_TIMEOUT_MS) {
-      await delay(POLL_INTERVAL_MS)
-      const response = await getSubmissionResult(submissionId)
-      if (!isPendingResponse(response)) return response
-    }
-
-    throw new Error('El servidor tardo demasiado, intenta de nuevo.')
-  }, [])
-
   const handleRun = useCallback(async () => {
     if (isBusy || isEditorEmpty) return
+    const actionId = actionSequenceRef.current + 1
+    actionSequenceRef.current = actionId
 
     try {
+      cancelPolling()
       setIsRunning(true)
       setActiveAction('run')
       setErrorMessage('')
+      setCanRetry(false)
       setRunResult(null)
       setSubmitResult(null)
-      onRunResultsChange([])
+      onRunResultsChange(createPendingResults(testcases))
       expandResultPanel()
 
       const response = await runProblemCode(problemId, {
         language,
         sourceCode: code,
+        testcases: testcases.map(({ input, expectedOutput }) => ({
+          input,
+          expectedOutput,
+        })),
       })
-      const finalResponse = isPendingResponse(response)
-        ? await pollRunResult(response.id)
-        : await getRunResult(response.id)
+      const finalResponse = isTerminalResponse(response)
+        ? await getRunResult(response.id)
+        : await pollUntilTerminal({
+            id: response.id,
+            fetchResult: getRunResult,
+          })
+
+      if (actionSequenceRef.current !== actionId) return
 
       setRunResult(finalResponse)
       onRunResultsChange(finalResponse.testcases ?? [])
     } catch (error) {
-      setErrorMessage(getApiUnavailableMessage(error, 'Run'))
+      if (isAbortError(error)) return
+      setErrorMessage(getApiErrorMessage(error, 'run'))
+      setCanRetry(canRetryAfterError(error))
+
+      if (error instanceof ApiError && error.status === 401) {
+        navigate('/login', { replace: true, state: { returnTo: location.pathname } })
+      }
     } finally {
-      setIsRunning(false)
+      if (actionSequenceRef.current === actionId) setIsRunning(false)
     }
   }, [
+    cancelPolling,
     code,
     expandResultPanel,
     isEditorEmpty,
     isBusy,
     language,
+    location.pathname,
+    navigate,
     onRunResultsChange,
-    pollRunResult,
+    pollUntilTerminal,
     problemId,
+    testcases,
   ])
 
   const handleSubmit = useCallback(async () => {
     if (isBusy || isEditorEmpty) return
+    const actionId = actionSequenceRef.current + 1
+    actionSequenceRef.current = actionId
 
     try {
+      cancelPolling()
       setIsSubmitting(true)
       setActiveAction('submit')
       setErrorMessage('')
+      setCanRetry(false)
       setRunResult(null)
       setSubmitResult(null)
       expandResultPanel()
@@ -240,9 +281,14 @@ function CodeWorkspace(
         language,
         sourceCode: code,
       })
-      const finalResponse = isPendingResponse(response)
-        ? await pollSubmissionResult(response.id)
-        : await getSubmissionResult(response.id)
+      const finalResponse = isTerminalResponse(response)
+        ? await getSubmissionResult(response.id)
+        : await pollUntilTerminal({
+            id: response.id,
+            fetchResult: getSubmissionResult,
+          })
+
+      if (actionSequenceRef.current !== actionId) return
 
       setSubmitResult(finalResponse)
 
@@ -251,18 +297,27 @@ function CodeWorkspace(
         onAcceptedSubmit()
       }
     } catch (error) {
-      setErrorMessage(getApiUnavailableMessage(error, 'Submit'))
+      if (isAbortError(error)) return
+      setErrorMessage(getApiErrorMessage(error, 'submit'))
+      setCanRetry(canRetryAfterError(error))
+
+      if (error instanceof ApiError && error.status === 401) {
+        navigate('/login', { replace: true, state: { returnTo: location.pathname } })
+      }
     } finally {
-      setIsSubmitting(false)
+      if (actionSequenceRef.current === actionId) setIsSubmitting(false)
     }
   }, [
+    cancelPolling,
     code,
     expandResultPanel,
     isEditorEmpty,
     isBusy,
     language,
+    location.pathname,
+    navigate,
     onAcceptedSubmit,
-    pollSubmissionResult,
+    pollUntilTerminal,
     problemId,
     user?.id,
   ])
@@ -408,6 +463,8 @@ function CodeWorkspace(
               runResult={runResult}
               submitResult={submitResult}
               errorMessage={errorMessage}
+              canRetry={canRetry}
+              onRetry={activeAction === 'submit' ? handleSubmit : handleRun}
             />
           }
         />

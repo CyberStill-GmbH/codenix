@@ -2,16 +2,20 @@ import Editor, { loader } from '@monaco-editor/react'
 
 import type { ProblemCodeLanguage } from '@/features/problems/types/problem.types'
 
+type MonacoEditorLanguage = ProblemCodeLanguage | 'java' | 'cpp'
+
 type CodeEditorProps = {
-  language: ProblemCodeLanguage
+  language: MonacoEditorLanguage
   value: string
   onChange: (value: string) => void
 }
 
-const monacoLanguageByProblemLanguage: Record<ProblemCodeLanguage, string> = {
+const monacoLanguageByProblemLanguage: Record<MonacoEditorLanguage, string> = {
   typescript: 'typescript',
   javascript: 'javascript',
   python: 'python',
+  c: 'c',
+  rust: 'rust',
   java: 'java',
   cpp: 'cpp',
 }

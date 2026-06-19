@@ -8,6 +8,7 @@ export type JudgeStatus =
   | 'compilation_error'
   | 'memory_limit_exceeded'
   | 'internal_error'
+  | 'running'
   | 'pending'
 
 export type CodingTestcase = {
@@ -20,9 +21,11 @@ export type CodingTestcase = {
 export type TestcaseRunResult = {
   id: string
   index: number
-  passed: boolean
-  input: string
-  expectedOutput?: string
+  passed: boolean | null
+  status?: 'pending' | 'finished'
+  visibility?: string
+  input?: string | null
+  expectedOutput?: string | null
   actualOutput?: string
   stdout?: string
   stderr?: string
@@ -56,6 +59,8 @@ export type RunCodeResponse = {
 export type SubmitCodeResponse = {
   id?: string
   status: JudgeStatus
+  stdout?: string
+  stderr?: string
   passedCases?: number
   totalCases?: number
   executionTimeMs?: number
@@ -92,8 +97,8 @@ export type SubmissionDetail = ProblemSubmission & {
     id: string
     testcaseId: string
     visibility: string
-    input: string
-    expectedOutput: string
+    input: string | null
+    expectedOutput: string | null
     actualOutput?: string | null
     error?: string | null
     passed: boolean

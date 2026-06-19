@@ -173,6 +173,20 @@ export function ProblemDetailPage() {
     workspaceRef.current?.submit()
   }, [])
 
+  const handleAcceptedSubmit = useCallback(() => {
+    setSubmissionsRefreshKey((current) => current + 1)
+    setProblem((currentProblem) =>
+      currentProblem ? { ...currentProblem, solved: true } : currentProblem,
+    )
+    setProblemCatalog((currentCatalog) =>
+      currentCatalog.map((catalogProblem) =>
+        catalogProblem.slug === problem?.slug
+          ? { ...catalogProblem, solved: true }
+          : catalogProblem,
+      ),
+    )
+  }, [problem?.slug])
+
   if (!problem) {
     return (
       <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
@@ -243,11 +257,10 @@ export function ProblemDetailPage() {
               key={`${problem.slug}:${codeLoadState.version}`}
               problemId={problem.apiId ?? problem.id}
               codeTemplates={problem.codeTemplates}
+              testcases={testcases}
               initialCodeLoad={codeLoadState.request}
               onRunResultsChange={setRunResults}
-              onAcceptedSubmit={() =>
-                setSubmissionsRefreshKey((current) => current + 1)
-              }
+              onAcceptedSubmit={handleAcceptedSubmit}
               onActionStateChange={setActionState}
             />
           </PageSection>
@@ -292,11 +305,10 @@ export function ProblemDetailPage() {
                 key={`${problem.slug}:${codeLoadState.version}`}
                 problemId={problem.apiId ?? problem.id}
                 codeTemplates={problem.codeTemplates}
+                testcases={testcases}
                 initialCodeLoad={codeLoadState.request}
                 onRunResultsChange={setRunResults}
-                onAcceptedSubmit={() =>
-                  setSubmissionsRefreshKey((current) => current + 1)
-                }
+                onAcceptedSubmit={handleAcceptedSubmit}
                 onActionStateChange={setActionState}
               />
             </PageSection>

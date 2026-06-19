@@ -24,6 +24,8 @@ type ResultPanelProps = {
   runResult: RunCodeResponse | null
   submitResult: SubmitCodeResponse | null
   errorMessage: string
+  canRetry: boolean
+  onRetry: () => void
 }
 
 type ResultTab = 'test-result' | 'output'
@@ -47,7 +49,7 @@ function formatRuntime(ms?: number) {
   return `${ms} ms`
 }
 
-function CodeBlock({ label, value }: { label: string; value?: string }) {
+function CodeBlock({ label, value }: { label: string; value?: string | null }) {
   return (
     <div className="min-w-0">
       <p className="mb-1 text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
@@ -61,11 +63,16 @@ function CodeBlock({ label, value }: { label: string; value?: string }) {
 }
 
 function TestcaseResultRow({ result }: { result: TestcaseRunResult }) {
+  const isPending = result.status === 'pending'
+  const isHidden = result.visibility === 'hidden' && !result.input && !result.expectedOutput
+
   return (
     <article className="rounded-xl border border-slate-800/90 bg-slate-950/55 p-3">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          {result.passed ? (
+          {isPending ? (
+            <CircleDotDashed className="h-4 w-4 animate-spin text-sky-300" aria-hidden="true" />
+          ) : result.passed ? (
             <Check className="h-4 w-4 text-[var(--color-success)]" aria-hidden="true" />
           ) : (
             <X className="h-4 w-4 text-[var(--color-error)]" aria-hidden="true" />
@@ -78,11 +85,20 @@ function TestcaseResultRow({ result }: { result: TestcaseRunResult }) {
           {formatRuntime(result.executionTimeMs)} · {formatMemory(result.memoryKb)}
         </span>
       </div>
-      <div className="grid gap-3 lg:grid-cols-3">
-        <CodeBlock label="Input" value={result.input} />
-        <CodeBlock label="Expected" value={result.expectedOutput} />
-        <CodeBlock label="Got" value={result.actualOutput ?? result.stdout} />
-      </div>
+      {isHidden ? (
+        <p className="rounded-lg border border-slate-800 bg-slate-950/80 p-3 text-sm font-semibold text-[var(--color-text-muted)]">
+          Caso oculto. El backend no expone input ni output esperado para este testcase.
+        </p>
+      ) : (
+        <div className="grid gap-3 lg:grid-cols-3">
+          <CodeBlock label="Input" value={result.input} />
+          <CodeBlock label="Expected" value={result.expectedOutput} />
+          <CodeBlock
+            label="Got"
+            value={isPending ? 'Ejecutando...' : result.actualOutput ?? result.stdout}
+          />
+        </div>
+      )}
       {result.error && (
         <pre className="mt-3 overflow-auto rounded-lg border border-[var(--color-error)]/30 bg-[var(--color-error-soft)] p-3 font-mono text-xs text-[var(--color-error)]">
           {result.error}
@@ -133,6 +149,8 @@ export function ResultPanel({
   runResult,
   submitResult,
   errorMessage,
+  canRetry,
+  onRetry,
 }: ResultPanelProps) {
   const [activeTab, setActiveTab] = useState<ResultTab>('test-result')
 
@@ -144,9 +162,15 @@ export function ResultPanel({
     return runResult?.testcases ?? []
   }, [activeAction, runResult?.testcases, submitResult])
 
-  const stdout = runResult?.stdout ?? ''
+  const stdout = runResult?.stdout ?? submitResult?.stdout ?? ''
   const stderr =
-    runResult?.stderr ?? runResult?.error?.stderr ?? runResult?.error?.message ?? ''
+    runResult?.stderr ??
+    runResult?.error?.stderr ??
+    runResult?.error?.message ??
+    submitResult?.stderr ??
+    submitResult?.error?.stderr ??
+    submitResult?.error?.message ??
+    ''
 
   const distribution =
     submitResult?.runtimeDistribution?.length
@@ -186,9 +210,20 @@ export function ResultPanel({
       <div className="min-h-0 flex-1 overflow-auto p-4">
         {errorMessage && (
           <div className="mb-4 rounded-xl border border-[var(--color-error)]/35 bg-[var(--color-error-soft)] p-4 text-sm font-semibold text-[var(--color-error)]">
-            <div className="flex gap-2">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>{errorMessage}</span>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span className="flex min-w-0 items-start gap-2">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{errorMessage}</span>
+              </span>
+              {canRetry && (
+                <button
+                  type="button"
+                  onClick={onRetry}
+                  className="h-8 rounded-lg border border-[var(--color-error)]/35 px-3 text-xs font-black transition hover:bg-[var(--color-error)]/10"
+                >
+                  Reintentar
+                </button>
+              )}
             </div>
           </div>
         )}

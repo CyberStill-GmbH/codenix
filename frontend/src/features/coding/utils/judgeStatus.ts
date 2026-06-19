@@ -39,6 +39,10 @@ export const judgeStatusMeta: Record<
     className:
       'border-[var(--color-error)]/35 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
+  running: {
+    label: 'Running',
+    className: 'border-sky-400/35 bg-sky-400/10 text-sky-300',
+  },
   pending: {
     label: 'Pending',
     className: 'border-slate-600/50 bg-slate-900/70 text-[var(--color-text-muted)]',

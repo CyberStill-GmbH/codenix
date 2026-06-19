@@ -56,8 +56,7 @@ function relativeDate(dateValue: string) {
 
 function normalizeLanguage(language: string): ProblemCodeLanguage | null {
   const normalized = language.toLowerCase()
-  if (normalized === 'c++') return 'cpp'
-  if (['typescript', 'javascript', 'python', 'java', 'cpp'].includes(normalized)) {
+  if (['typescript', 'javascript', 'python', 'c', 'rust'].includes(normalized)) {
     return normalized as ProblemCodeLanguage
   }
   return null

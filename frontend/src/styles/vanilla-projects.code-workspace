@@ -1,0 +1,50 @@
+{
+	"folders": [
+		{
+			"name": "vanilla-projects",
+			"path": "../../../../../Users/ceadr/OneDrive/Documentos/Desktop/vanilla-projects"
+		},
+		{
+			"name": "ieeecsuni.github.io",
+			"path": "../../../../../Users/ceadr/OneDrive/Documentos/Desktop/ieeecsuni.github.io"
+		},
+		{
+			"name": "aws-arquitect-notes",
+			"path": "../../../../../study-notes/aws-arquitect-notes"
+		},
+		{
+			"name": "competitive-programming",
+			"path": "../../../../../study-notes/competitive-programming"
+		},
+		{
+			"name": "cybersecurity-portfolio",
+			"path": "../../../../../study-notes/cybersecurity-portfolio"
+		},
+		{
+			"name": "fullstack-lab",
+			"path": "../../../../../labs-dev/fullstack-lab"
+		},
+		{
+			"name": "rust-playground",
+			"path": "../../../../../labs-dev/rust-playground"
+		},
+		{
+			"name": "clinsync-frontend",
+			"path": "../../../../clinsync-frontend"
+		},
+		{
+			"name": "clinsync-backend",
+			"path": "../../../../clinsync-backend"
+		},
+		{
+			"path": "../../../../../labs-dev/backend-nodejs-lab"
+		},
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "vanilla-projects",
+		"prisma.pinToPrisma6": false
+	}
+}
