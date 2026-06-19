@@ -1,4 +1,5 @@
-import Editor, { loader } from '@monaco-editor/react'
+import { useEffect, useRef } from 'react'
+import Editor, { loader, type OnMount } from '@monaco-editor/react'
 
 import type { ProblemCodeLanguage } from '@/features/problems/types/problem.types'
 
@@ -27,25 +28,53 @@ loader.config({
 })
 
 export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
+  const resizeObserverRef = useRef<ResizeObserver | null>(null)
+  const layoutFrameRef = useRef(0)
+
+  useEffect(() => {
+    return () => {
+      cancelAnimationFrame(layoutFrameRef.current)
+      resizeObserverRef.current?.disconnect()
+    }
+  }, [])
+
+  const handleMount: OnMount = (editor) => {
+    editorRef.current = editor
+    editor.layout()
+
+    resizeObserverRef.current?.disconnect()
+    resizeObserverRef.current = new ResizeObserver(() => {
+      cancelAnimationFrame(layoutFrameRef.current)
+      layoutFrameRef.current = requestAnimationFrame(() => editorRef.current?.layout())
+    })
+
+    if (containerRef.current) resizeObserverRef.current.observe(containerRef.current)
+  }
+
   return (
-    <Editor
-      height="100%"
-      width="100%"
-      theme="vs-dark"
-      language={monacoLanguageByProblemLanguage[language]}
-      value={value}
-      onChange={(nextValue) => onChange(nextValue ?? '')}
-      options={{
-        automaticLayout: true,
-        minimap: { enabled: false },
-        wordWrap: 'on',
-        fontSize: 14,
-        fontLigatures: true,
-        lineNumbersMinChars: 3,
-        scrollBeyondLastLine: false,
-        smoothScrolling: true,
-        padding: { top: 16, bottom: 16 },
-      }}
-    />
+    <div ref={containerRef} className="h-full min-h-0 w-full overflow-hidden">
+      <Editor
+        height="100%"
+        width="100%"
+        onMount={handleMount}
+        theme="vs-dark"
+        language={monacoLanguageByProblemLanguage[language]}
+        value={value}
+        onChange={(nextValue) => onChange(nextValue ?? '')}
+        options={{
+          automaticLayout: true,
+          minimap: { enabled: false },
+          wordWrap: 'on',
+          fontSize: 14,
+          fontLigatures: true,
+          lineNumbersMinChars: 3,
+          scrollBeyondLastLine: false,
+          smoothScrolling: true,
+          padding: { top: 16, bottom: 16 },
+        }}
+      />
+    </div>
   )
 }
