@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1600" height="1100" viewBox="0 0 1600 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10" fill="none" stroke="#334155" stroke-width="2"/>
+    </marker>
+    <style>
+      .title { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 42px; font-weight: 800; fill: #0f172a; }
+      .subtitle { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 21px; font-weight: 500; fill: #475569; }
+      .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 20; filter: url(#shadow); }
+      .head { fill: #1e293b; rx: 20; }
+      .entity { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 24px; font-weight: 800; fill: #ffffff; }
+      .attr { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 18px; fill: #1e293b; }
+      .pk { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 18px; font-weight: 800; fill: #0f172a; }
+      .fk { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #2563eb; }
+      .note { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 17px; fill: #475569; }
+      .rel { stroke: #334155; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .relText { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #334155; }
+      .badge { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.5; rx: 12; }
+      .badgeText { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 16px; font-weight: 700; fill: #1d4ed8; }
+      .legendBox { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 2; rx: 18; }
+      .small { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 16px; fill: #475569; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1100" fill="#f1f5f9"/>
+  <text x="80" y="78" class="title">MER — Codenix V1 estilo LeetCode</text>
+  <text x="80" y="112" class="subtitle">Modelo académico para DB I: usuarios resuelven problemas; solo admins crean problemas.</text>
+
+  <!-- Usuario -->
+  <g transform="translate(80,180)">
+    <rect width="370" height="370" class="box"/>
+    <path d="M0 20 Q0 0 20 0 H350 Q370 0 370 20 V76 H0 Z" class="head"/>
+    <text x="28" y="48" class="entity">USUARIO</text>
+    <text x="28" y="112" class="pk">PK id_usuario</text>
+    <text x="28" y="145" class="attr">username UNIQUE</text>
+    <text x="28" y="178" class="attr">email UNIQUE</text>
+    <text x="28" y="211" class="attr">password_hash</text>
+    <text x="28" y="244" class="attr">rol: USER | ADMIN</text>
+    <text x="28" y="277" class="attr">estado</text>
+    <text x="28" y="310" class="attr">fecha_registro</text>
+    <rect x="28" y="328" width="292" height="28" class="badge"/>
+    <text x="42" y="348" class="badgeText">Restricción: solo ADMIN crea problemas</text>
+  </g>
+
+  <!-- Problema -->
+  <g transform="translate(615,160)">
+    <rect width="405" height="445" class="box"/>
+    <path d="M0 20 Q0 0 20 0 H385 Q405 0 405 20 V76 H0 Z" class="head"/>
+    <text x="28" y="48" class="entity">PROBLEMA</text>
+    <text x="28" y="112" class="pk">PK id_problema</text>
+    <text x="28" y="145" class="fk">FK id_admin_creador → Usuario</text>
+    <text x="28" y="178" class="attr">titulo</text>
+    <text x="28" y="211" class="attr">slug UNIQUE</text>
+    <text x="28" y="244" class="attr">descripcion</text>
+    <text x="28" y="277" class="attr">dificultad: EASY | MEDIUM | HARD</text>
+    <text x="28" y="310" class="attr">limite_tiempo_ms</text>
+    <text x="28" y="343" class="attr">limite_memoria_mb</text>
+    <text x="28" y="376" class="attr">estado: DRAFT | PUBLISHED | ARCHIVED</text>
+    <text x="28" y="409" class="attr">fecha_creacion</text>
+  </g>
+
+  <!-- Caso Prueba -->
+  <g transform="translate(1160,120)">
+    <rect width="360" height="315" class="box"/>
+    <path d="M0 20 Q0 0 20 0 H340 Q360 0 360 20 V76 H0 Z" class="head"/>
+    <text x="28" y="48" class="entity">CASO_PRUEBA</text>
+    <text x="28" y="112" class="pk">PK id_caso</text>
+    <text x="28" y="145" class="fk">FK id_problema → Problema</text>
+    <text x="28" y="178" class="attr">input</text>
+    <text x="28" y="211" class="attr">output_esperado</text>
+    <text x="28" y="244" class="attr">es_publico</text>
+    <text x="28" y="277" class="attr">orden</text>
+  </g>
+
+  <!-- Submission -->
+  <g transform="translate(600,700)">
+    <rect width="430" height="350" class="box"/>
+    <path d="M0 20 Q0 0 20 0 H410 Q430 0 430 20 V76 H0 Z" class="head"/>
+    <text x="28" y="48" class="entity">SUBMISSION / ENVÍO</text>
+    <text x="28" y="112" class="pk">PK id_submission</text>
+    <text x="28" y="145" class="fk">FK id_usuario → Usuario</text>
+    <text x="28" y="178" class="fk">FK id_problema → Problema</text>
+    <text x="28" y="211" class="attr">lenguaje</text>
+    <text x="28" y="244" class="attr">codigo_fuente</text>
+    <text x="28" y="277" class="attr">veredicto: AC | WA | TLE | CE | RE</text>
+    <text x="28" y="310" class="attr">tiempo_ms, memoria_kb, fecha_envio</text>
+  </g>
+
+  <!-- Tag -->
+  <g transform="translate(1160,550)">
+    <rect width="330" height="215" class="box"/>
+    <path d="M0 20 Q0 0 20 0 H310 Q330 0 330 20 V76 H0 Z" class="head"/>
+    <text x="28" y="48" class="entity">TAG</text>
+    <text x="28" y="112" class="pk">PK id_tag</text>
+    <text x="28" y="145" class="attr">nombre UNIQUE</text>
+    <text x="28" y="178" class="note">Ej: DP, Graphs, Greedy</text>
+  </g>
+
+  <!-- Problema Tag -->
+  <g transform="translate(1160,835)">
+    <rect width="360" height="190" class="box"/>
+    <path d="M0 20 Q0 0 20 0 H340 Q360 0 360 20 V76 H0 Z" class="head"/>
+    <text x="28" y="48" class="entity">PROBLEMA_TAG</text>
+    <text x="28" y="112" class="pk">PK compuesta: problema + tag</text>
+    <text x="28" y="145" class="fk">FK id_problema → Problema</text>
+    <text x="28" y="178" class="fk">FK id_tag → Tag</text>
+  </g>
+
+  <!-- Relationships -->
+  <path d="M450 315 C520 315 545 310 615 310" class="rel"/>
+  <text x="478" y="292" class="relText">1 ADMIN crea N problemas</text>
+
+  <path d="M1020 300 C1075 280 1105 260 1160 245" class="rel"/>
+  <text x="1045" y="247" class="relText">1 problema tiene N casos</text>
+
+  <path d="M450 485 C535 620 540 785 600 835" class="rel"/>
+  <text x="315" y="666" class="relText">1 usuario hace N envíos</text>
+
+  <path d="M805 605 C805 650 805 665 805 700" class="rel"/>
+  <text x="833" y="665" class="relText">1 problema recibe N envíos</text>
+
+  <path d="M1020 450 C1090 500 1105 585 1160 650" class="rel"/>
+  <text x="1042" y="538" class="relText">N:M mediante tabla puente</text>
+
+  <path d="M1325 765 C1325 795 1325 810 1325 835" class="rel"/>
+  <text x="1348" y="810" class="relText">1 tag aparece en N relaciones</text>
+
+  <path d="M1020 515 C1110 650 1110 880 1160 930" class="rel"/>
+  <text x="1016" y="755" class="relText">1 problema tiene N tags</text>
+
+  <!-- Legend -->
+  <g transform="translate(80,660)">
+    <rect width="410" height="300" class="legendBox"/>
+    <text x="28" y="48" class="entity" fill="#0f172a">Notas del modelo</text>
+    <text x="28" y="88" class="small">• Admin no es entidad separada en V1.</text>
+    <text x="28" y="118" class="small">• Se controla con Usuario.rol = ADMIN.</text>
+    <text x="28" y="148" class="small">• Problema guarda quién lo creó.</text>
+    <text x="28" y="178" class="small">• Caso_Prueba evita meter inputs/outputs</text>
+    <text x="42" y="204" class="small">como texto gigante dentro de Problema.</text>
+    <text x="28" y="234" class="small">• Problema_Tag normaliza la relación N:M.</text>
+    <text x="28" y="264" class="small">• Submission permite ranking y estadísticas.</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="80" y="1045" class="subtitle">Codenix V1: suficiente para DDL, DML, joins, subconsultas, vistas, índices, triggers y procedimientos.</text>
+</svg>

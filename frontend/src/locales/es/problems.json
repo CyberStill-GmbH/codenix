@@ -1,0 +1,69 @@
+{
+  "hero": {
+    "practiceTitle": "Practica algoritmos",
+    "practiceDescription": "{{total}} problemas curados para entrenar.",
+    "progressTitle": "Progreso real",
+    "progressDescription": "{{solved}}/{{total}} problemas resueltos.",
+    "preparationTitle": "Preparacion competitiva",
+    "preparationDescription": "{{count}} retos medios y dificiles disponibles."
+  },
+  "search": {
+    "label": "Buscar problemas",
+    "placeholder": "Buscar problemas"
+  },
+  "filters": {
+    "allTopics": "Todos los temas",
+    "difficulty": "Dificultad",
+    "status": "Estado",
+    "all": "Todos",
+    "solved": "Resueltos",
+    "unsolved": "No resueltos",
+    "sort": "Ordenar",
+    "sortOriginal": "Orden original",
+    "sortAcceptanceDesc": "Mayor aceptacion",
+    "sortAcceptanceAsc": "Menor aceptacion",
+    "sortDifficultyAsc": "Dificultad",
+    "topics": {
+      "array": "Arreglos",
+      "math": "Matematicas",
+      "graph": "Grafos",
+      "shortestPath": "Camino mas corto",
+      "binarySearch": "Busqueda binaria",
+      "greedy": "Voraz",
+      "sorting": "Ordenamiento",
+      "dynamicProgramming": "Programacion dinamica",
+      "heap": "Heap",
+      "priorityQueue": "Cola de prioridad",
+      "matrix": "Matriz",
+      "simulation": "Simulacion",
+      "twoPointers": "Dos punteros",
+      "slidingWindow": "Ventana deslizante",
+      "hashTable": "Tablas hash",
+      "string": "Cadenas",
+      "prefixSum": "Suma de prefijos",
+      "segmentTree": "Arbol de segmentos",
+      "dfs": "DFS"
+    }
+  },
+  "difficulty": {
+    "easy": "Facil",
+    "medium": "Medio",
+    "hard": "Dificil"
+  },
+  "table": {
+    "headerStatus": "ESTADO",
+    "headerProblem": "PROBLEMA",
+    "headerAcceptance": "ACEPTACION",
+    "headerDifficulty": "DIFICULTAD",
+    "emptyTitle": "No encontramos problemas",
+    "emptyDescription": "Ajusta la busqueda o cambia los filtros para ver mas resultados."
+  },
+  "status": {
+    "solvedCount": "{{solved}}/{{total}} Resueltos",
+    "solved": "Problema resuelto",
+    "pending": "Problema pendiente"
+  },
+  "feedback": {
+    "loading": "Cargando problemas..."
+  }
+}
