@@ -382,8 +382,8 @@ function CodeWorkspace(
   }
 
   return (
-    <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-slate-700/50 bg-slate-950/70 shadow-[0_18px_50px_rgba(2,8,23,0.24)]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 bg-slate-950/80 px-4 py-2">
+    <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-bg-soft)]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border-soft)] bg-[var(--color-bg-soft)] px-4 py-2">
         <label className="flex items-center gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
             Language
@@ -443,7 +443,7 @@ function CodeWorkspace(
           minPrimaryPx={120}
           minSecondaryPx={80}
           className="h-full"
-          primaryClassName="border-b border-slate-800/80"
+          primaryClassName="border-b border-[var(--color-border-soft)]"
           ariaLabel="Redimensionar editor y consola"
           onHandleDoubleClick={({ currentPercent, setPercent }) => {
             setPercent(currentPercent > 76 ? 70 : 88)
