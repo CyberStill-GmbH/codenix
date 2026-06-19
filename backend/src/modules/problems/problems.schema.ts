@@ -1,4 +1,4 @@
-﻿import { z } from "zod";
+import { z } from "zod";
 
 export const problemsQuerySchema = z
   .object({
@@ -29,3 +29,29 @@ export const problemSlugParamsSchema = z
 export type ProblemsQueryInput = z.infer<typeof problemsQuerySchema>;
 export type ProblemsSearchQueryInput = z.infer<typeof problemsSearchQuerySchema>;
 export type ProblemSlugParamsInput = z.infer<typeof problemSlugParamsSchema>;
+
+export const problemIdentifierParamsSchema = z
+  .object({
+    problemId: z.string().trim().min(1).max(120)
+  })
+  .strict();
+
+export const runCodeRequestSchema = z
+  .object({
+    language: z.string(),
+    sourceCode: z.string().min(1),
+    stdin: z.string().optional(),
+    testcaseIds: z.array(z.string()).optional()
+  })
+  .strict();
+
+export const createSubmissionRequestSchema = z
+  .object({
+    language: z.string(),
+    sourceCode: z.string().min(1)
+  })
+  .strict();
+
+export type ProblemIdentifierParamsInput = z.infer<typeof problemIdentifierParamsSchema>;
+export type RunCodeRequestInput = z.infer<typeof runCodeRequestSchema>;
+export type CreateSubmissionRequestInput = z.infer<typeof createSubmissionRequestSchema>;

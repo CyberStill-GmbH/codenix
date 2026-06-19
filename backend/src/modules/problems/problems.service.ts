@@ -1,4 +1,4 @@
-﻿import type { Prisma } from "../../generated/prisma/client";
+import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../../db/prisma";
 import { AppError } from "../../shared/errors/app-error";
 import { solvedProblemsService } from "../../shared/services/solved-problems.service";
@@ -10,7 +10,9 @@ import {
 } from "./problems.mapper";
 import type {
   ProblemsQueryInput,
-  ProblemsSearchQueryInput
+  ProblemsSearchQueryInput,
+  RunCodeRequestInput,
+  CreateSubmissionRequestInput
 } from "./problems.schema";
 
 function slugify(value: string) {
@@ -223,5 +225,140 @@ export const problemService = {
       : new Set<string>();
 
     return toProblemDetail(problem, solvedProblemIds);
+  },
+
+  async runCode(identifier: string, data: RunCodeRequestInput, userId: string) {
+    const problem = await prisma.problem.findFirst({
+      where: {
+        OR: [
+          { id: identifier },
+          { slug: identifier }
+        ],
+        status: "published"
+      },
+      include: {
+        testcases: {
+          where: data.testcaseIds && data.testcaseIds.length > 0
+            ? { id: { in: data.testcaseIds } }
+            : { visibility: "sample" }
+        }
+      }
+    });
+
+    if (!problem) {
+      throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
+    }
+
+    const { judgeService } = await import("../judge/judge.service");
+
+    const judgeInput = {
+      language: data.language as any,
+      sourceCode: data.sourceCode,
+      testcases: problem.testcases.map(tc => ({
+        id: tc.id,
+        input: tc.input,
+        expectedOutput: tc.expectedOutput
+      })),
+      timeLimitMs: problem.timeLimitMs,
+      memoryLimitMb: problem.memoryLimitMb
+    };
+
+    const runResult = await judgeService.run(judgeInput);
+
+    const run = await prisma.codeRun.create({
+      data: {
+        userId,
+        problemId: problem.id,
+        language: data.language as any,
+        sourceCode: data.sourceCode,
+        status: runResult.status as any,
+        stdout: runResult.stdout ?? null,
+        stderr: runResult.stderr ?? null,
+        error: runResult.error ?? null,
+        executionTimeMs: runResult.executionTimeMs ?? null,
+        memoryKb: runResult.memoryKb ?? null,
+        testcaseResults: {
+          create: runResult.testcaseResults.map(tr => ({
+            testcaseId: tr.testcaseId,
+            input: problem.testcases.find(t => t.id === tr.testcaseId)?.input || "",
+            expectedOutput: problem.testcases.find(t => t.id === tr.testcaseId)?.expectedOutput ?? null,
+            actualOutput: tr.actualOutput ?? null,
+            error: tr.error ?? null,
+            passed: tr.passed,
+            executionTimeMs: tr.executionTimeMs ?? null,
+            memoryKb: tr.memoryKb ?? null
+          }))
+        }
+      }
+    });
+
+    return {
+      id: run.id,
+      status: run.status
+    };
+  },
+
+  async submitCode(identifier: string, data: CreateSubmissionRequestInput, userId: string) {
+    const problem = await prisma.problem.findFirst({
+      where: {
+        OR: [
+          { id: identifier },
+          { slug: identifier }
+        ],
+        status: "published"
+      },
+      include: {
+        testcases: true
+      }
+    });
+
+    if (!problem) {
+      throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
+    }
+
+    const { judgeService } = await import("../judge/judge.service");
+
+    const judgeInput = {
+      language: data.language as any,
+      sourceCode: data.sourceCode,
+      testcases: problem.testcases.map(tc => ({
+        id: tc.id,
+        input: tc.input,
+        expectedOutput: tc.expectedOutput
+      })),
+      timeLimitMs: problem.timeLimitMs,
+      memoryLimitMb: problem.memoryLimitMb
+    };
+
+    const runResult = await judgeService.run(judgeInput);
+
+    const submission = await prisma.submission.create({
+      data: {
+        userId,
+        problemId: problem.id,
+        language: data.language as any,
+        sourceCode: data.sourceCode,
+        result: runResult.status as any,
+        executionTimeMs: runResult.executionTimeMs ?? null,
+        memoryKb: runResult.memoryKb ?? null,
+        testcaseResults: {
+          create: runResult.testcaseResults.map(tr => ({
+            testcaseId: tr.testcaseId,
+            actualOutput: tr.actualOutput ?? null,
+            error: tr.error ?? null,
+            passed: tr.passed,
+            executionTimeMs: tr.executionTimeMs ?? null,
+            memoryKb: tr.memoryKb ?? null
+          }))
+        }
+      }
+    });
+
+    return {
+      id: submission.id,
+      result: submission.result,
+      resultCode: submission.result,
+      submittedAt: submission.submittedAt.toISOString()
+    };
   }
 };
