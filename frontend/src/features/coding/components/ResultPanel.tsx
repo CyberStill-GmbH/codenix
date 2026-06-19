@@ -180,7 +180,7 @@ export function ResultPanel({
   const isBusy = isRunning || isSubmitting
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-slate-950/65">
+    <div className="flex h-full min-h-0 flex-col bg-[var(--color-bg-soft)]">
       <div className="flex items-center justify-between gap-3 border-b border-slate-800/80 px-4 py-2">
         <div className="flex items-center gap-2">
           {(['test-result', 'output'] as const).map((tab) => (

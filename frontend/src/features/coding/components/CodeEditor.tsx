@@ -1,4 +1,5 @@
-import Editor, { loader } from '@monaco-editor/react'
+import { useEffect, useRef } from 'react'
+import Editor, { loader, type BeforeMount, type OnMount } from '@monaco-editor/react'
 
 import type { ProblemCodeLanguage } from '@/features/problems/types/problem.types'
 
@@ -26,26 +27,81 @@ loader.config({
   },
 })
 
+const CODENIX_EDITOR_THEME = 'codenix-dark'
+
+const defineCodenixTheme: BeforeMount = (monaco) => {
+  monaco.editor.defineTheme(CODENIX_EDITOR_THEME, {
+    base: 'vs-dark',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#071225',
+      'editor.foreground': '#CBD5E1',
+      'editorCursor.foreground': '#38BDF8',
+      'editor.lineHighlightBackground': '#0C1A2E',
+      'editor.selectionBackground': '#0B7FC355',
+      'editor.inactiveSelectionBackground': '#0B7FC330',
+      'editorLineNumber.foreground': '#52647A',
+      'editorLineNumber.activeForeground': '#CBD5E1',
+      'editorIndentGuide.background1': '#172842',
+      'editorIndentGuide.activeBackground1': '#285174',
+    },
+  })
+}
+
 export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
+  const resizeObserverRef = useRef<ResizeObserver | null>(null)
+  const layoutFrameRef = useRef(0)
+
+  useEffect(() => {
+    return () => {
+      cancelAnimationFrame(layoutFrameRef.current)
+      resizeObserverRef.current?.disconnect()
+    }
+  }, [])
+
+  const handleMount: OnMount = (editor) => {
+    editorRef.current = editor
+    editor.layout()
+
+    resizeObserverRef.current?.disconnect()
+    resizeObserverRef.current = new ResizeObserver(() => {
+      cancelAnimationFrame(layoutFrameRef.current)
+      layoutFrameRef.current = requestAnimationFrame(() => editorRef.current?.layout())
+    })
+
+    if (containerRef.current) resizeObserverRef.current.observe(containerRef.current)
+  }
+
   return (
-    <Editor
-      height="100%"
-      width="100%"
-      theme="vs-dark"
-      language={monacoLanguageByProblemLanguage[language]}
-      value={value}
-      onChange={(nextValue) => onChange(nextValue ?? '')}
-      options={{
-        automaticLayout: true,
-        minimap: { enabled: false },
-        wordWrap: 'on',
-        fontSize: 14,
-        fontLigatures: true,
-        lineNumbersMinChars: 3,
-        scrollBeyondLastLine: false,
-        smoothScrolling: true,
-        padding: { top: 16, bottom: 16 },
-      }}
-    />
+    <div ref={containerRef} className="h-full min-h-0 w-full overflow-hidden bg-[#071225]">
+      <Editor
+        height="100%"
+        width="100%"
+        beforeMount={defineCodenixTheme}
+        onMount={handleMount}
+        theme={CODENIX_EDITOR_THEME}
+        language={monacoLanguageByProblemLanguage[language]}
+        value={value}
+        onChange={(nextValue) => onChange(nextValue ?? '')}
+        options={{
+          automaticLayout: true,
+          minimap: { enabled: false },
+          wordWrap: 'on',
+          fontSize: 14,
+          fontFamily: '"JetBrains Mono", "Cascadia Code", Consolas, monospace',
+          fontLigatures: true,
+          lineNumbersMinChars: 3,
+          scrollBeyondLastLine: false,
+          smoothScrolling: true,
+          padding: { top: 16, bottom: 16 },
+          bracketPairColorization: { enabled: true },
+          cursorBlinking: 'smooth',
+          cursorSmoothCaretAnimation: 'on',
+        }}
+      />
+    </div>
   )
 }
