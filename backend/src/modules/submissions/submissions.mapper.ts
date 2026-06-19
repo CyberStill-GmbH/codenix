@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   Prisma,
   Submission,
   SubmissionResult,
@@ -40,6 +40,7 @@ type SubmissionWithOptionalRuntimeFields = Submission & {
   stderr?: string | null;
   error?: string | null;
   stackTrace?: string | null;
+  compileOutput?: string | null;
 };
 
 type TestcaseResultWithTestcase = SubmissionTestcaseResult & {
@@ -51,7 +52,9 @@ const resultLabels: Record<SubmissionResult, string> = {
   wrong_answer: "Wrong Answer",
   runtime_error: "Runtime Error",
   time_limit_exceeded: "Time Limit Exceeded",
+  memory_limit_exceeded: "Memory Limit Exceeded",
   compilation_error: "Compilation Error",
+  internal_error: "Internal Error",
   pending: "Pending"
 };
 
@@ -82,6 +85,24 @@ export function toSubmissionDetail(
   testcaseResults: TestcaseResultWithTestcase[]
 ) {
   const runtimeSubmission = submission as SubmissionWithOptionalRuntimeFields;
+  const passedCases = testcaseResults.filter((result) => result.passed).length;
+  const failedResult = testcaseResults.find((result) => !result.passed);
+
+  const mapTestcase = (result: TestcaseResultWithTestcase, index: number) => {
+    return {
+      id: result.id,
+      index: index + 1,
+      testcaseId: result.testcaseId,
+      visibility: result.testcase.visibility,
+      input: result.testcase.visibility === "sample" ? result.testcase.input : null,
+      expectedOutput: result.testcase.visibility === "sample" ? result.testcase.expectedOutput : null,
+      actualOutput: result.actualOutput,
+      error: result.error,
+      passed: result.passed,
+      executionTimeMs: result.executionTimeMs,
+      memoryKb: result.memoryKb
+    };
+  };
 
   return {
     id: submission.id,
@@ -93,29 +114,32 @@ export function toSubmissionDetail(
 
     result: resultLabels[submission.result],
     resultCode: submission.result,
+    status: submission.result,
     language: submission.language,
     submittedAt: submission.submittedAt.toISOString(),
 
     sourceCode: runtimeSubmission.sourceCode ?? "",
     stdout: runtimeSubmission.stdout ?? null,
     stderr: runtimeSubmission.stderr ?? null,
-    error: runtimeSubmission.error ?? null,
+    error:
+      runtimeSubmission.error ?? runtimeSubmission.compileOutput
+        ? {
+            message:
+              runtimeSubmission.error ??
+              runtimeSubmission.compileOutput ??
+              "Judge execution failed."
+          }
+        : null,
     stackTrace: runtimeSubmission.stackTrace ?? null,
 
     executionTimeMs: submission.executionTimeMs,
     memoryKb: submission.memoryKb,
 
-    testcaseResults: testcaseResults.map((result) => ({
-      id: result.id,
-      testcaseId: result.testcaseId,
-      visibility: result.testcase.visibility,
-      input: result.testcase.input,
-      expectedOutput: result.testcase.expectedOutput,
-      actualOutput: result.actualOutput,
-      error: result.error,
-      passed: result.passed,
-      executionTimeMs: result.executionTimeMs,
-      memoryKb: result.memoryKb
-    }))
+    passedCases,
+    totalCases: testcaseResults.length,
+    failedCase: failedResult
+      ? mapTestcase(failedResult, testcaseResults.indexOf(failedResult))
+      : undefined,
+    testcaseResults: testcaseResults.map(mapTestcase)
   };
 }

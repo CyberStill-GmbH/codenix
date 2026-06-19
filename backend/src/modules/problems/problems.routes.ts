@@ -12,6 +12,10 @@ import { asyncHandler } from "../../shared/middleware/async-handler";
 import { optionalAuthMiddleware } from "../../shared/middleware/optional-auth.middleware";
 import { authMiddleware } from "../../shared/middleware/auth.middleware";
 import { validate } from "../../shared/middleware/validate.middleware";
+import {
+  runRateLimiter,
+  submissionRateLimiter
+} from "../judge/judge.rate-limit";
 
 export const problemsRoutes = Router();
 
@@ -36,6 +40,7 @@ problemsRoutes.get(
 problemsRoutes.post(
   "/:problemId/run",
   asyncHandler(authMiddleware),
+  runRateLimiter,
   validate({
     params: problemIdentifierParamsSchema,
     body: runCodeRequestSchema
@@ -46,6 +51,7 @@ problemsRoutes.post(
 problemsRoutes.post(
   "/:problemId/submissions",
   asyncHandler(authMiddleware),
+  submissionRateLimiter,
   validate({
     params: problemIdentifierParamsSchema,
     body: createSubmissionRequestSchema

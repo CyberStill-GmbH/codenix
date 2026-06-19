@@ -238,6 +238,9 @@ export const problemService = {
         status: "published"
       },
       include: {
+        codeTemplates: {
+          select: { language: true }
+        },
         testcases: {
           where: data.testcaseIds && data.testcaseIds.length > 0
             ? { id: { in: data.testcaseIds } }
@@ -250,11 +253,36 @@ export const problemService = {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
     }
 
+    if (!problem.codeTemplates.some((template) => template.language === data.language)) {
+      throw new AppError(
+        422,
+        "UNSUPPORTED_LANGUAGE",
+        "This language is not enabled for the selected problem."
+      );
+    }
+
+    const selectedTestcases = data.testcases?.length
+      ? data.testcases.map((testcase) => ({
+          input: testcase.input,
+          expectedOutput: testcase.expectedOutput
+        }))
+      : data.stdin !== undefined
+        ? [{ input: data.stdin, expectedOutput: null }]
+        : problem.testcases.map((testcase) => ({
+            id: testcase.id,
+            input: testcase.input,
+            expectedOutput: testcase.expectedOutput
+          }));
+
+    if (selectedTestcases.length === 0) {
+      throw new AppError(422, "NO_TESTCASES", "This problem has no sample testcases.");
+    }
+
     const run = await prisma.codeRun.create({
       data: {
         userId,
         problemId: problem.id,
-        language: data.language as any,
+        language: data.language,
         sourceCode: data.sourceCode,
         status: "pending" as const,
       }
@@ -263,18 +291,22 @@ export const problemService = {
     const judgeInput = {
       runId: run.id,
       problemId: problem.id,
-      language: data.language as any,
+      language: data.language,
       sourceCode: data.sourceCode,
-      testcases: problem.testcases.map(tc => ({
-        id: tc.id,
-        input: tc.input,
-        expectedOutput: tc.expectedOutput
-      })),
+      testcases: selectedTestcases,
       timeLimitMs: problem.timeLimitMs,
       memoryLimitMb: problem.memoryLimitMb
     };
 
-    await judgeProducer.addJob(judgeInput);
+    try {
+      await judgeProducer.addJob(judgeInput);
+    } catch {
+      await prisma.codeRun.update({
+        where: { id: run.id },
+        data: { status: "internal_error", error: "Judge queue unavailable." }
+      });
+      throw new AppError(503, "JUDGE_UNAVAILABLE", "The judge is temporarily unavailable.");
+    }
 
     return {
       id: run.id,
@@ -292,6 +324,9 @@ export const problemService = {
         status: "published"
       },
       include: {
+        codeTemplates: {
+          select: { language: true }
+        },
         testcases: true
       }
     });
@@ -300,13 +335,25 @@ export const problemService = {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
     }
 
+
+    if (!problem.codeTemplates.some((template) => template.language === data.language)) {
+      throw new AppError(
+        422,
+        "UNSUPPORTED_LANGUAGE",
+        "This language is not enabled for the selected problem."
+      );
+    }
+
+    if (problem.testcases.length === 0) {
+      throw new AppError(422, "NO_TESTCASES", "This problem has no testcases.");
+    }
+
     const submission = await prisma.submission.create({
       data: {
         userId,
         problemId: problem.id,
-        language: data.language as any,
+        language: data.language,
         sourceCode: data.sourceCode,
-        status: "pending" as const,
         result: "pending" as const,
       }
     });
@@ -314,7 +361,7 @@ export const problemService = {
     const judgeInput = {
       submissionId: submission.id,
       problemId: problem.id,
-      language: data.language as any,
+      language: data.language,
       sourceCode: data.sourceCode,
       testcases: problem.testcases.map(tc => ({
         id: tc.id,
@@ -325,10 +372,19 @@ export const problemService = {
       memoryLimitMb: problem.memoryLimitMb
     };
 
-    await judgeProducer.addJob(judgeInput);
+    try {
+      await judgeProducer.addJob(judgeInput);
+    } catch {
+      await prisma.submission.update({
+        where: { id: submission.id },
+        data: { result: "internal_error" }
+      });
+      throw new AppError(503, "JUDGE_UNAVAILABLE", "The judge is temporarily unavailable.");
+    }
 
     return {
       id: submission.id,
+      status: submission.result,
       result: submission.result,
       resultCode: submission.result,
       submittedAt: submission.submittedAt.toISOString()

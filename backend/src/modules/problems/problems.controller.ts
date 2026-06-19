@@ -48,26 +48,26 @@ export const problemController = {
   async runCode(req: Request, res: Response) {
     const { problemId } = res.locals.validatedParams as ProblemIdentifierParamsInput;
     const body = res.locals.validatedBody as RunCodeRequestInput;
-    const userId = req.user?.id || (req as any).userId;
+    const userId = req.user?.id;
 
     if (!userId) {
       return res.status(401).json({ code: "UNAUTHORIZED", message: "Unauthorized" });
     }
 
     const response = await problemService.runCode(problemId, body, userId);
-    return res.status(200).json(response);
+    return res.status(202).json(response);
   },
 
   async submitCode(req: Request, res: Response) {
     const { problemId } = res.locals.validatedParams as ProblemIdentifierParamsInput;
     const body = res.locals.validatedBody as CreateSubmissionRequestInput;
-    const userId = req.user?.id || (req as any).userId;
+    const userId = req.user?.id;
 
     if (!userId) {
       return res.status(401).json({ code: "UNAUTHORIZED", message: "Unauthorized" });
     }
 
     const response = await problemService.submitCode(problemId, body, userId);
-    return res.status(200).json(response);
+    return res.status(202).json(response);
   }
 };
