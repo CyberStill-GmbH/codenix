@@ -38,17 +38,21 @@ enum SubmissionResult {
   wrong_answer
   runtime_error
   time_limit_exceeded
+  memory_limit_exceeded
   compilation_error
+  internal_error
   pending
 }
 
 enum CodeRunStatus {
   pending
   running
+  completed
   accepted
   wrong_answer
   runtime_error
   time_limit_exceeded
+  memory_limit_exceeded
   compilation_error
   internal_error
 }
@@ -57,6 +61,8 @@ enum SupportedLanguage {
   python
   java
   cpp
+  c
+  rust
   typescript
   javascript
 }
@@ -202,9 +208,11 @@ model Submission {
   userId    String
   problemId String
 
-  language   SupportedLanguage
-  sourceCode String            @db.Text
-  result     SubmissionResult  @default(pending)
+  language      SupportedLanguage
+  sourceCode    String            @db.Text
+  status        CodeRunStatus     @default(pending)
+  result        SubmissionResult  @default(pending)
+  compileOutput String?           @db.Text
 
   executionTimeMs Int?
   memoryKb        Int?
@@ -295,6 +303,7 @@ model CodeRun {
   language        SupportedLanguage
   sourceCode      String            @db.Text
   status          CodeRunStatus     @default(pending)
+  compileOutput   String?           @db.Text
   stdout          String?           @db.Text
   stderr          String?           @db.Text
   error           String?           @db.Text
@@ -332,4 +341,16 @@ model CodeRunTestcaseResult {
   @@index([runId])
   @@index([testcaseId])
   @@map("code_run_testcase_results")
+}
+
+model UserProblem {
+  userId    String
+  problemId String
+  isSolved  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, problemId])
+  @@map("user_problems")
 }

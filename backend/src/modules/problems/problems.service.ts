@@ -14,6 +14,7 @@ import type {
   RunCodeRequestInput,
   CreateSubmissionRequestInput
 } from "./problems.schema";
+import { judgeProducer } from "../judge/queue/producer";
 
 function slugify(value: string) {
   return value
@@ -249,9 +250,19 @@ export const problemService = {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
     }
 
-    const { judgeService } = await import("../judge/judge.service");
+    const run = await prisma.codeRun.create({
+      data: {
+        userId,
+        problemId: problem.id,
+        language: data.language as any,
+        sourceCode: data.sourceCode,
+        status: "pending" as const,
+      }
+    });
 
     const judgeInput = {
+      runId: run.id,
+      problemId: problem.id,
       language: data.language as any,
       sourceCode: data.sourceCode,
       testcases: problem.testcases.map(tc => ({
@@ -263,34 +274,7 @@ export const problemService = {
       memoryLimitMb: problem.memoryLimitMb
     };
 
-    const runResult = await judgeService.run(judgeInput);
-
-    const run = await prisma.codeRun.create({
-      data: {
-        userId,
-        problemId: problem.id,
-        language: data.language as any,
-        sourceCode: data.sourceCode,
-        status: runResult.status as any,
-        stdout: runResult.stdout ?? null,
-        stderr: runResult.stderr ?? null,
-        error: runResult.error ?? null,
-        executionTimeMs: runResult.executionTimeMs ?? null,
-        memoryKb: runResult.memoryKb ?? null,
-        testcaseResults: {
-          create: runResult.testcaseResults.map(tr => ({
-            testcaseId: tr.testcaseId,
-            input: problem.testcases.find(t => t.id === tr.testcaseId)?.input || "",
-            expectedOutput: problem.testcases.find(t => t.id === tr.testcaseId)?.expectedOutput ?? null,
-            actualOutput: tr.actualOutput ?? null,
-            error: tr.error ?? null,
-            passed: tr.passed,
-            executionTimeMs: tr.executionTimeMs ?? null,
-            memoryKb: tr.memoryKb ?? null
-          }))
-        }
-      }
-    });
+    await judgeProducer.addJob(judgeInput);
 
     return {
       id: run.id,
@@ -316,9 +300,20 @@ export const problemService = {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
     }
 
-    const { judgeService } = await import("../judge/judge.service");
+    const submission = await prisma.submission.create({
+      data: {
+        userId,
+        problemId: problem.id,
+        language: data.language as any,
+        sourceCode: data.sourceCode,
+        status: "pending" as const,
+        result: "pending" as const,
+      }
+    });
 
     const judgeInput = {
+      submissionId: submission.id,
+      problemId: problem.id,
       language: data.language as any,
       sourceCode: data.sourceCode,
       testcases: problem.testcases.map(tc => ({
@@ -330,29 +325,7 @@ export const problemService = {
       memoryLimitMb: problem.memoryLimitMb
     };
 
-    const runResult = await judgeService.run(judgeInput);
-
-    const submission = await prisma.submission.create({
-      data: {
-        userId,
-        problemId: problem.id,
-        language: data.language as any,
-        sourceCode: data.sourceCode,
-        result: runResult.status as any,
-        executionTimeMs: runResult.executionTimeMs ?? null,
-        memoryKb: runResult.memoryKb ?? null,
-        testcaseResults: {
-          create: runResult.testcaseResults.map(tr => ({
-            testcaseId: tr.testcaseId,
-            actualOutput: tr.actualOutput ?? null,
-            error: tr.error ?? null,
-            passed: tr.passed,
-            executionTimeMs: tr.executionTimeMs ?? null,
-            memoryKb: tr.memoryKb ?? null
-          }))
-        }
-      }
-    });
+    await judgeProducer.addJob(judgeInput);
 
     return {
       id: submission.id,

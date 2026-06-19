@@ -23,5 +23,15 @@ services:
     ports:
       - "5433:5432"
 
+  redis:
+    image: redis:7-alpine
+    container_name: codenix-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - codenix_redis_data:/data
+
 volumes:
   codenix_pg_data:
+  codenix_redis_data:

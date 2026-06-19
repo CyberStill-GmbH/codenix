@@ -1,7 +1,8 @@
-﻿import { app } from "./app";
+import { app } from "./app";
 import { env } from "./config/env";
 import { prisma } from "./db/prisma";
 import { ensureImagesUploadDir } from "./modules/admin/uploads/admin-uploads.service";
+import { judgeWorker } from "./modules/judge/queue/worker";
 
 let server: ReturnType<typeof app.listen>;
 
@@ -17,11 +18,13 @@ async function shutdown(signal: string) {
   console.log(`${signal} received. Shutting down...`);
 
   if (!server) {
+    await judgeWorker.close();
     await prisma.$disconnect();
     process.exit(0);
   }
 
   server.close(async () => {
+    await judgeWorker.close();
     await prisma.$disconnect();
     process.exit(0);
   });

@@ -1,4 +1,4 @@
-﻿import "dotenv/config";
+import "dotenv/config";
 import { z } from "zod";
 
 const envSchema = z.object({
@@ -7,6 +7,8 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(4000),
 
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required."),
+  
+  REDIS_URL: z.string().url().default("redis://localhost:6379"),
 
   FRONTEND_URL: z.string().url().default("http://localhost:5173"),
 
