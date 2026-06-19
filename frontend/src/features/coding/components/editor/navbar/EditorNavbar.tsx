@@ -36,7 +36,7 @@ export function EditorNavbar({
   return (
     <header className="sticky top-0 z-50 bg-[var(--color-navbar-bg)] backdrop-blur-xl">
       <nav
-        className="grid h-12 grid-cols-[auto_1fr_auto] items-center gap-2 px-2 md:px-3"
+        className="grid h-10 grid-cols-[auto_1fr_auto] items-center gap-2 px-2 md:px-3"
         aria-label="Navegacion del editor de problemas"
       >
         <ProblemNavigator
