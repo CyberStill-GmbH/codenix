@@ -1,12 +1,17 @@
 ﻿import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../../db/prisma";
 import { AppError } from "../../shared/errors/app-error";
-import { 
-  toProblemDetail, 
+import { solvedProblemsService } from "../../shared/services/solved-problems.service";
+import {
+  toProblemDetail,
   toProblemListItem,
-  toProblemTopicItem 
+  toProblemSearchItem,
+  toProblemTopicItem
 } from "./problems.mapper";
-import type { ProblemsQueryInput } from "./problems.schema";
+import type {
+  ProblemsQueryInput,
+  ProblemsSearchQueryInput
+} from "./problems.schema";
 
 function slugify(value: string) {
   return value
@@ -15,7 +20,9 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function buildOrderBy(sort: ProblemsQueryInput["sort"]): Prisma.ProblemOrderByWithRelationInput {
+function buildOrderBy(
+  sort: ProblemsQueryInput["sort"]
+): Prisma.ProblemOrderByWithRelationInput {
   if (sort === "numeric-desc") {
     return { numericId: "desc" };
   }
@@ -70,8 +77,42 @@ function buildWhere(query: ProblemsQueryInput): Prisma.ProblemWhereInput {
   return where;
 }
 
+function buildSearchWhere(
+  query: ProblemsSearchQueryInput
+): Prisma.ProblemWhereInput {
+  return {
+    status: "published",
+    OR: [
+      {
+        title: {
+          contains: query.q,
+          mode: "insensitive"
+        }
+      },
+      {
+        slug: {
+          contains: query.q,
+          mode: "insensitive"
+        }
+      },
+      {
+        topics: {
+          some: {
+            topic: {
+              name: {
+                contains: query.q,
+                mode: "insensitive"
+              }
+            }
+          }
+        }
+      }
+    ]
+  };
+}
+
 export const problemService = {
-  async list(query: ProblemsQueryInput) {
+  async list(query: ProblemsQueryInput, userId?: string) {
     const page = query.page;
     const pageSize = query.pageSize;
     const skip = (page - 1) * pageSize;
@@ -99,14 +140,44 @@ export const problemService = {
       })
     ]);
 
+    const solvedProblemIds = userId
+      ? await solvedProblemsService.getSolvedProblemIds(
+          userId,
+          problems.map((problem) => problem.id)
+        )
+      : new Set<string>();
+
     return {
-      data: problems.map(toProblemListItem),
+      data: problems.map((problem) =>
+        toProblemListItem(problem, solvedProblemIds)
+      ),
       meta: {
         page,
         pageSize,
         total,
         totalPages: Math.ceil(total / pageSize)
       }
+    };
+  },
+
+  async search(query: ProblemsSearchQueryInput) {
+    const problems = await prisma.problem.findMany({
+      where: buildSearchWhere(query),
+      orderBy: {
+        numericId: "asc"
+      },
+      take: query.limit,
+      include: {
+        topics: {
+          include: {
+            topic: true
+          }
+        }
+      }
+    });
+
+    return {
+      data: problems.map(toProblemSearchItem)
     };
   },
 
@@ -127,7 +198,7 @@ export const problemService = {
     };
   },
 
-  async findBySlug(slug: string) {
+  async findBySlug(slug: string, userId?: string) {
     const problem = await prisma.problem.findUnique({
       where: {
         slug
@@ -147,6 +218,10 @@ export const problemService = {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
     }
 
-    return toProblemDetail(problem);
+    const solvedProblemIds = userId
+      ? await solvedProblemsService.getSolvedProblemIds(userId, [problem.id])
+      : new Set<string>();
+
+    return toProblemDetail(problem, solvedProblemIds);
   }
 };

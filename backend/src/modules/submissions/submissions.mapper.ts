@@ -1,4 +1,10 @@
-﻿import type { Prisma, SubmissionResult } from "../../generated/prisma/client";
+﻿import type {
+  Prisma,
+  Submission,
+  SubmissionResult,
+  SubmissionTestcaseResult,
+  Testcase
+} from "../../generated/prisma/client";
 
 type SubmissionListItemModel = Prisma.SubmissionGetPayload<{
   include: {
@@ -14,6 +20,32 @@ type SubmissionListItemModel = Prisma.SubmissionGetPayload<{
   };
 }>;
 
+type SubmissionDetailModel = Prisma.SubmissionGetPayload<{
+  include: {
+    problem: {
+      include: {
+        topics: {
+          include: {
+            topic: true;
+          };
+        };
+      };
+    };
+  };
+}>;
+
+type SubmissionWithOptionalRuntimeFields = Submission & {
+  sourceCode?: string | null;
+  stdout?: string | null;
+  stderr?: string | null;
+  error?: string | null;
+  stackTrace?: string | null;
+};
+
+type TestcaseResultWithTestcase = SubmissionTestcaseResult & {
+  testcase: Testcase;
+};
+
 const resultLabels: Record<SubmissionResult, string> = {
   accepted: "Accepted",
   wrong_answer: "Wrong Answer",
@@ -23,7 +55,7 @@ const resultLabels: Record<SubmissionResult, string> = {
   pending: "Pending"
 };
 
-function mapTopics(submission: SubmissionListItemModel) {
+function mapTopics(submission: SubmissionListItemModel | SubmissionDetailModel) {
   return submission.problem.topics.map((item) => item.topic.name);
 }
 
@@ -42,5 +74,48 @@ export function toSubmissionListItem(submission: SubmissionListItemModel) {
     submissionsCount: 1,
     acceptance: submission.problem.acceptance,
     topics: mapTopics(submission)
+  };
+}
+
+export function toSubmissionDetail(
+  submission: SubmissionDetailModel,
+  testcaseResults: TestcaseResultWithTestcase[]
+) {
+  const runtimeSubmission = submission as SubmissionWithOptionalRuntimeFields;
+
+  return {
+    id: submission.id,
+    problemId: submission.problemId,
+    problemTitle: submission.problem.title,
+    problemSlug: submission.problem.slug,
+    difficulty: submission.problem.difficulty,
+    topics: mapTopics(submission),
+
+    result: resultLabels[submission.result],
+    resultCode: submission.result,
+    language: submission.language,
+    submittedAt: submission.submittedAt.toISOString(),
+
+    sourceCode: runtimeSubmission.sourceCode ?? "",
+    stdout: runtimeSubmission.stdout ?? null,
+    stderr: runtimeSubmission.stderr ?? null,
+    error: runtimeSubmission.error ?? null,
+    stackTrace: runtimeSubmission.stackTrace ?? null,
+
+    executionTimeMs: submission.executionTimeMs,
+    memoryKb: submission.memoryKb,
+
+    testcaseResults: testcaseResults.map((result) => ({
+      id: result.id,
+      testcaseId: result.testcaseId,
+      visibility: result.testcase.visibility,
+      input: result.testcase.input,
+      expectedOutput: result.testcase.expectedOutput,
+      actualOutput: result.actualOutput,
+      error: result.error,
+      passed: result.passed,
+      executionTimeMs: result.executionTimeMs,
+      memoryKb: result.memoryKb
+    }))
   };
 }

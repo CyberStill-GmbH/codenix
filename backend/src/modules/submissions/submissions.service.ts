@@ -1,6 +1,10 @@
 ﻿import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../../db/prisma";
-import { toSubmissionListItem } from "./submissions.mapper";
+import { AppError } from "../../shared/errors/app-error";
+import {
+  toSubmissionDetail,
+  toSubmissionListItem
+} from "./submissions.mapper";
 import type { SubmissionsQueryInput } from "./submissions.schema";
 
 function slugify(value: string) {
@@ -107,5 +111,45 @@ export const submissionsService = {
         totalPages: Math.ceil(total / pageSize)
       }
     };
+  },
+
+  async findByIdForUser(userId: string, submissionId: string) {
+    const submission = await prisma.submission.findFirst({
+      where: {
+        id: submissionId,
+        userId
+      },
+      include: {
+        problem: {
+          include: {
+            topics: {
+              include: {
+                topic: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!submission) {
+      throw new AppError(404, "SUBMISSION_NOT_FOUND", "Submission not found.");
+    }
+
+    const testcaseResults = await prisma.submissionTestcaseResult.findMany({
+      where: {
+        submissionId: submission.id
+      },
+      orderBy: {
+        testcase: {
+          orderIndex: "asc"
+        }
+      },
+      include: {
+        testcase: true
+      }
+    });
+
+    return toSubmissionDetail(submission, testcaseResults);
   }
 };

@@ -26,7 +26,10 @@ function mapTopics(problem: ProblemListItemModel | ProblemDetailModel) {
   return problem.topics.map((item) => item.topic.name);
 }
 
-export function toProblemListItem(problem: ProblemListItemModel) {
+export function toProblemListItem(
+  problem: ProblemListItemModel,
+  solvedProblemIds = new Set<string>()
+) {
   return {
     id: problem.id,
     numericId: problem.numericId,
@@ -34,12 +37,26 @@ export function toProblemListItem(problem: ProblemListItemModel) {
     slug: problem.slug,
     difficulty: problem.difficulty,
     acceptance: problem.acceptance,
-    solved: false,
+    solved: solvedProblemIds.has(problem.id),
     topics: mapTopics(problem)
   };
 }
 
-export function toProblemDetail(problem: ProblemDetailModel) {
+export function toProblemSearchItem(problem: ProblemListItemModel) {
+  return {
+    id: problem.id,
+    numericId: problem.numericId,
+    title: problem.title,
+    slug: problem.slug,
+    difficulty: problem.difficulty,
+    topics: mapTopics(problem)
+  };
+}
+
+export function toProblemDetail(
+  problem: ProblemDetailModel,
+  solvedProblemIds = new Set<string>()
+) {
   return {
     id: problem.id,
     numericId: problem.numericId,
@@ -47,7 +64,7 @@ export function toProblemDetail(problem: ProblemDetailModel) {
     slug: problem.slug,
     difficulty: problem.difficulty,
     acceptance: problem.acceptance,
-    solved: false,
+    solved: solvedProblemIds.has(problem.id),
     topics: mapTopics(problem),
     statement: problem.statement,
     inputFormat: problem.inputFormat,

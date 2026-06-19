@@ -21,4 +21,11 @@ export const submissionsQuerySchema = z
   })
   .strict();
 
+export const submissionParamsSchema = z
+  .object({
+    submissionId: z.string().uuid()
+  })
+  .strict();
+
 export type SubmissionsQueryInput = z.infer<typeof submissionsQuerySchema>;
+export type SubmissionParamsInput = z.infer<typeof submissionParamsSchema>;

@@ -2,11 +2,12 @@
 import { problemService } from "./problems.service";
 import type {
   ProblemSlugParamsInput,
-  ProblemsQueryInput
+  ProblemsQueryInput,
+  ProblemsSearchQueryInput
 } from "./problems.schema";
 
-function getValidatedQuery(res: Response): ProblemsQueryInput {
-  return res.locals.validatedQuery as ProblemsQueryInput;
+function getValidatedQuery<T>(res: Response): T {
+  return res.locals.validatedQuery as T;
 }
 
 function getValidatedParams(res: Response): ProblemSlugParamsInput {
@@ -14,9 +15,16 @@ function getValidatedParams(res: Response): ProblemSlugParamsInput {
 }
 
 export const problemController = {
-  async list(_req: Request, res: Response) {
-    const query = getValidatedQuery(res);
-    const response = await problemService.list(query);
+  async list(req: Request, res: Response) {
+    const query = getValidatedQuery<ProblemsQueryInput>(res);
+    const response = await problemService.list(query, req.user?.id);
+
+    return res.status(200).json(response);
+  },
+
+  async search(_req: Request, res: Response) {
+    const query = getValidatedQuery<ProblemsSearchQueryInput>(res);
+    const response = await problemService.search(query);
 
     return res.status(200).json(response);
   },
@@ -27,9 +35,9 @@ export const problemController = {
     return res.status(200).json(response);
   },
 
-  async findBySlug(_req: Request, res: Response) {
+  async findBySlug(req: Request, res: Response) {
     const { slug } = getValidatedParams(res);
-    const problem = await problemService.findBySlug(slug);
+    const problem = await problemService.findBySlug(slug, req.user?.id);
 
     return res.status(200).json(problem);
   }

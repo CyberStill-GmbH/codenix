@@ -13,6 +13,13 @@ export const problemsQuerySchema = z
   })
   .strict();
 
+export const problemsSearchQuerySchema = z
+  .object({
+    q: z.string().trim().min(1).max(100),
+    limit: z.coerce.number().int().positive().max(20).default(8)
+  })
+  .strict();
+
 export const problemSlugParamsSchema = z
   .object({
     slug: z.string().trim().min(1).max(120)
@@ -20,4 +27,5 @@ export const problemSlugParamsSchema = z
   .strict();
 
 export type ProblemsQueryInput = z.infer<typeof problemsQuerySchema>;
+export type ProblemsSearchQueryInput = z.infer<typeof problemsSearchQuerySchema>;
 export type ProblemSlugParamsInput = z.infer<typeof problemSlugParamsSchema>;
