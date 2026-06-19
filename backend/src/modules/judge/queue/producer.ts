@@ -1,8 +1,6 @@
 import { Queue } from "bullmq";
 import { env } from "../../../config/env";
-import type { JudgeJobPayload } from "./types";
-
-export const JUDGE_QUEUE_NAME = "judge-queue";
+import { JUDGE_QUEUE_NAME, type JudgeJobPayload } from "./types";
 
 export const judgeQueue = new Queue<JudgeJobPayload>(JUDGE_QUEUE_NAME, {
   connection: {
@@ -18,6 +16,14 @@ export const judgeQueue = new Queue<JudgeJobPayload>(JUDGE_QUEUE_NAME, {
 export const judgeProducer = {
   async addJob(payload: JudgeJobPayload) {
     const jobId = payload.runId ?? payload.submissionId;
-    return await judgeQueue.add("judge-job" as never, payload, { jobId });
+    if (!jobId) {
+      throw new Error("Judge jobs require a runId or submissionId.");
+    }
+
+    return judgeQueue.add("judge-job", payload, { jobId });
+  },
+
+  async close() {
+    await judgeQueue.close();
   }
 };
