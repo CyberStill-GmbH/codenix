@@ -1,6 +1,19 @@
 @import "./theme.css";
 @import "tailwindcss";
 
+@keyframes codenix-splash-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @layer base {
 
   /* Reset */
@@ -344,6 +357,18 @@
   }
 
   /* Auth route transition */
+  @keyframes codenix-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @keyframes codenix-auth-route-enter {
     from {
       opacity: 0;
@@ -384,6 +409,15 @@
     gap: clamp(1.5rem, 2vw, 2rem);
   }
 
+  .topic-filters-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .topic-filters-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
   @media (max-width: 1023px) {
     .codenix-app-shell {
       max-width: 48rem;
@@ -405,6 +439,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .motion-safe\:animate-\[codenix-reveal_420ms_cubic-bezier\(0\.22\2c 1\2c 0\.36\2c 1\)_both\] {
+      animation: none;
+    }
+
     .codenix-auth-route-enter {
       animation: none;
     }

@@ -25,15 +25,44 @@ export type RegisterFormErrors = {
   terms?: string
 }
 
+export type ForgotPasswordFormValues = {
+  email: string
+}
+
+export type ForgotPasswordFormErrors = {
+  email?: string
+}
+
+export type ResetPasswordFormValues = {
+  password: string
+  confirmPassword: string
+}
+
+export type ResetPasswordFormErrors = {
+  password?: string
+  confirmPassword?: string
+}
+
 export type OAuthProvider = 'github' | 'google'
 
-// ─── Session (para cuando exista backend) ────────────────────────────────────
-// TODO(backend): Reemplazar con el shape real de la respuesta del servidor.
-// Ejemplo esperado: { token: string; user: { id: string; email: string } }
+export type UserRole = 'user' | 'admin'
+
+export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
+
+export type AuthUser = {
+  id: string
+  name: string
+  username: string
+  email: string
+  avatarUrl: string
+  degree: string
+  githubUrl: string
+  linkedinUrl: string
+  memberSince?: string
+  role: UserRole
+}
+
 export type AuthSession = {
-  user: {
-    id: string
-    name: string
-    email: string
-  }
+  accessToken: string
+  user: AuthUser
 }

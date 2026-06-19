@@ -7,6 +7,7 @@ type AuthSubmitButtonProps = {
   icon?: ReactNode
   isLoading?: boolean
   loadingText?: string
+  disabled?: boolean
 }
 
 export function AuthSubmitButton({
@@ -14,11 +15,12 @@ export function AuthSubmitButton({
   icon,
   isLoading = false,
   loadingText = 'Procesando...',
+  disabled = false,
 }: AuthSubmitButtonProps) {
   return (
     <button
       type="submit"
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       className={`${landingTokens.auth.primaryButton} ${landingTokens.focus}`}
     >
       <span className={landingTokens.auth.primaryButtonOverlay} />

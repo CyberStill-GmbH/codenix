@@ -36,7 +36,7 @@ export function PasswordInput({
             href={forgotHref}
             className={`${landingTokens.auth.textLink} ${landingTokens.focus}`}
           >
-            ¿Olvidaste tu contraseña?
+            Olvidaste tu contrasena?
           </a>
         )}
       </div>
@@ -71,7 +71,7 @@ export function PasswordInput({
         <button
           type="button"
           className={`${landingTokens.auth.iconButton} ${landingTokens.focus}`}
-          aria-label={isVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          aria-label={isVisible ? 'Ocultar contrasena' : 'Mostrar contrasena'}
           aria-pressed={isVisible}
           onClick={() => setIsVisible((value) => !value)}
         >
