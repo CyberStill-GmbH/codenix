@@ -4,7 +4,7 @@ export type ProblemStatus = 'draft' | 'published'
 
 export type TestcaseVisibility = 'sample' | 'hidden'
 
-export type ProblemLanguage = 'typescript' | 'javascript' | 'python' | 'java' | 'cpp'
+export type ProblemLanguage = 'typescript' | 'javascript' | 'python' | 'c' | 'rust'
 
 export type ProblemParameterType =
   | 'number'

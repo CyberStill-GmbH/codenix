@@ -30,15 +30,6 @@ type ResultPanelProps = {
 
 type ResultTab = 'test-result' | 'output'
 
-const placeholderRuntimeDistribution = [
-  { runtimeMs: 24, submissions: 8 },
-  { runtimeMs: 32, submissions: 18 },
-  { runtimeMs: 40, submissions: 27 },
-  { runtimeMs: 56, submissions: 19 },
-  { runtimeMs: 72, submissions: 11 },
-  { runtimeMs: 96, submissions: 5 },
-]
-
 function formatMemory(memoryKb?: number) {
   if (!memoryKb) return '-'
   return `${(memoryKb / 1024).toFixed(1)} MB`
@@ -172,10 +163,8 @@ export function ResultPanel({
     submitResult?.error?.message ??
     ''
 
-  const distribution =
-    submitResult?.runtimeDistribution?.length
-      ? submitResult.runtimeDistribution
-      : placeholderRuntimeDistribution
+  const distribution = submitResult?.runtimeDistribution ?? []
+  const hasRuntimeDistribution = distribution.length > 0
 
   const isBusy = isRunning || isSubmitting
 
@@ -231,16 +220,13 @@ export function ResultPanel({
         {submitResult && activeAction === 'submit' && (
           <div className="mb-4 space-y-4">
             <SubmitBanner submitResult={submitResult} />
-            {submitResult.status === 'accepted' && (
+            {submitResult.status === 'accepted' && hasRuntimeDistribution && (
               <div className="rounded-xl border border-slate-800 bg-slate-950/55 p-4">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <h3 className="text-sm font-bold text-[var(--color-text)]">
                       Runtime distribution
                     </h3>
-                    <p className="text-xs text-[var(--color-text-subtle)]">
-                      Placeholder hasta que backend devuelva distribucion real.
-                    </p>
                   </div>
                   {submitResult.runtimePercentile && (
                     <p className="text-xs font-bold text-[var(--color-success)]">

@@ -9,8 +9,8 @@ export const starterCodeTemplates: Record<ProblemLanguage, string> = {
   typescript: 'function solve(input: string): string {\n  return ""\n}\n',
   javascript: 'function solve(input) {\n  return ""\n}\n',
   python: 'def solve(data: str) -> str:\n    return ""\n',
-  java: 'class Solution {\n    public String solve(String input) {\n        return "";\n    }\n}\n',
-  cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nstring solve(const string& input) {\n    return "";\n}\n',
+  c: '#include <stdio.h>\n\nint main(void) {\n    return 0;\n}\n',
+  rust: 'fn main() {\n}\n',
 }
 
 export function createDefaultStarterCode() {

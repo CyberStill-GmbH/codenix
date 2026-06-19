@@ -17,8 +17,8 @@ export const availableLanguages: Array<{ value: ProblemLanguage; label: string }
   { value: 'typescript', label: 'TypeScript' },
   { value: 'javascript', label: 'JavaScript' },
   { value: 'python', label: 'Python' },
-  { value: 'java', label: 'Java' },
-  { value: 'cpp', label: 'C++' },
+  { value: 'c', label: 'C' },
+  { value: 'rust', label: 'Rust' },
 ]
 
 export const defaultStarterCode: Record<ProblemLanguage, string> = starterCodeTemplates
@@ -43,8 +43,8 @@ const problemLanguageSchema = z.enum([
   'typescript',
   'javascript',
   'python',
-  'java',
-  'cpp',
+  'c',
+  'rust',
 ])
 
 const jsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>

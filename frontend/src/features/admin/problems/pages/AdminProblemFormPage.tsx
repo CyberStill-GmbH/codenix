@@ -34,7 +34,7 @@ const emptyProblemFormValues: AdminProblemFormValues = {
   parameters: createDefaultProblemParameters(),
   outputType: 'number[]',
   testcases: createDefaultStructuredTestcases(),
-  supportedLanguages: ['typescript', 'javascript', 'python', 'java'],
+  supportedLanguages: ['typescript', 'javascript', 'python', 'c', 'rust'],
   starterCode: createDefaultStarterCode(),
   timeLimitMs: 2000,
   memoryLimitMb: 256,
@@ -119,7 +119,7 @@ export function AdminProblemFormPage() {
       supportedLanguages:
         problem.supportedLanguages?.length > 0
           ? [...problem.supportedLanguages]
-          : ['typescript', 'javascript', 'python', 'java'],
+          : ['typescript', 'javascript', 'python', 'c', 'rust'],
       starterCode: { ...createDefaultStarterCode(), ...problem.starterCode },
       timeLimitMs: problem.timeLimitMs ?? 2000,
       memoryLimitMb: problem.memoryLimitMb ?? 256,
