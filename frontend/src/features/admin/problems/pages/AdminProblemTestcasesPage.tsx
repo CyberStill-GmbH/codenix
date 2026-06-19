@@ -51,9 +51,13 @@ export function AdminProblemTestcasesPage() {
           setProblem(nextProblem)
           setTestcases(nextTestcases)
         }
-      } catch {
+      } catch (loadError) {
         if (isMounted) {
-          setError('We could not load this problem testcases.')
+          setError(
+            loadError instanceof Error
+              ? loadError.message
+              : 'We could not load this problem testcases.',
+          )
         }
       } finally {
         if (isMounted) {
@@ -143,8 +147,12 @@ export function AdminProblemTestcasesPage() {
       setFeedback(editingTestcase ? 'Testcase updated.' : 'Testcase created.')
       setEditingTestcase(null)
       setIsFormOpen(false)
-    } catch {
-      setError('We could not save the testcase. Try again.')
+    } catch (saveError) {
+      setError(
+        saveError instanceof Error
+          ? saveError.message
+          : 'We could not save the testcase. Try again.',
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -168,8 +176,12 @@ export function AdminProblemTestcasesPage() {
       const nextProblem = await adminProblemsService.getProblem(problemId)
       setProblem(nextProblem)
       setFeedback('Testcase deleted.')
-    } catch {
-      setError('We could not delete the testcase. Try again.')
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : 'We could not delete the testcase. Try again.',
+      )
     } finally {
       setDeletingTestcaseId(null)
     }

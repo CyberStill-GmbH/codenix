@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom'
 import { AdminNavbar } from '@/features/admin/problems/components/AdminNavbar'
 import { AdminProblemFilters } from '@/features/admin/problems/components/AdminProblemFilters'
 import { AdminProblemsTable } from '@/features/admin/problems/components/AdminProblemsTable'
-import { adminProblemTagsMock } from '@/features/admin/problems/data/adminProblems.mock'
 import { adminProblemsService } from '@/features/admin/problems/services/adminProblems.service'
 import type {
   AdminProblem,
@@ -82,6 +81,13 @@ export function AdminProblemsPage() {
 
   const publishedCount = problems.filter((problem) => problem.status === 'published').length
   const draftCount = problems.length - publishedCount
+  const availableTags = useMemo(
+    () =>
+      Array.from(new Set(problems.flatMap((problem) => problem.tags))).sort((a, b) =>
+        a.localeCompare(b),
+      ),
+    [problems],
+  )
 
   const updateFilters = <Key extends keyof AdminProblemFiltersState>(
     key: Key,
@@ -185,7 +191,7 @@ export function AdminProblemsPage() {
               difficulty={filters.difficulty}
               status={filters.status}
               tag={filters.tag}
-              tags={adminProblemTagsMock}
+              tags={availableTags}
               resultCount={filteredProblems.length}
               totalCount={problems.length}
               onSearchChange={(search) => updateFilters('search', search)}

@@ -9,6 +9,7 @@ import type {
   ProblemParameterType,
   StructuredProblemTestcase,
 } from '@/features/admin/problems/types/problem.types'
+import { starterCodeTemplates } from '@/features/admin/problems/utils/problemFormDefaults'
 
 export type ProblemFormErrors = Partial<Record<keyof AdminProblemFormValues, string>>
 
@@ -20,13 +21,7 @@ export const availableLanguages: Array<{ value: ProblemLanguage; label: string }
   { value: 'cpp', label: 'C++' },
 ]
 
-export const defaultStarterCode: Record<ProblemLanguage, string> = {
-  typescript: 'function solve(input: string): string {\n  return ""\n}\n',
-  javascript: 'function solve(input) {\n  return ""\n}\n',
-  python: 'def solve(data: str) -> str:\n    return ""\n',
-  java: 'class Solution {\n    public String solve(String input) {\n        return "";\n    }\n}\n',
-  cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nstring solve(const string& input) {\n    return "";\n}\n',
-}
+export const defaultStarterCode: Record<ProblemLanguage, string> = starterCodeTemplates
 
 export const markdownPlaceholder =
   '## Descripcion\n\nEscribe el enunciado del problema aqui...\n\n## Ejemplos\n\n...'

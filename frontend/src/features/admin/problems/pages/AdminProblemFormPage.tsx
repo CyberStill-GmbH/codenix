@@ -9,7 +9,7 @@ import {
   createDefaultProblemParameters,
   createDefaultStarterCode,
   createDefaultStructuredTestcases,
-} from '@/features/admin/problems/data/adminProblemDetails.mock'
+} from '@/features/admin/problems/utils/problemFormDefaults'
 import { adminProblemsService } from '@/features/admin/problems/services/adminProblems.service'
 import type {
   AdminProblemDetails,
