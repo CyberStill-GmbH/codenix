@@ -1,5 +1,7 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
 
+import { profileSurfaceClassName } from '@/features/user/components/profileStyles'
+
 type UserCardProps<T extends ElementType> = {
   as?: T
   className?: string
@@ -7,7 +9,7 @@ type UserCardProps<T extends ElementType> = {
 } & Omit<ComponentPropsWithoutRef<T>, 'as' | 'className' | 'children'>
 
 export const userCardClassName =
-  'codenix-user-card overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.28)]'
+  `codenix-user-card overflow-hidden rounded-2xl ${profileSurfaceClassName}`
 
 export function UserCard<T extends ElementType = 'section'>({
   as,

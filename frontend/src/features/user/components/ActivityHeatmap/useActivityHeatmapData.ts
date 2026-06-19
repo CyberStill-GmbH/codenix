@@ -12,7 +12,7 @@ function buildActiveDayIndexes() {
 }
 
 export function useActivityHeatmapData() {
-  // TODO: API - GET /api/users/me/activity?year={year}
+  // Development fallback for isolated visual rendering; ProfilePage passes API data.
   return useMemo<ActivityDay[]>(() => {
     const today = new Date()
     const activeIndexes = buildActiveDayIndexes()
@@ -33,6 +33,7 @@ export function useActivityHeatmapData() {
       return {
         date: date.toISOString().split('T')[0],
         count,
+        accepted: count,
       }
     })
   }, [])

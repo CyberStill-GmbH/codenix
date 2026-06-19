@@ -9,7 +9,7 @@ type UserAvatarProps = {
 const sizeClassNames: Record<NonNullable<UserAvatarProps['size']>, string> = {
   sm: 'h-8 w-8 text-xs',
   md: 'h-10 w-10 text-sm',
-  lg: 'h-14 w-14 text-base',
+  lg: 'h-16 w-16 text-2xl md:h-20 md:w-20 md:text-3xl',
 }
 
 function getInitials(name: string) {
@@ -27,11 +27,12 @@ export function UserAvatar({ src, name, size = 'md' }: UserAvatarProps) {
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-full)] font-display font-semibold ${sizeClassNames[size]}`}
+      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-full)] font-display font-bold shadow-[0_14px_36px_rgba(14,165,233,0.18)] ${sizeClassNames[size]}`}
       style={{
-        background: 'rgba(56,189,248,0.12)',
-        color: 'var(--color-difficulty-easy)',
-        border: '1px solid rgba(56,189,248,0.18)',
+        background:
+          'linear-gradient(135deg, rgba(11,127,195,0.92), rgba(56,189,248,0.78))',
+        color: 'white',
+        border: '1px solid rgba(125,211,252,0.34)',
       }}
       aria-label={name}
     >
@@ -39,6 +40,8 @@ export function UserAvatar({ src, name, size = 'md' }: UserAvatarProps) {
         <img
           src={src}
           alt=""
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover"
           onError={() => setHasImageError(true)}
         />

@@ -1,6 +1,7 @@
 import { LogOut, Send, Settings, TrendingUp, UserRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
+import { useAuth } from '@/features/auth/context/useAuth'
 import type { User } from '@/features/user/types/user.types'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
 import { UserMenuAction } from '@/features/user/components/UserMenuAction'
@@ -12,15 +13,14 @@ type UserMenuProps = {
 
 export function UserMenu({ user, onClose }: UserMenuProps) {
   const navigate = useNavigate()
+  const { logout } = useAuth()
 
-  const handleAction = (label: string) => {
-    console.log(`[UserMenu] ${label}`)
+  const handleAction = () => {
     onClose?.()
   }
 
-  const handleLogout = () => {
-    // TODO: API - POST /api/auth/logout
-    console.log('[UserMenu] logout')
+  const handleLogout = async () => {
+    await logout()
     onClose?.()
     navigate('/login')
   }
@@ -44,22 +44,22 @@ export function UserMenu({ user, onClose }: UserMenuProps) {
         <UserMenuAction
           icon={UserRound}
           label="Mi perfil"
-          onClick={() => handleAction('profile')}
+          onClick={handleAction}
         />
         <UserMenuAction
           icon={TrendingUp}
           label="Progreso"
-          onClick={() => handleAction('progress')}
+          onClick={handleAction}
         />
         <UserMenuAction
           icon={Send}
           label="Envíos"
-          onClick={() => handleAction('submissions')}
+          onClick={handleAction}
         />
         <UserMenuAction
           icon={Settings}
           label="Configuración"
-          onClick={() => handleAction('settings')}
+          onClick={handleAction}
         />
       </div>
 

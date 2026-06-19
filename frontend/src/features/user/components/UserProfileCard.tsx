@@ -1,8 +1,49 @@
-import { Pencil } from 'lucide-react'
+import { useState, type ReactNode } from 'react'
+import { ChevronDown, Pencil } from 'lucide-react'
 
 import type { Submission, User } from '@/features/user/types/user.types'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
 import { UserCard } from '@/features/user/components/UserCard'
+import {
+  profileDividerClassName,
+  profileInteractiveSurfaceClassName,
+  profileInsetSurfaceClassName,
+  profilePillClassName,
+} from '@/features/user/components/profileStyles'
+import { formatDate } from '@/shared/utils/date'
+
+type LangEntry = {
+  id: string
+  label: string
+  icon: string
+  solved: number
+}
+
+type SkillGroup = {
+  label: string
+  color: string
+  tags: Array<{ label: string; count: number }>
+}
+
+const supportedLanguages = [
+  { id: 'JavaScript', label: 'JavaScript', icon: '/javascript.svg' },
+  { id: 'Python', label: 'Python', icon: '/python.svg' },
+  { id: 'Java', label: 'Java', icon: '/java.svg' },
+  { id: 'C++', label: 'C++', icon: '/rust.svg' },
+]
+
+const skillLevels = [
+  { label: 'Avanzado', color: 'var(--color-success)' },
+  { label: 'Intermedio', color: 'var(--color-difficulty-medium)' },
+  { label: 'Fundamental', color: 'var(--color-accent)' },
+] as const
+
+type ProfileLink = {
+  label: string
+  href: string
+  emptyLabel: string
+  Icon: ({ className }: { className?: string }) => ReactNode
+}
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -20,39 +61,8 @@ function LinkedinIcon({ className }: { className?: string }) {
   )
 }
 
-type LangEntry = {
-  id: string
-  label: string
-  icon: string
-  solved: number
-}
-
-const SUPPORTED_LANGS = [
-  { id: 'JavaScript', label: 'JavaScript', icon: '/javascript.svg' },
-  { id: 'Python', label: 'Python', icon: '/python.svg' },
-  { id: 'Java', label: 'Java', icon: '/java.svg' },
-]
-
-const skillsGroups = [
-  {
-    label: 'Temas dominados',
-    color: '#818cf8',
-    tags: [{ label: 'Dynamic Programming', count: 3 }, { label: 'Graphs', count: 2 }],
-  },
-  {
-    label: 'En progreso',
-    color: 'var(--color-difficulty-medium)',
-    tags: [{ label: 'Binary Search', count: 4 }, { label: 'Sorting', count: 5 }, { label: 'Hash Table', count: 3 }],
-  },
-  {
-    label: 'Fundamentos',
-    color: 'var(--color-difficulty-easy)',
-    tags: [{ label: 'Arrays', count: 8 }, { label: 'Strings', count: 6 }, { label: 'Math', count: 4 }],
-  },
-]
-
 function buildLanguageStats(submissions: Submission[]): LangEntry[] {
-  const solved: Record<string, Set<number>> = {}
+  const solved: Record<string, Set<string | number>> = {}
 
   for (const submission of submissions) {
     if (submission.status === 'accepted') {
@@ -61,10 +71,66 @@ function buildLanguageStats(submissions: Submission[]): LangEntry[] {
     }
   }
 
-  return SUPPORTED_LANGS.map((language) => ({
-    ...language,
-    solved: solved[language.id]?.size ?? 0,
-  })).filter((language) => language.solved > 0)
+  return supportedLanguages
+    .map((language) => ({
+      ...language,
+      solved: solved[language.id]?.size ?? 0,
+    }))
+    .filter((language) => language.solved > 0)
+    .slice(0, 3)
+}
+
+function buildSkillGroups(submissions: Submission[]): SkillGroup[] {
+  const tagCounts = new Map<string, Set<string | number>>()
+
+  for (const submission of submissions) {
+    if (submission.status !== 'accepted') continue
+
+    for (const topic of submission.topics ?? []) {
+      if (!tagCounts.has(topic)) tagCounts.set(topic, new Set())
+      tagCounts.get(topic)?.add(submission.problemId)
+    }
+  }
+
+  const tags = Array.from(tagCounts.entries())
+    .map(([label, problemIds]) => ({ label, count: problemIds.size }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+
+  return skillLevels.map((level, index) => ({
+    ...level,
+    tags: tags.filter((tag) => {
+      if (level.label === 'Avanzado') return tag.count >= 3
+      if (level.label === 'Intermedio') return tag.count === 2
+      return tag.count <= 1
+    }).slice(0, index === 2 ? 6 : 3),
+  }))
+}
+
+function getHandle(url: string) {
+  if (!url) return ''
+
+  try {
+    const parsedUrl = new URL(url)
+    return parsedUrl.pathname.replace(/^\/|\/$/g, '')
+  } catch {
+    return url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+  }
+}
+
+function solvedLabel(count: number) {
+  return `${count} ${count === 1 ? 'resuelto' : 'resueltos'}`
+}
+
+function Divider() {
+  return <div className={profileDividerClassName} />
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mb-3 text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
+      {children}
+    </p>
+  )
 }
 
 function LanguageIcon({ src, label }: { src: string; label: string }) {
@@ -81,83 +147,87 @@ function LanguageIcon({ src, label }: { src: string; label: string }) {
   )
 }
 
-function solvedLabel(count: number) {
-  return `${count} ${count === 1 ? 'resuelto' : 'resueltos'}`
-}
-
-function Divider() {
-  return <div className="border-t border-slate-700/40" />
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mb-3 text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-      {children}
-    </p>
-  )
-}
-
 type UserProfileCardProps = {
   user: User
   submissions?: Submission[]
 }
 
 export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps) {
+  const [showAllSkills, setShowAllSkills] = useState(false)
   const langEntries = buildLanguageStats(submissions)
-  const solvedTotal = langEntries.reduce((total, language) => total + language.solved, 0)
-
-  const profileLinks = [
-    { label: user.githubUrl ? 'GitHub' : 'Añadir GitHub', href: user.githubUrl, Icon: GithubIcon },
-    { label: user.linkedinUrl ? 'LinkedIn' : 'Añadir LinkedIn', href: user.linkedinUrl, Icon: LinkedinIcon },
+  const skillGroups = buildSkillGroups(submissions)
+  const solvedTotal = new Set(
+    submissions
+      .filter((submission) => submission.status === 'accepted')
+      .map((submission) => submission.problemId),
+  ).size
+  const activeDays = new Set(submissions.map((submission) => submission.submittedAt.slice(0, 10))).size
+  const maxStreak = 3
+  const profileLinks: ProfileLink[] = [
+    { label: 'github.com', href: user.githubUrl, emptyLabel: 'Añadir GitHub', Icon: GithubIcon },
+    { label: 'linkedin.com', href: user.linkedinUrl, emptyLabel: 'Añadir LinkedIn', Icon: LinkedinIcon },
   ]
 
   return (
-    <UserCard as="article">
-      <div className="flex items-start justify-between gap-4 p-5">
-        <div className="flex min-w-0 items-center gap-4">
-          <UserAvatar src={user.avatarUrl} name={user.name} size="lg" />
-          <div className="min-w-0">
-            <h1 className="font-display text-xl font-bold leading-tight text-[var(--color-text)]">
-              {user.name}
-            </h1>
-            <p className="mt-1 text-sm leading-snug text-[var(--color-text-muted)]">
-              {user.degree}
-            </p>
-            <p className="mt-2 text-xs text-[var(--color-text-subtle)]">
-              @{user.username}
-              {user.memberSince ? ` · Miembro desde ${user.memberSince}` : ''}
-            </p>
+    <UserCard as="article" className="!border-none !bg-transparent !shadow-none">
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-4">
+            <UserAvatar src={user.avatarUrl} name={user.name} size="lg" />
+            <div className="min-w-0">
+              <h1 className="font-display text-2xl font-bold leading-tight text-[var(--color-text)]">
+                {user.name}
+              </h1>
+              <p className="mt-1 truncate text-sm font-medium text-[var(--color-text-muted)]">
+                @{user.username}
+              </p>
+              <p className="mt-1 text-sm leading-snug text-[var(--color-text-muted)]">
+                {user.degree}
+              </p>
+              {user.memberSince && (
+                <p className="mt-2 text-xs text-[var(--color-text-subtle)]">
+                  Miembro desde {formatDate(user.memberSince)}
+                </p>
+              )}
+            </div>
           </div>
+
+          <button
+            type="button"
+            disabled
+            aria-label="Editar perfil"
+            className="inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-[var(--radius-md)] border border-slate-600/70 bg-slate-900/60 px-3 text-xs font-semibold text-[var(--color-text-muted)] disabled:opacity-80"
+          >
+            <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+            Editar
+          </button>
         </div>
 
-        <button
-          type="button"
-          disabled
-          aria-label="Editar perfil"
-          className="inline-flex min-h-10 shrink-0 items-center justify-center gap-1.5 rounded-[var(--radius-pill)] border border-slate-600/70 bg-slate-900/60 px-3 text-xs font-medium text-[var(--color-text-muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] disabled:opacity-80"
-        >
-          <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
-          Editar
-        </button>
-      </div>
-
-      <div className="px-5 pb-5">
-        <div className="rounded-xl border border-slate-700/40 bg-slate-900/45 px-3 py-2 text-sm text-[var(--color-text-muted)]">
-          <span className="font-mono font-semibold text-[var(--color-text)]">{solvedTotal}</span> problemas resueltos
-          <span className="text-[var(--color-text-subtle)]"> · </span>
-          <span className="font-mono font-semibold text-[var(--color-text)]">67</span> dias activos
-          <span className="text-[var(--color-text-subtle)]"> · </span>
-          racha maxima <span className="font-mono font-semibold text-[var(--color-text)]">3</span> dias
+        <div className={`mt-4 grid grid-cols-3 gap-2 rounded-xl p-3 ${profileInsetSurfaceClassName}`}>
+          {[
+            { label: 'Resueltos', value: solvedTotal },
+            { label: 'Dias activos', value: activeDays },
+            { label: 'Racha max.', value: maxStreak },
+          ].map((metric) => (
+            <div key={metric.label} className="text-center">
+              <p className="font-mono text-xl font-bold text-[var(--color-text)]">
+                {metric.value}
+              </p>
+              <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
+                {metric.label}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
-      <Divider />
-      <div className="grid grid-cols-2 gap-2 p-5">
-        {profileLinks.map(({ label, href, Icon }) => {
+      <div className="grid max-w-[15rem] grid-cols-2 gap-2 px-4 pb-4">
+        {profileLinks.map(({ label, href, emptyLabel, Icon }) => {
+          const handle = getHandle(href)
           const content = (
             <>
               <Icon className="h-4 w-4 shrink-0 text-[var(--color-accent)]" />
-              {label}
+              <span className="min-w-0 truncate">{handle ? `${label}/${handle}` : emptyLabel}</span>
             </>
           )
 
@@ -167,7 +237,7 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center gap-3 rounded-lg border border-slate-700/50 bg-slate-950/30 px-3 text-sm font-medium text-[var(--color-text-muted)] transition hover:bg-slate-800/70 hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
+              className={`inline-flex min-h-9 items-center gap-2 rounded-lg px-2.5 text-xs font-medium text-[var(--color-text-muted)] ${profileInteractiveSurfaceClassName}`}
             >
               {content}
             </a>
@@ -176,7 +246,7 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
               key={label}
               type="button"
               disabled
-              className="inline-flex min-h-11 items-center gap-3 rounded-lg border border-slate-700/50 bg-slate-950/30 px-3 text-sm font-medium text-[var(--color-text-subtle)]"
+              className={`inline-flex min-h-9 items-center gap-2 rounded-lg px-2.5 text-xs font-medium text-[var(--color-text-subtle)] ${profileInsetSurfaceClassName}`}
             >
               {content}
             </button>
@@ -185,13 +255,18 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
       </div>
 
       <Divider />
-      <div className="px-5 pb-5 pt-5">
+      <div className="px-4 pb-4 pt-4">
         <SectionLabel>Languages</SectionLabel>
         <ul className="flex flex-col gap-3">
           {langEntries.map((language) => (
-            <li key={language.id} className="grid grid-cols-[1.25rem_minmax(0,1fr)_auto] items-center gap-3">
+            <li
+              key={language.id}
+              className={`grid grid-cols-[1.25rem_minmax(0,1fr)_auto] items-center gap-3 rounded-lg px-3 py-2 ${profileInsetSurfaceClassName}`}
+            >
               <LanguageIcon src={language.icon} label={language.label} />
-              <span className="text-sm font-semibold text-[var(--color-text-soft)]">{language.label}</span>
+              <span className="text-sm font-semibold text-[var(--color-text-soft)]">
+                {language.label}
+              </span>
               <span className="font-mono text-xs tabular-nums text-[var(--color-text-muted)]">
                 {solvedLabel(language.solved)}
               </span>
@@ -201,31 +276,52 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
       </div>
 
       <Divider />
-      <div className="px-5 pb-5 pt-5">
+      <div className="px-4 pb-4 pt-4">
         <SectionLabel>Skills</SectionLabel>
         <div className="flex flex-col gap-4">
-          {skillsGroups.map((group) => (
-            <div key={group.label}>
-              <div className="mb-2 flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: group.color }} />
-                <span className="text-xs font-semibold" style={{ color: group.color }}>
-                  {group.label}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {group.tags.map((tag) => (
+          {skillGroups.map((group) => {
+            const visibleTags = showAllSkills ? group.tags : group.tags.slice(0, 3)
+            if (visibleTags.length === 0) return null
+
+            return (
+              <div key={group.label}>
+                <div className="mb-2 flex items-center gap-2">
                   <span
-                    key={tag.label}
-                    className="inline-flex items-center gap-1 rounded-lg border border-slate-700/50 bg-slate-800/60 px-2.5 py-1.5 text-xs font-medium text-[var(--color-text-muted)]"
-                  >
-                    {tag.label}
-                    <span className="text-[var(--color-text-subtle)]">×{tag.count}</span>
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: group.color }}
+                  />
+                  <span className="text-xs font-semibold" style={{ color: group.color }}>
+                    {group.label}
                   </span>
-                ))}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {visibleTags.map((tag) => (
+                    <span
+                      key={tag.label}
+                      className={profilePillClassName}
+                    >
+                      {tag.label}
+                      <span className="text-[var(--color-text-subtle)]">x{tag.count}</span>
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
+        {skillGroups.some((group) => group.tags.length > 3) && (
+          <button
+            type="button"
+            onClick={() => setShowAllSkills((current) => !current)}
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-accent)]"
+          >
+            {showAllSkills ? 'Ver menos' : 'Ver mas'}
+            <ChevronDown
+              className={`h-3.5 w-3.5 transition ${showAllSkills ? 'rotate-180' : ''}`}
+              aria-hidden="true"
+            />
+          </button>
+        )}
       </div>
     </UserCard>
   )
