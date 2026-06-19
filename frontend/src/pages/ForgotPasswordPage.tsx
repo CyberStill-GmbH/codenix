@@ -11,9 +11,9 @@ import type {
   ForgotPasswordFormErrors,
   ForgotPasswordFormValues,
 } from '@/features/auth/types/auth.types'
-import { getApiErrorMessage } from '@/features/auth/utils/authApiErrors'
 import { validateForgotPasswordForm } from '@/features/auth/utils/authValidation'
 import { landingTokens } from '@/features/landing/theme/tokens'
+import { ApiError } from '@/shared/api/apiClient'
 
 const initialValues: ForgotPasswordFormValues = { email: '' }
 const SUCCESS_MESSAGE =
@@ -74,9 +74,13 @@ export function ForgotPasswordPage() {
       setSuccessMessage(SUCCESS_MESSAGE)
       setCooldown(RESEND_COOLDOWN_SECONDS)
     } catch (error) {
-      setServerError(
-        getApiErrorMessage(error, 'No pudimos enviar el enlace. Intentalo de nuevo.'),
-      )
+      // Never let client errors disclose whether an account exists for this email.
+      if (error instanceof ApiError && error.status < 500) {
+        setSuccessMessage(SUCCESS_MESSAGE)
+        setCooldown(RESEND_COOLDOWN_SECONDS)
+      } else {
+        setServerError('No pudimos enviar el enlace. Intentalo de nuevo.')
+      }
     } finally {
       setIsLoading(false)
     }
