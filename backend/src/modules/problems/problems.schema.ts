@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SUPPORTED_JUDGE_LANGUAGES } from "../judge/supported-languages";
 
 export const problemsQuerySchema = z
   .object({
@@ -36,13 +37,7 @@ export const problemIdentifierParamsSchema = z
   })
   .strict();
 
-const judgeLanguageSchema = z.enum([
-  "python",
-  "javascript",
-  "typescript",
-  "c",
-  "rust"
-]);
+const judgeLanguageSchema = z.enum(SUPPORTED_JUDGE_LANGUAGES);
 
 const customTestcaseSchema = z
   .object({
