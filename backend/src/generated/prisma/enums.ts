@@ -55,17 +55,36 @@ export const SubmissionResult = {
   wrong_answer: 'wrong_answer',
   runtime_error: 'runtime_error',
   time_limit_exceeded: 'time_limit_exceeded',
+  memory_limit_exceeded: 'memory_limit_exceeded',
   compilation_error: 'compilation_error',
+  internal_error: 'internal_error',
   pending: 'pending'
 } as const
 
 export type SubmissionResult = (typeof SubmissionResult)[keyof typeof SubmissionResult]
 
 
+export const CodeRunStatus = {
+  pending: 'pending',
+  running: 'running',
+  accepted: 'accepted',
+  wrong_answer: 'wrong_answer',
+  runtime_error: 'runtime_error',
+  time_limit_exceeded: 'time_limit_exceeded',
+  memory_limit_exceeded: 'memory_limit_exceeded',
+  compilation_error: 'compilation_error',
+  internal_error: 'internal_error'
+} as const
+
+export type CodeRunStatus = (typeof CodeRunStatus)[keyof typeof CodeRunStatus]
+
+
 export const SupportedLanguage = {
   python: 'python',
   java: 'java',
   cpp: 'cpp',
+  c: 'c',
+  rust: 'rust',
   typescript: 'typescript',
   javascript: 'javascript'
 } as const

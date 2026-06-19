@@ -254,6 +254,7 @@ export type TestcaseWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Testcase"> | Date | string
   problem?: Prisma.XOR<Prisma.ProblemScalarRelationFilter, Prisma.ProblemWhereInput>
   results?: Prisma.SubmissionTestcaseResultListRelationFilter
+  codeRunResults?: Prisma.CodeRunTestcaseResultListRelationFilter
 }
 
 export type TestcaseOrderByWithRelationInput = {
@@ -268,6 +269,7 @@ export type TestcaseOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   problem?: Prisma.ProblemOrderByWithRelationInput
   results?: Prisma.SubmissionTestcaseResultOrderByRelationAggregateInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultOrderByRelationAggregateInput
 }
 
 export type TestcaseWhereUniqueInput = Prisma.AtLeast<{
@@ -285,6 +287,7 @@ export type TestcaseWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Testcase"> | Date | string
   problem?: Prisma.XOR<Prisma.ProblemScalarRelationFilter, Prisma.ProblemWhereInput>
   results?: Prisma.SubmissionTestcaseResultListRelationFilter
+  codeRunResults?: Prisma.CodeRunTestcaseResultListRelationFilter
 }, "id">
 
 export type TestcaseOrderByWithAggregationInput = {
@@ -330,6 +333,7 @@ export type TestcaseCreateInput = {
   updatedAt?: Date | string
   problem: Prisma.ProblemCreateNestedOneWithoutTestcasesInput
   results?: Prisma.SubmissionTestcaseResultCreateNestedManyWithoutTestcaseInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultCreateNestedManyWithoutTestcaseInput
 }
 
 export type TestcaseUncheckedCreateInput = {
@@ -343,6 +347,7 @@ export type TestcaseUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   results?: Prisma.SubmissionTestcaseResultUncheckedCreateNestedManyWithoutTestcaseInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultUncheckedCreateNestedManyWithoutTestcaseInput
 }
 
 export type TestcaseUpdateInput = {
@@ -356,6 +361,7 @@ export type TestcaseUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   problem?: Prisma.ProblemUpdateOneRequiredWithoutTestcasesNestedInput
   results?: Prisma.SubmissionTestcaseResultUpdateManyWithoutTestcaseNestedInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultUpdateManyWithoutTestcaseNestedInput
 }
 
 export type TestcaseUncheckedUpdateInput = {
@@ -369,6 +375,7 @@ export type TestcaseUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   results?: Prisma.SubmissionTestcaseResultUncheckedUpdateManyWithoutTestcaseNestedInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultUncheckedUpdateManyWithoutTestcaseNestedInput
 }
 
 export type TestcaseCreateManyInput = {
@@ -467,6 +474,11 @@ export type TestcaseScalarRelationFilter = {
   isNot?: Prisma.TestcaseWhereInput
 }
 
+export type TestcaseNullableScalarRelationFilter = {
+  is?: Prisma.TestcaseWhereInput | null
+  isNot?: Prisma.TestcaseWhereInput | null
+}
+
 export type TestcaseCreateNestedManyWithoutProblemInput = {
   create?: Prisma.XOR<Prisma.TestcaseCreateWithoutProblemInput, Prisma.TestcaseUncheckedCreateWithoutProblemInput> | Prisma.TestcaseCreateWithoutProblemInput[] | Prisma.TestcaseUncheckedCreateWithoutProblemInput[]
   connectOrCreate?: Prisma.TestcaseCreateOrConnectWithoutProblemInput | Prisma.TestcaseCreateOrConnectWithoutProblemInput[]
@@ -527,6 +539,22 @@ export type TestcaseUpdateOneRequiredWithoutResultsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TestcaseUpdateToOneWithWhereWithoutResultsInput, Prisma.TestcaseUpdateWithoutResultsInput>, Prisma.TestcaseUncheckedUpdateWithoutResultsInput>
 }
 
+export type TestcaseCreateNestedOneWithoutCodeRunResultsInput = {
+  create?: Prisma.XOR<Prisma.TestcaseCreateWithoutCodeRunResultsInput, Prisma.TestcaseUncheckedCreateWithoutCodeRunResultsInput>
+  connectOrCreate?: Prisma.TestcaseCreateOrConnectWithoutCodeRunResultsInput
+  connect?: Prisma.TestcaseWhereUniqueInput
+}
+
+export type TestcaseUpdateOneWithoutCodeRunResultsNestedInput = {
+  create?: Prisma.XOR<Prisma.TestcaseCreateWithoutCodeRunResultsInput, Prisma.TestcaseUncheckedCreateWithoutCodeRunResultsInput>
+  connectOrCreate?: Prisma.TestcaseCreateOrConnectWithoutCodeRunResultsInput
+  upsert?: Prisma.TestcaseUpsertWithoutCodeRunResultsInput
+  disconnect?: Prisma.TestcaseWhereInput | boolean
+  delete?: Prisma.TestcaseWhereInput | boolean
+  connect?: Prisma.TestcaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TestcaseUpdateToOneWithWhereWithoutCodeRunResultsInput, Prisma.TestcaseUpdateWithoutCodeRunResultsInput>, Prisma.TestcaseUncheckedUpdateWithoutCodeRunResultsInput>
+}
+
 export type TestcaseCreateWithoutProblemInput = {
   id?: string
   input: string
@@ -537,6 +565,7 @@ export type TestcaseCreateWithoutProblemInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   results?: Prisma.SubmissionTestcaseResultCreateNestedManyWithoutTestcaseInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultCreateNestedManyWithoutTestcaseInput
 }
 
 export type TestcaseUncheckedCreateWithoutProblemInput = {
@@ -549,6 +578,7 @@ export type TestcaseUncheckedCreateWithoutProblemInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   results?: Prisma.SubmissionTestcaseResultUncheckedCreateNestedManyWithoutTestcaseInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultUncheckedCreateNestedManyWithoutTestcaseInput
 }
 
 export type TestcaseCreateOrConnectWithoutProblemInput = {
@@ -602,6 +632,7 @@ export type TestcaseCreateWithoutResultsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   problem: Prisma.ProblemCreateNestedOneWithoutTestcasesInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultCreateNestedManyWithoutTestcaseInput
 }
 
 export type TestcaseUncheckedCreateWithoutResultsInput = {
@@ -614,6 +645,7 @@ export type TestcaseUncheckedCreateWithoutResultsInput = {
   orderIndex?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  codeRunResults?: Prisma.CodeRunTestcaseResultUncheckedCreateNestedManyWithoutTestcaseInput
 }
 
 export type TestcaseCreateOrConnectWithoutResultsInput = {
@@ -642,6 +674,7 @@ export type TestcaseUpdateWithoutResultsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   problem?: Prisma.ProblemUpdateOneRequiredWithoutTestcasesNestedInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultUpdateManyWithoutTestcaseNestedInput
 }
 
 export type TestcaseUncheckedUpdateWithoutResultsInput = {
@@ -654,6 +687,75 @@ export type TestcaseUncheckedUpdateWithoutResultsInput = {
   orderIndex?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  codeRunResults?: Prisma.CodeRunTestcaseResultUncheckedUpdateManyWithoutTestcaseNestedInput
+}
+
+export type TestcaseCreateWithoutCodeRunResultsInput = {
+  id?: string
+  input: string
+  expectedOutput: string
+  visibility: $Enums.TestcaseVisibility
+  weight?: number
+  orderIndex?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  problem: Prisma.ProblemCreateNestedOneWithoutTestcasesInput
+  results?: Prisma.SubmissionTestcaseResultCreateNestedManyWithoutTestcaseInput
+}
+
+export type TestcaseUncheckedCreateWithoutCodeRunResultsInput = {
+  id?: string
+  problemId: string
+  input: string
+  expectedOutput: string
+  visibility: $Enums.TestcaseVisibility
+  weight?: number
+  orderIndex?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  results?: Prisma.SubmissionTestcaseResultUncheckedCreateNestedManyWithoutTestcaseInput
+}
+
+export type TestcaseCreateOrConnectWithoutCodeRunResultsInput = {
+  where: Prisma.TestcaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.TestcaseCreateWithoutCodeRunResultsInput, Prisma.TestcaseUncheckedCreateWithoutCodeRunResultsInput>
+}
+
+export type TestcaseUpsertWithoutCodeRunResultsInput = {
+  update: Prisma.XOR<Prisma.TestcaseUpdateWithoutCodeRunResultsInput, Prisma.TestcaseUncheckedUpdateWithoutCodeRunResultsInput>
+  create: Prisma.XOR<Prisma.TestcaseCreateWithoutCodeRunResultsInput, Prisma.TestcaseUncheckedCreateWithoutCodeRunResultsInput>
+  where?: Prisma.TestcaseWhereInput
+}
+
+export type TestcaseUpdateToOneWithWhereWithoutCodeRunResultsInput = {
+  where?: Prisma.TestcaseWhereInput
+  data: Prisma.XOR<Prisma.TestcaseUpdateWithoutCodeRunResultsInput, Prisma.TestcaseUncheckedUpdateWithoutCodeRunResultsInput>
+}
+
+export type TestcaseUpdateWithoutCodeRunResultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  input?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedOutput?: Prisma.StringFieldUpdateOperationsInput | string
+  visibility?: Prisma.EnumTestcaseVisibilityFieldUpdateOperationsInput | $Enums.TestcaseVisibility
+  weight?: Prisma.FloatFieldUpdateOperationsInput | number
+  orderIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  problem?: Prisma.ProblemUpdateOneRequiredWithoutTestcasesNestedInput
+  results?: Prisma.SubmissionTestcaseResultUpdateManyWithoutTestcaseNestedInput
+}
+
+export type TestcaseUncheckedUpdateWithoutCodeRunResultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  problemId?: Prisma.StringFieldUpdateOperationsInput | string
+  input?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedOutput?: Prisma.StringFieldUpdateOperationsInput | string
+  visibility?: Prisma.EnumTestcaseVisibilityFieldUpdateOperationsInput | $Enums.TestcaseVisibility
+  weight?: Prisma.FloatFieldUpdateOperationsInput | number
+  orderIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  results?: Prisma.SubmissionTestcaseResultUncheckedUpdateManyWithoutTestcaseNestedInput
 }
 
 export type TestcaseCreateManyProblemInput = {
@@ -677,6 +779,7 @@ export type TestcaseUpdateWithoutProblemInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   results?: Prisma.SubmissionTestcaseResultUpdateManyWithoutTestcaseNestedInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultUpdateManyWithoutTestcaseNestedInput
 }
 
 export type TestcaseUncheckedUpdateWithoutProblemInput = {
@@ -689,6 +792,7 @@ export type TestcaseUncheckedUpdateWithoutProblemInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   results?: Prisma.SubmissionTestcaseResultUncheckedUpdateManyWithoutTestcaseNestedInput
+  codeRunResults?: Prisma.CodeRunTestcaseResultUncheckedUpdateManyWithoutTestcaseNestedInput
 }
 
 export type TestcaseUncheckedUpdateManyWithoutProblemInput = {
@@ -709,10 +813,12 @@ export type TestcaseUncheckedUpdateManyWithoutProblemInput = {
 
 export type TestcaseCountOutputType = {
   results: number
+  codeRunResults: number
 }
 
 export type TestcaseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   results?: boolean | TestcaseCountOutputTypeCountResultsArgs
+  codeRunResults?: boolean | TestcaseCountOutputTypeCountCodeRunResultsArgs
 }
 
 /**
@@ -732,6 +838,13 @@ export type TestcaseCountOutputTypeCountResultsArgs<ExtArgs extends runtime.Type
   where?: Prisma.SubmissionTestcaseResultWhereInput
 }
 
+/**
+ * TestcaseCountOutputType without action
+ */
+export type TestcaseCountOutputTypeCountCodeRunResultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CodeRunTestcaseResultWhereInput
+}
+
 
 export type TestcaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -745,6 +858,7 @@ export type TestcaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   updatedAt?: boolean
   problem?: boolean | Prisma.ProblemDefaultArgs<ExtArgs>
   results?: boolean | Prisma.Testcase$resultsArgs<ExtArgs>
+  codeRunResults?: boolean | Prisma.Testcase$codeRunResultsArgs<ExtArgs>
   _count?: boolean | Prisma.TestcaseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["testcase"]>
 
@@ -790,6 +904,7 @@ export type TestcaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type TestcaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   problem?: boolean | Prisma.ProblemDefaultArgs<ExtArgs>
   results?: boolean | Prisma.Testcase$resultsArgs<ExtArgs>
+  codeRunResults?: boolean | Prisma.Testcase$codeRunResultsArgs<ExtArgs>
   _count?: boolean | Prisma.TestcaseCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TestcaseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -804,6 +919,7 @@ export type $TestcasePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     problem: Prisma.$ProblemPayload<ExtArgs>
     results: Prisma.$SubmissionTestcaseResultPayload<ExtArgs>[]
+    codeRunResults: Prisma.$CodeRunTestcaseResultPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1211,6 +1327,7 @@ export interface Prisma__TestcaseClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   problem<T extends Prisma.ProblemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProblemDefaultArgs<ExtArgs>>): Prisma.Prisma__ProblemClient<runtime.Types.Result.GetResult<Prisma.$ProblemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   results<T extends Prisma.Testcase$resultsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Testcase$resultsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionTestcaseResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  codeRunResults<T extends Prisma.Testcase$codeRunResultsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Testcase$codeRunResultsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodeRunTestcaseResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1671,6 +1788,30 @@ export type Testcase$resultsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.SubmissionTestcaseResultScalarFieldEnum | Prisma.SubmissionTestcaseResultScalarFieldEnum[]
+}
+
+/**
+ * Testcase.codeRunResults
+ */
+export type Testcase$codeRunResultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CodeRunTestcaseResult
+   */
+  select?: Prisma.CodeRunTestcaseResultSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CodeRunTestcaseResult
+   */
+  omit?: Prisma.CodeRunTestcaseResultOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CodeRunTestcaseResultInclude<ExtArgs> | null
+  where?: Prisma.CodeRunTestcaseResultWhereInput
+  orderBy?: Prisma.CodeRunTestcaseResultOrderByWithRelationInput | Prisma.CodeRunTestcaseResultOrderByWithRelationInput[]
+  cursor?: Prisma.CodeRunTestcaseResultWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CodeRunTestcaseResultScalarFieldEnum | Prisma.CodeRunTestcaseResultScalarFieldEnum[]
 }
 
 /**

@@ -61,7 +61,9 @@ export const ModelName = {
   Submission: 'Submission',
   SubmissionTestcaseResult: 'SubmissionTestcaseResult',
   OAuthAccount: 'OAuthAccount',
-  PasswordResetToken: 'PasswordResetToken'
+  PasswordResetToken: 'PasswordResetToken',
+  CodeRun: 'CodeRun',
+  CodeRunTestcaseResult: 'CodeRunTestcaseResult'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -184,6 +186,7 @@ export const SubmissionScalarFieldEnum = {
   language: 'language',
   sourceCode: 'sourceCode',
   result: 'result',
+  compileOutput: 'compileOutput',
   executionTimeMs: 'executionTimeMs',
   memoryKb: 'memoryKb',
   submittedAt: 'submittedAt',
@@ -236,6 +239,43 @@ export const PasswordResetTokenScalarFieldEnum = {
 } as const
 
 export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const CodeRunScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  problemId: 'problemId',
+  language: 'language',
+  sourceCode: 'sourceCode',
+  status: 'status',
+  compileOutput: 'compileOutput',
+  stdout: 'stdout',
+  stderr: 'stderr',
+  error: 'error',
+  executionTimeMs: 'executionTimeMs',
+  memoryKb: 'memoryKb',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodeRunScalarFieldEnum = (typeof CodeRunScalarFieldEnum)[keyof typeof CodeRunScalarFieldEnum]
+
+
+export const CodeRunTestcaseResultScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  testcaseId: 'testcaseId',
+  input: 'input',
+  expectedOutput: 'expectedOutput',
+  actualOutput: 'actualOutput',
+  error: 'error',
+  passed: 'passed',
+  executionTimeMs: 'executionTimeMs',
+  memoryKb: 'memoryKb',
+  createdAt: 'createdAt'
+} as const
+
+export type CodeRunTestcaseResultScalarFieldEnum = (typeof CodeRunTestcaseResultScalarFieldEnum)[keyof typeof CodeRunTestcaseResultScalarFieldEnum]
 
 
 export const SortOrder = {

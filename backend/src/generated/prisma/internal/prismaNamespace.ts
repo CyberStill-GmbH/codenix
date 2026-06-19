@@ -394,7 +394,9 @@ export const ModelName = {
   Submission: 'Submission',
   SubmissionTestcaseResult: 'SubmissionTestcaseResult',
   OAuthAccount: 'OAuthAccount',
-  PasswordResetToken: 'PasswordResetToken'
+  PasswordResetToken: 'PasswordResetToken',
+  CodeRun: 'CodeRun',
+  CodeRunTestcaseResult: 'CodeRunTestcaseResult'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -410,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "problem" | "problemExample" | "problemCodeTemplate" | "topic" | "problemTopic" | "testcase" | "submission" | "submissionTestcaseResult" | "oAuthAccount" | "passwordResetToken"
+    modelProps: "user" | "problem" | "problemExample" | "problemCodeTemplate" | "topic" | "problemTopic" | "testcase" | "submission" | "submissionTestcaseResult" | "oAuthAccount" | "passwordResetToken" | "codeRun" | "codeRunTestcaseResult"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1228,6 +1230,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CodeRun: {
+      payload: Prisma.$CodeRunPayload<ExtArgs>
+      fields: Prisma.CodeRunFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CodeRunFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CodeRunFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>
+        }
+        findFirst: {
+          args: Prisma.CodeRunFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CodeRunFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>
+        }
+        findMany: {
+          args: Prisma.CodeRunFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>[]
+        }
+        create: {
+          args: Prisma.CodeRunCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>
+        }
+        createMany: {
+          args: Prisma.CodeRunCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CodeRunCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>[]
+        }
+        delete: {
+          args: Prisma.CodeRunDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>
+        }
+        update: {
+          args: Prisma.CodeRunUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>
+        }
+        deleteMany: {
+          args: Prisma.CodeRunDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CodeRunUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CodeRunUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>[]
+        }
+        upsert: {
+          args: Prisma.CodeRunUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunPayload>
+        }
+        aggregate: {
+          args: Prisma.CodeRunAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCodeRun>
+        }
+        groupBy: {
+          args: Prisma.CodeRunGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodeRunGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CodeRunCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodeRunCountAggregateOutputType> | number
+        }
+      }
+    }
+    CodeRunTestcaseResult: {
+      payload: Prisma.$CodeRunTestcaseResultPayload<ExtArgs>
+      fields: Prisma.CodeRunTestcaseResultFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CodeRunTestcaseResultFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CodeRunTestcaseResultFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>
+        }
+        findFirst: {
+          args: Prisma.CodeRunTestcaseResultFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CodeRunTestcaseResultFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>
+        }
+        findMany: {
+          args: Prisma.CodeRunTestcaseResultFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>[]
+        }
+        create: {
+          args: Prisma.CodeRunTestcaseResultCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>
+        }
+        createMany: {
+          args: Prisma.CodeRunTestcaseResultCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CodeRunTestcaseResultCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>[]
+        }
+        delete: {
+          args: Prisma.CodeRunTestcaseResultDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>
+        }
+        update: {
+          args: Prisma.CodeRunTestcaseResultUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>
+        }
+        deleteMany: {
+          args: Prisma.CodeRunTestcaseResultDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CodeRunTestcaseResultUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CodeRunTestcaseResultUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>[]
+        }
+        upsert: {
+          args: Prisma.CodeRunTestcaseResultUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodeRunTestcaseResultPayload>
+        }
+        aggregate: {
+          args: Prisma.CodeRunTestcaseResultAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCodeRunTestcaseResult>
+        }
+        groupBy: {
+          args: Prisma.CodeRunTestcaseResultGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodeRunTestcaseResultGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CodeRunTestcaseResultCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodeRunTestcaseResultCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1371,6 +1521,7 @@ export const SubmissionScalarFieldEnum = {
   language: 'language',
   sourceCode: 'sourceCode',
   result: 'result',
+  compileOutput: 'compileOutput',
   executionTimeMs: 'executionTimeMs',
   memoryKb: 'memoryKb',
   submittedAt: 'submittedAt',
@@ -1423,6 +1574,43 @@ export const PasswordResetTokenScalarFieldEnum = {
 } as const
 
 export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const CodeRunScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  problemId: 'problemId',
+  language: 'language',
+  sourceCode: 'sourceCode',
+  status: 'status',
+  compileOutput: 'compileOutput',
+  stdout: 'stdout',
+  stderr: 'stderr',
+  error: 'error',
+  executionTimeMs: 'executionTimeMs',
+  memoryKb: 'memoryKb',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodeRunScalarFieldEnum = (typeof CodeRunScalarFieldEnum)[keyof typeof CodeRunScalarFieldEnum]
+
+
+export const CodeRunTestcaseResultScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  testcaseId: 'testcaseId',
+  input: 'input',
+  expectedOutput: 'expectedOutput',
+  actualOutput: 'actualOutput',
+  error: 'error',
+  passed: 'passed',
+  executionTimeMs: 'executionTimeMs',
+  memoryKb: 'memoryKb',
+  createdAt: 'createdAt'
+} as const
+
+export type CodeRunTestcaseResultScalarFieldEnum = (typeof CodeRunTestcaseResultScalarFieldEnum)[keyof typeof CodeRunTestcaseResultScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1645,6 +1833,20 @@ export type EnumOAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 export type ListEnumOAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthProvider[]'>
     
 
+
+/**
+ * Reference to a field of type 'CodeRunStatus'
+ */
+export type EnumCodeRunStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CodeRunStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CodeRunStatus[]'
+ */
+export type ListEnumCodeRunStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CodeRunStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1766,6 +1968,8 @@ export type GlobalOmitConfig = {
   submissionTestcaseResult?: Prisma.SubmissionTestcaseResultOmit
   oAuthAccount?: Prisma.OAuthAccountOmit
   passwordResetToken?: Prisma.PasswordResetTokenOmit
+  codeRun?: Prisma.CodeRunOmit
+  codeRunTestcaseResult?: Prisma.CodeRunTestcaseResultOmit
 }
 
 /* Types for Logging */

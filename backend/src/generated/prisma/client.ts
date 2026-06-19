@@ -96,3 +96,13 @@ export type OAuthAccount = Prisma.OAuthAccountModel
  * 
  */
 export type PasswordResetToken = Prisma.PasswordResetTokenModel
+/**
+ * Model CodeRun
+ * 
+ */
+export type CodeRun = Prisma.CodeRunModel
+/**
+ * Model CodeRunTestcaseResult
+ * 
+ */
+export type CodeRunTestcaseResult = Prisma.CodeRunTestcaseResultModel

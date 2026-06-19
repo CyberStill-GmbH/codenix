@@ -43,6 +43,7 @@ export type SubmissionMinAggregateOutputType = {
   language: $Enums.SupportedLanguage | null
   sourceCode: string | null
   result: $Enums.SubmissionResult | null
+  compileOutput: string | null
   executionTimeMs: number | null
   memoryKb: number | null
   submittedAt: Date | null
@@ -56,6 +57,7 @@ export type SubmissionMaxAggregateOutputType = {
   language: $Enums.SupportedLanguage | null
   sourceCode: string | null
   result: $Enums.SubmissionResult | null
+  compileOutput: string | null
   executionTimeMs: number | null
   memoryKb: number | null
   submittedAt: Date | null
@@ -69,6 +71,7 @@ export type SubmissionCountAggregateOutputType = {
   language: number
   sourceCode: number
   result: number
+  compileOutput: number
   executionTimeMs: number
   memoryKb: number
   submittedAt: number
@@ -94,6 +97,7 @@ export type SubmissionMinAggregateInputType = {
   language?: true
   sourceCode?: true
   result?: true
+  compileOutput?: true
   executionTimeMs?: true
   memoryKb?: true
   submittedAt?: true
@@ -107,6 +111,7 @@ export type SubmissionMaxAggregateInputType = {
   language?: true
   sourceCode?: true
   result?: true
+  compileOutput?: true
   executionTimeMs?: true
   memoryKb?: true
   submittedAt?: true
@@ -120,6 +125,7 @@ export type SubmissionCountAggregateInputType = {
   language?: true
   sourceCode?: true
   result?: true
+  compileOutput?: true
   executionTimeMs?: true
   memoryKb?: true
   submittedAt?: true
@@ -220,6 +226,7 @@ export type SubmissionGroupByOutputType = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result: $Enums.SubmissionResult
+  compileOutput: string | null
   executionTimeMs: number | null
   memoryKb: number | null
   submittedAt: Date
@@ -256,6 +263,7 @@ export type SubmissionWhereInput = {
   language?: Prisma.EnumSupportedLanguageFilter<"Submission"> | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFilter<"Submission"> | string
   result?: Prisma.EnumSubmissionResultFilter<"Submission"> | $Enums.SubmissionResult
+  compileOutput?: Prisma.StringNullableFilter<"Submission"> | string | null
   executionTimeMs?: Prisma.IntNullableFilter<"Submission"> | number | null
   memoryKb?: Prisma.IntNullableFilter<"Submission"> | number | null
   submittedAt?: Prisma.DateTimeFilter<"Submission"> | Date | string
@@ -272,6 +280,7 @@ export type SubmissionOrderByWithRelationInput = {
   language?: Prisma.SortOrder
   sourceCode?: Prisma.SortOrder
   result?: Prisma.SortOrder
+  compileOutput?: Prisma.SortOrderInput | Prisma.SortOrder
   executionTimeMs?: Prisma.SortOrderInput | Prisma.SortOrder
   memoryKb?: Prisma.SortOrderInput | Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
@@ -291,6 +300,7 @@ export type SubmissionWhereUniqueInput = Prisma.AtLeast<{
   language?: Prisma.EnumSupportedLanguageFilter<"Submission"> | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFilter<"Submission"> | string
   result?: Prisma.EnumSubmissionResultFilter<"Submission"> | $Enums.SubmissionResult
+  compileOutput?: Prisma.StringNullableFilter<"Submission"> | string | null
   executionTimeMs?: Prisma.IntNullableFilter<"Submission"> | number | null
   memoryKb?: Prisma.IntNullableFilter<"Submission"> | number | null
   submittedAt?: Prisma.DateTimeFilter<"Submission"> | Date | string
@@ -307,6 +317,7 @@ export type SubmissionOrderByWithAggregationInput = {
   language?: Prisma.SortOrder
   sourceCode?: Prisma.SortOrder
   result?: Prisma.SortOrder
+  compileOutput?: Prisma.SortOrderInput | Prisma.SortOrder
   executionTimeMs?: Prisma.SortOrderInput | Prisma.SortOrder
   memoryKb?: Prisma.SortOrderInput | Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
@@ -328,6 +339,7 @@ export type SubmissionScalarWhereWithAggregatesInput = {
   language?: Prisma.EnumSupportedLanguageWithAggregatesFilter<"Submission"> | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringWithAggregatesFilter<"Submission"> | string
   result?: Prisma.EnumSubmissionResultWithAggregatesFilter<"Submission"> | $Enums.SubmissionResult
+  compileOutput?: Prisma.StringNullableWithAggregatesFilter<"Submission"> | string | null
   executionTimeMs?: Prisma.IntNullableWithAggregatesFilter<"Submission"> | number | null
   memoryKb?: Prisma.IntNullableWithAggregatesFilter<"Submission"> | number | null
   submittedAt?: Prisma.DateTimeWithAggregatesFilter<"Submission"> | Date | string
@@ -339,6 +351,7 @@ export type SubmissionCreateInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -355,6 +368,7 @@ export type SubmissionUncheckedCreateInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -367,6 +381,7 @@ export type SubmissionUpdateInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,6 +398,7 @@ export type SubmissionUncheckedUpdateInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -397,6 +413,7 @@ export type SubmissionCreateManyInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -408,6 +425,7 @@ export type SubmissionUpdateManyMutationInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -421,6 +439,7 @@ export type SubmissionUncheckedUpdateManyInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -444,6 +463,7 @@ export type SubmissionCountOrderByAggregateInput = {
   language?: Prisma.SortOrder
   sourceCode?: Prisma.SortOrder
   result?: Prisma.SortOrder
+  compileOutput?: Prisma.SortOrder
   executionTimeMs?: Prisma.SortOrder
   memoryKb?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
@@ -462,6 +482,7 @@ export type SubmissionMaxOrderByAggregateInput = {
   language?: Prisma.SortOrder
   sourceCode?: Prisma.SortOrder
   result?: Prisma.SortOrder
+  compileOutput?: Prisma.SortOrder
   executionTimeMs?: Prisma.SortOrder
   memoryKb?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
@@ -475,6 +496,7 @@ export type SubmissionMinOrderByAggregateInput = {
   language?: Prisma.SortOrder
   sourceCode?: Prisma.SortOrder
   result?: Prisma.SortOrder
+  compileOutput?: Prisma.SortOrder
   executionTimeMs?: Prisma.SortOrder
   memoryKb?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
@@ -606,6 +628,7 @@ export type SubmissionCreateWithoutUserInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -620,6 +643,7 @@ export type SubmissionUncheckedCreateWithoutUserInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -663,6 +687,7 @@ export type SubmissionScalarWhereInput = {
   language?: Prisma.EnumSupportedLanguageFilter<"Submission"> | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFilter<"Submission"> | string
   result?: Prisma.EnumSubmissionResultFilter<"Submission"> | $Enums.SubmissionResult
+  compileOutput?: Prisma.StringNullableFilter<"Submission"> | string | null
   executionTimeMs?: Prisma.IntNullableFilter<"Submission"> | number | null
   memoryKb?: Prisma.IntNullableFilter<"Submission"> | number | null
   submittedAt?: Prisma.DateTimeFilter<"Submission"> | Date | string
@@ -674,6 +699,7 @@ export type SubmissionCreateWithoutProblemInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -688,6 +714,7 @@ export type SubmissionUncheckedCreateWithoutProblemInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -726,6 +753,7 @@ export type SubmissionCreateWithoutTestcaseResultsInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -741,6 +769,7 @@ export type SubmissionUncheckedCreateWithoutTestcaseResultsInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -768,6 +797,7 @@ export type SubmissionUpdateWithoutTestcaseResultsInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -783,6 +813,7 @@ export type SubmissionUncheckedUpdateWithoutTestcaseResultsInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -795,6 +826,7 @@ export type SubmissionCreateManyUserInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -806,6 +838,7 @@ export type SubmissionUpdateWithoutUserInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -820,6 +853,7 @@ export type SubmissionUncheckedUpdateWithoutUserInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -833,6 +867,7 @@ export type SubmissionUncheckedUpdateManyWithoutUserInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -845,6 +880,7 @@ export type SubmissionCreateManyProblemInput = {
   language: $Enums.SupportedLanguage
   sourceCode: string
   result?: $Enums.SubmissionResult
+  compileOutput?: string | null
   executionTimeMs?: number | null
   memoryKb?: number | null
   submittedAt?: Date | string
@@ -856,6 +892,7 @@ export type SubmissionUpdateWithoutProblemInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -870,6 +907,7 @@ export type SubmissionUncheckedUpdateWithoutProblemInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -883,6 +921,7 @@ export type SubmissionUncheckedUpdateManyWithoutProblemInput = {
   language?: Prisma.EnumSupportedLanguageFieldUpdateOperationsInput | $Enums.SupportedLanguage
   sourceCode?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.EnumSubmissionResultFieldUpdateOperationsInput | $Enums.SubmissionResult
+  compileOutput?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   executionTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   memoryKb?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -927,6 +966,7 @@ export type SubmissionSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   language?: boolean
   sourceCode?: boolean
   result?: boolean
+  compileOutput?: boolean
   executionTimeMs?: boolean
   memoryKb?: boolean
   submittedAt?: boolean
@@ -944,6 +984,7 @@ export type SubmissionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   language?: boolean
   sourceCode?: boolean
   result?: boolean
+  compileOutput?: boolean
   executionTimeMs?: boolean
   memoryKb?: boolean
   submittedAt?: boolean
@@ -959,6 +1000,7 @@ export type SubmissionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   language?: boolean
   sourceCode?: boolean
   result?: boolean
+  compileOutput?: boolean
   executionTimeMs?: boolean
   memoryKb?: boolean
   submittedAt?: boolean
@@ -974,13 +1016,14 @@ export type SubmissionSelectScalar = {
   language?: boolean
   sourceCode?: boolean
   result?: boolean
+  compileOutput?: boolean
   executionTimeMs?: boolean
   memoryKb?: boolean
   submittedAt?: boolean
   updatedAt?: boolean
 }
 
-export type SubmissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "problemId" | "language" | "sourceCode" | "result" | "executionTimeMs" | "memoryKb" | "submittedAt" | "updatedAt", ExtArgs["result"]["submission"]>
+export type SubmissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "problemId" | "language" | "sourceCode" | "result" | "compileOutput" | "executionTimeMs" | "memoryKb" | "submittedAt" | "updatedAt", ExtArgs["result"]["submission"]>
 export type SubmissionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   problem?: boolean | Prisma.ProblemDefaultArgs<ExtArgs>
@@ -1010,6 +1053,7 @@ export type $SubmissionPayload<ExtArgs extends runtime.Types.Extensions.Internal
     language: $Enums.SupportedLanguage
     sourceCode: string
     result: $Enums.SubmissionResult
+    compileOutput: string | null
     executionTimeMs: number | null
     memoryKb: number | null
     submittedAt: Date
@@ -1446,6 +1490,7 @@ export interface SubmissionFieldRefs {
   readonly language: Prisma.FieldRef<"Submission", 'SupportedLanguage'>
   readonly sourceCode: Prisma.FieldRef<"Submission", 'String'>
   readonly result: Prisma.FieldRef<"Submission", 'SubmissionResult'>
+  readonly compileOutput: Prisma.FieldRef<"Submission", 'String'>
   readonly executionTimeMs: Prisma.FieldRef<"Submission", 'Int'>
   readonly memoryKb: Prisma.FieldRef<"Submission", 'Int'>
   readonly submittedAt: Prisma.FieldRef<"Submission", 'DateTime'>

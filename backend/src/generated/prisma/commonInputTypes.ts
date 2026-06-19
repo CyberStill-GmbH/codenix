@@ -412,6 +412,23 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumCodeRunStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CodeRunStatus | Prisma.EnumCodeRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CodeRunStatus[] | Prisma.ListEnumCodeRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CodeRunStatus[] | Prisma.ListEnumCodeRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCodeRunStatusFilter<$PrismaModel> | $Enums.CodeRunStatus
+}
+
+export type EnumCodeRunStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CodeRunStatus | Prisma.EnumCodeRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CodeRunStatus[] | Prisma.ListEnumCodeRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CodeRunStatus[] | Prisma.ListEnumCodeRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCodeRunStatusWithAggregatesFilter<$PrismaModel> | $Enums.CodeRunStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCodeRunStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCodeRunStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -783,6 +800,23 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumCodeRunStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CodeRunStatus | Prisma.EnumCodeRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CodeRunStatus[] | Prisma.ListEnumCodeRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CodeRunStatus[] | Prisma.ListEnumCodeRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCodeRunStatusFilter<$PrismaModel> | $Enums.CodeRunStatus
+}
+
+export type NestedEnumCodeRunStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CodeRunStatus | Prisma.EnumCodeRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CodeRunStatus[] | Prisma.ListEnumCodeRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CodeRunStatus[] | Prisma.ListEnumCodeRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCodeRunStatusWithAggregatesFilter<$PrismaModel> | $Enums.CodeRunStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCodeRunStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCodeRunStatusFilter<$PrismaModel>
 }
 
 
