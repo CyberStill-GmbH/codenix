@@ -132,28 +132,23 @@ This reflects the current production behavior and avoids implying cookie-based s
 
 A future migration to httpOnly cookies should be handled as a separate architecture change with CSRF protection, cookie attributes, frontend request changes, and explicit CORS credential handling.
 
-## Explicitly Out Of Scope
+## Judge Execution Endpoints
 
-The following judge-related endpoints and behaviors were not created, modified, simulated, or stubbed:
+Run and submission endpoints enqueue Docker-backed execution through BullMQ:
 
 - `POST /api/problems/:problemId/run`
 - `GET /api/runs/:runId`
 - `POST /api/problems/:problemId/submissions`
-- Live/asynchronous execution result polling
 
-Those belong to the future judge integration and should be implemented with the real execution backend.
+The worker executes code with language-specific runners for the canonical judge
+languages. Rate limiting uses `ipKeyGenerator` for anonymous clients and
+`user.id` for authenticated requests.
 
 ## Test Result
 
-Backend tests were added for:
-
-- Authenticated accepted submission sets `solved: true`.
-- Authenticated user without submissions gets `solved: false`.
-- Failed submissions do not set `solved: true`.
-- Unauthenticated problem requests do not expose another user's solved state.
-- Problem detail returns real solved state.
-- `GET /api/users/me/stats` rejects unauthenticated requests.
-- Ranking stats return `rank`, `percentile`, `totalUsers`, and aggregate `distribution`.
+Backend tests cover solved state, ranking stats, admin publish validation, judge
+language contract, rate-limit keys, seeded reference solutions, and run/submit
+integration flows.
 
 Final test result:
 
@@ -161,6 +156,6 @@ Final test result:
 npm test
 ```
 
-- 5 test files passed.
-- 13 tests passed.
+- 10 test files passed.
+- 40 tests passed.
 - `npm run typecheck` passed.
