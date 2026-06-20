@@ -360,9 +360,9 @@ export function ProblemContentTabs({
 
         {activeTab === 'testcases' && (
           <section className="space-y-3">
-            {/* TODO: API-PENDING - el backend acepta stdin, pero todavia no lo ejecuta. */}
             <p className="text-xs text-[var(--color-text-subtle)]">
-              Run evalua los casos de muestra almacenados en el servidor.
+              Run evalua los casos de muestra almacenados en el servidor. Enviar
+              `testcases: []` u omitir el campo tiene el mismo significado.
             </p>
             {testcases.map((testcase, index) => {
               const result = resultByCaseId.get(testcase.id)

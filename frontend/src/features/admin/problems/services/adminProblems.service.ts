@@ -214,7 +214,7 @@ function isParameterType(value: unknown): value is ProblemParameterType {
 
 function normalizeLanguages(value: string[]): ProblemLanguage[] {
   return value.filter((language): language is ProblemLanguage =>
-    ['typescript', 'javascript', 'python', 'java', 'cpp'].includes(language),
+    ['typescript', 'javascript', 'python', 'c', 'rust'].includes(language),
   )
 }
 

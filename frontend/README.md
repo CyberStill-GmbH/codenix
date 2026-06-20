@@ -63,25 +63,28 @@ El backend tiene CORS con `origin: FRONTEND_URL` y `credentials: false`; la sesi
 - Admin Problems ya no usa fallback a memoria: listado, formulario, publicación y testcases dependen de la API real.
 - Se eliminaron los tres archivos de mock data de Admin Problems.
 
-## Pendientes `TODO: API-PENDING`
+## Pendientes fuera de alcance MVP
 
-- Ejecucion real de `stdin`/casos custom: el schema de Run acepta `stdin`, pero el servicio actual no lo usa y ejecuta testcases almacenados.
-- Distribucion y percentil de runtime por lenguaje para submissions aceptadas: el backend no devuelve estos datos; el grafico conserva un placeholder identificado visualmente.
-- El judge actual del backend es una implementacion mock determinista. La interfaz consume su contrato real, pero todavia no ejecuta codigo en un sandbox.
+- Ejecucion de `stdin` en Run: el schema lo acepta, pero el judge actual ejecuta
+  testcases almacenados del problema.
+- Distribucion y percentil de runtime por lenguaje para submissions aceptadas: el
+  backend aun no devuelve estos datos; el grafico solo aparece cuando la API los
+  envia.
 
-## Validacion pendiente
+## Validacion manual recomendada
 
 - Probar login y token antes de entrar a `/profile`, `/submissions` y `/admin`.
 - Probar Profile con usuario que tenga submissions reales.
 - Probar busqueda del navbar con al menos dos caracteres.
 - Probar carga de codigo desde `Mis Submissions` con una submission que tenga `sourceCode`.
 - Probar upload admin con JPEG, PNG, WEBP/GIF y archivo mayor a 2MB para validar errores backend.
-- Probar Run y Submit autenticados con los marcadores soportados por el mock judge (`__CE_WA__`, `__CE_TLE__`, `__CE_RUNTIME_ERROR__`, `__CE_FAIL_COMPILE__`).
-- Sustituir el judge mock del backend por el ejecutor aislado antes de considerar los veredictos aptos para produccion.
+- Probar Run y Submit autenticados en `two-sum` y `valid-parentheses` con al menos
+  Python y TypeScript: Run debe pasar samples; Submit debe dar Accepted y marcar
+  el problema como resuelto.
+- Probar una solucion incorrecta y confirmar Wrong Answer con el caso sample visible.
 
 ## Inconsistencias detectadas
 
 - CORS y sesion son coherentes: `credentials: false` y JWT Bearer en header.
 - Run declara `stdin`, pero el servicio backend no lo aplica al judge actual.
-- Run/Submit son sincronos internamente aunque devuelven primero un receipt; el frontend recupera despues el detalle por id.
-- El judge backend actual decide resultados mediante marcadores en `sourceCode`, no mediante ejecucion real del lenguaje.
+- Run/Submit encolan ejecucion real en Docker; el frontend hace polling por id.
