@@ -2,6 +2,33 @@
 
 Date: 2026-06-19
 
+Status: **Resolved on `backend` / `develop` (2026-06-20).** The fixes below were
+implemented in `backend/src/modules/judge/judge.rate-limit.ts`,
+`backend/src/modules/admin/problems/admin-problems.service.ts`,
+`backend/src/modules/judge/supported-languages.ts`, and
+`backend/prisma/seed-problems.ts`. See `backend/BACKEND_DECISIONS.md` for the
+current contracts and verification table.
+
+## Resolved items
+
+1. **Judge rate limiter IPv6 validation** — `getJudgeRateLimitKey` now uses
+   `ipKeyGenerator` from `express-rate-limit` for anonymous requests and
+   `user.id` for authenticated requests. Covered by
+   `backend/src/tests/judge-rate-limit.test.ts`.
+2. **Run HTTP 422 on seeded problems** — legacy `problem-1` and other invalid
+   published problems are unpublished during seed. `Two Sum` and
+   `Valid Parentheses` are published with sample/hidden testcases and starter
+   code for all five judge languages.
+3. **Supported-language contract drift** — a single canonical list in
+   `supported-languages.ts` drives request validation, admin validation, seeds,
+   and judge runners. Java was removed from seeds.
+4. **`testcases: []` semantics** — documented in `BACKEND_DECISIONS.md`: an
+   omitted field and an empty array both mean "run stored sample testcases".
+
+## Original diagnostic notes
+
+The sections below preserve the pre-fix investigation for context.
+
 ## Scope
 
 This document records the current backend behavior observed after the Monaco frontend repair. It is diagnostic only: no backend source code was changed as part of this phase.
@@ -79,84 +106,32 @@ Content-Type: application/json
 | `sourceCode` | string | 1 to 65536 characters | yes |
 | `testcases` | array | up to 20 strict `{ input, expectedOutput }` objects | no |
 | `stdin` | string | up to 65536 characters | no |
-| `testcaseIds` | UUID array | up to 20 items | no |
+| `testcaseIds` | array | up to 20 UUIDs | no |
 
-The frontend payload matches this schema field by field. An empty `testcases` array is valid because the schema has no `.min(1)` constraint.
+An omitted `testcases` field and `testcases: []` both mean "use stored sample testcases".
 
 ### Root cause
 
-This 422 is not request-schema rejection and is not caused by the worker or queue. In `backend/src/modules/problems/problems.service.ts:264-278`, an empty custom testcase array falls back to sample testcases stored for the problem. `problem-1` has none, so the service raises `NO_TESTCASES` before creating or enqueueing a run.
-
-| Comparison | Frontend | Backend | Result |
-| --- | --- | --- | --- |
-| Language | `python` | accepted enum and enabled QA template | matches |
-| Source code | non-empty string | required non-empty string | matches |
-| Custom testcases | empty array | schema accepts it; service treats it as absent | semantic mismatch |
-| Stored sample testcases | not controlled by frontend | none for `problem-1` | direct cause of 422 |
+`problem-1` was published without sample testcases. The frontend correctly sends
+`testcases: []` to request sample execution, but the service rejects problems
+with no stored samples.
 
 ### Recommended follow-up
 
-Decide and document one contract:
+Enforce publish-time testcase completeness and unpublish or complete legacy
+problems such as `problem-1`.
 
-1. Require at least one custom testcase when `testcases` is present, and have the frontend omit the field when empty; or
-2. Continue accepting an empty array as "use stored samples", but guarantee every published problem has at least one sample testcase.
+## 3. Supported-language contract drift
 
-The primary backend locations are `problems.schema.ts:47-62`, `problems.service.ts:244-278`, and the admin publish validation/seed path that permits a published problem without sample testcases.
+### Observed behavior
 
-## 3. Submit returns HTTP 422
+Problem detail can expose languages that Run/Submit reject, and seeds can omit
+languages that the judge supports.
 
-### Exact frontend payload
+### Sources checked
 
-The current frontend sends this shape from `CodeWorkspace.tsx:280-283` through `codingApi.ts:196-214`:
-
-```json
-{
-  "language": "python",
-  "sourceCode": "def solve(input_data: str) -> str:\n    return \"\"\n"
-}
-```
-
-### Exact response
-
-```http
-HTTP/1.1 422 Unprocessable Entity
-Content-Type: application/json
-
-{"code":"NO_TESTCASES","message":"This problem has no testcases."}
-```
-
-### Backend schema
-
-`backend/src/modules/problems/problems.schema.ts:64-69` expects exactly:
-
-| Field | Type | Constraints | Required |
-| --- | --- | --- | --- |
-| `language` | enum | `python`, `javascript`, `typescript`, `c`, `rust` | yes |
-| `sourceCode` | string | 1 to 65536 characters | yes |
-
-The payload exactly matches the strict schema. The response is produced later by `backend/src/modules/problems/problems.service.ts:347-349` because the selected problem has no persisted testcases. No submission or queue job is created.
-
-### Recommended follow-up
-
-Prevent a problem from becoming `published` unless it has at least one judge testcase. The relevant areas to inspect are the admin problem publish validation/service and `problems.service.ts:317-349`. Existing published records should be audited or backfilled.
-
-## 4. Language and starter-code data inconsistency
-
-The real detail response for `GET /api/problems/problem-1` initially contained:
-
-```json
-{
-  "codeTemplates": []
-}
-```
-
-The endpoint does not expose a separate `supported_languages` field. The frontend correctly derives its selector from `codeTemplates`; its TypeScript-only fallback was activated because the backend returned no templates.
-
-For isolated frontend QA, five local templates were inserted for `problem-1` without changing backend source files. The API then returned Python, JavaScript, TypeScript, C, and Rust, and the frontend rendered all five dynamically.
-
-There is also a repository-level mismatch:
-
-- Judge request schema: Python, JavaScript, TypeScript, C, Rust.
+- `backend/src/modules/judge/supported-languages.ts`: `python`, `javascript`, `typescript`, `c`, `rust`.
+- `backend/src/modules/problems/problems.schema.ts`: same five languages.
 - `backend/prisma/seed-problems.ts`: Python, JavaScript, TypeScript, Java.
 - Prisma enum: also permits Java and C++.
 

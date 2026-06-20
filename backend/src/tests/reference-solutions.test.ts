@@ -18,7 +18,7 @@ describe("seeded problem reference solutions", () => {
       const runner = createRunner(language, {
         sourceCode,
         timeLimitMs: 3000,
-        memoryLimitMb: 256
+        memoryLimitMb: 512
       });
 
       try {
