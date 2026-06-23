@@ -1,4 +1,5 @@
 import { prisma } from "../../db/prisma";
+import type { CodeRunTestcaseResult } from "../../generated/prisma/client";
 import { AppError } from "../../shared/errors/app-error";
 
 export class RunsService {
@@ -24,7 +25,8 @@ export class RunsService {
       throw new AppError(404, "RUN_NOT_FOUND", "Code run not found");
     }
 
-    const testcaseResults = run.testcaseResults.map((testcase, index) => ({
+    const testcaseResults = run.testcaseResults.map(
+      (testcase: CodeRunTestcaseResult, index: number) => ({
       id: testcase.id,
       index: index + 1,
       testcaseId: testcase.testcaseId,
