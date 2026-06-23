@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowLeft, Plus, UploadCloud } from 'lucide-react'
+import { Button } from '@/shared/components/ui/Button'
 import { Link, useParams } from 'react-router-dom'
 
 import { AdminNavbar } from '@/features/admin/problems/components/AdminNavbar'
@@ -263,20 +264,22 @@ export function AdminProblemTestcasesPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <button
+                  <Button
                     type="button"
+                    variant="secondary"
                     onClick={openCreateForm}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-5 text-sm font-semibold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+                    className="rounded-full"
                   >
                     <Plus className="h-4 w-4" aria-hidden="true" />
                     Create testcase
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     type="button"
+                    variant="primary"
                     disabled={!problem || isPublishing}
                     onClick={handleTogglePublish}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-sky-300/30 bg-[linear-gradient(135deg,var(--color-primary)_0%,var(--color-accent)_100%)] px-5 text-sm font-bold text-white shadow-[0_10px_28px_rgba(14,165,233,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(14,165,233,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+                    className="rounded-full"
                   >
                     <UploadCloud className="h-4 w-4" aria-hidden="true" />
                     {isPublishing
@@ -284,7 +287,7 @@ export function AdminProblemTestcasesPage() {
                       : problem?.status === 'published'
                         ? 'Unpublish'
                         : 'Publish'}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </header>

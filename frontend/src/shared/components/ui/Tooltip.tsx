@@ -1,14 +1,51 @@
-import React from 'react'
+import * as React from "react"
+import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
-type TooltipProps = {
-  content: string
+import { cn } from "@/shared/lib/utils"
+
+const TooltipProvider = TooltipPrimitive.Provider
+
+const Tooltip = TooltipPrimitive.Root
+
+const TooltipTrigger = TooltipPrimitive.Trigger
+
+const TooltipContent = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => (
+  <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Content
+      ref={ref}
+      sideOffset={sideOffset}
+      className={cn(
+        "z-tooltip overflow-hidden rounded-md border border-border-soft bg-surface-elevated px-3 py-1.5 text-sm text-text-base shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        className
+      )}
+      {...props}
+    />
+  </TooltipPrimitive.Portal>
+))
+TooltipContent.displayName = TooltipPrimitive.Content.displayName
+
+type SimpleTooltipProps = {
+  content: React.ReactNode
   children: React.ReactNode
+  side?: "top" | "right" | "bottom" | "left"
 }
 
-export function Tooltip({ content, children }: TooltipProps) {
+export function SimpleTooltip({ content, children, side = "top" }: SimpleTooltipProps) {
   return (
-    <div className="group relative inline-flex items-center" title={content}>
-      {children}
-    </div>
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {children}
+        </TooltipTrigger>
+        <TooltipContent side={side}>
+          {content}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }

@@ -1,4 +1,6 @@
 import { Plus, Trash2 } from 'lucide-react'
+import { Button } from '@/shared/components/ui/Button'
+import { Textarea } from '@/shared/components/ui/Textarea'
 
 import type {
   AdminProblemFormValues,
@@ -11,8 +13,7 @@ type AdminProblemExamplesEditorProps = {
   onChange: (examples: ProblemExample[]) => void
 }
 
-const textareaClassName =
-  'min-h-24 w-full rounded-2xl border border-slate-700/50 bg-slate-900/70 px-4 py-3 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]'
+const textareaClassName = ''
 
 export function AdminProblemExamplesEditor({
   examples,
@@ -59,14 +60,15 @@ export function AdminProblemExamplesEditor({
           </p>
         </div>
 
-        <button
+        <Button
           type="button"
+          variant="secondary"
           onClick={addExample}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-semibold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          className="rounded-full"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           Add example
-        </button>
+        </Button>
       </div>
 
       {error && (
@@ -85,14 +87,16 @@ export function AdminProblemExamplesEditor({
               <h3 className="font-mono text-sm font-bold text-[var(--color-text-soft)]">
                 Example {index + 1}
               </h3>
-              <button
+              <Button
                 type="button"
+                variant="danger"
+                size="sm"
                 onClick={() => removeExample(example.id)}
-                className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--color-error)]/40 bg-slate-900/70 px-3 text-xs font-semibold text-[var(--color-error)] transition hover:bg-[var(--color-error-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+                className="rounded-full"
               >
                 <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 Remove
-              </button>
+              </Button>
             </div>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -100,7 +104,7 @@ export function AdminProblemExamplesEditor({
                 <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
                   Input
                 </span>
-                <textarea
+                <Textarea
                   value={example.input}
                   onChange={(event) => updateExample(example.id, 'input', event.target.value)}
                   className={`${textareaClassName} font-mono`}
@@ -112,7 +116,7 @@ export function AdminProblemExamplesEditor({
                 <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
                   Output
                 </span>
-                <textarea
+                <Textarea
                   value={example.output}
                   onChange={(event) => updateExample(example.id, 'output', event.target.value)}
                   className={`${textareaClassName} font-mono`}
@@ -125,7 +129,7 @@ export function AdminProblemExamplesEditor({
               <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
                 Explanation
               </span>
-              <textarea
+              <Textarea
                 value={example.explanation ?? ''}
                 onChange={(event) =>
                   updateExample(example.id, 'explanation', event.target.value)

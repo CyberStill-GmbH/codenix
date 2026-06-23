@@ -1,5 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Save, X } from 'lucide-react'
+import { Button } from '@/shared/components/ui/Button'
+import { Input } from '@/shared/components/ui/Input'
+import { Textarea } from '@/shared/components/ui/Textarea'
 
 import type {
   AdminTestcase,
@@ -21,8 +24,7 @@ const emptyPayload: AdminTestcasePayload = {
   weight: undefined,
 }
 
-const fieldClassName =
-  'w-full rounded-2xl border border-slate-700/50 bg-slate-900/70 px-4 py-3 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]'
+const fieldClassName = ''
 
 export function AdminTestcaseForm({
   testcase,
@@ -79,7 +81,7 @@ export function AdminTestcaseForm({
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
             Input
           </span>
-          <textarea
+          <Textarea
             value={payload.input}
             onChange={(event) =>
               setPayload((currentPayload) => ({
@@ -96,7 +98,7 @@ export function AdminTestcaseForm({
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
             Expected output
           </span>
-          <textarea
+          <Textarea
             value={payload.expectedOutput}
             onChange={(event) =>
               setPayload((currentPayload) => ({
@@ -134,7 +136,7 @@ export function AdminTestcaseForm({
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
             Weight
           </span>
-          <input
+          <Input
             type="number"
             min="0"
             step="1"
@@ -159,23 +161,25 @@ export function AdminTestcaseForm({
       )}
 
       <div className="mt-5 flex flex-wrap justify-end gap-2">
-        <button
+        <Button
           type="button"
+          variant="secondary"
           onClick={onCancel}
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-semibold text-[var(--color-text-soft)] transition hover:border-slate-600 hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          className="rounded-full"
         >
           <X className="h-4 w-4" aria-hidden="true" />
           Cancel
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
           disabled={isSubmitting}
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-sky-300/30 bg-[linear-gradient(135deg,var(--color-primary)_0%,var(--color-accent)_100%)] px-4 text-sm font-bold text-white shadow-[0_10px_28px_rgba(14,165,233,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(14,165,233,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+          className="rounded-full"
         >
           <Save className="h-4 w-4" aria-hidden="true" />
           {isSubmitting ? 'Saving' : testcase ? 'Save changes' : 'Create testcase'}
-        </button>
+        </Button>
       </div>
     </form>
   )
