@@ -89,6 +89,7 @@ Antes de empezar, asegúrate de tener instalado:
 * Node.js
 * npm
 * Git
+* Docker y Docker Compose, si vas a usar servicios locales o Jenkins
 
 ### Clonar el repositorio
 
@@ -114,6 +115,22 @@ Luego abre la URL local que indique la terminal, normalmente:
 ```bash
 http://localhost:5173
 ```
+
+### Jenkins con Docker
+
+El repositorio incluye una instalacion local de Jenkins sobre Docker para ejecutar el pipeline de CI definido en `Jenkinsfile`.
+
+```bash
+docker compose -f docker-compose.jenkins.yml up -d --build
+```
+
+Jenkins quedara disponible en:
+
+```bash
+http://localhost:8080
+```
+
+La guia completa esta en [`docs/JENKINS_DOCKER.md`](docs/JENKINS_DOCKER.md).
 
 ## Uso básico
 

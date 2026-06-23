@@ -1,0 +1,27 @@
+services:
+  jenkins:
+    build:
+      context: ./docker/jenkins
+    image: codenix-jenkins:lts
+    container_name: codenix-jenkins
+    restart: unless-stopped
+    user: root
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=true"
+      JENKINS_OPTS: "--httpPort=8080"
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - codenix_jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - codenix-jenkins
+
+volumes:
+  codenix_jenkins_home:
+
+networks:
+  codenix-jenkins:
+    name: codenix-jenkins
+
