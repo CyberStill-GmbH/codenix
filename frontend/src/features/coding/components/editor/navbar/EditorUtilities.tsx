@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { useRef, useState } from 'react'
-import { Columns3, Settings } from 'lucide-react'
+import { Expand, Shrink, Settings } from 'lucide-react'
+
+import { useWorkspace } from '@/features/coding/context/WorkspaceContext'
 
 import { EditorTimer } from '@/features/coding/components/editor/navbar/EditorTimer'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
@@ -36,13 +38,24 @@ export function EditorUtilities({ user, problemId }: EditorUtilitiesProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const userMenuButtonRef = useRef<HTMLButtonElement>(null)
 
+  const { isFullscreen, toggleFullscreen } = useWorkspace()
+
   return (
     <div className="flex items-center justify-end gap-1.5">
       <div className="hidden items-center gap-1.5 md:flex">
-        {/* TODO: MVP-PENDING - selector de layout */}
-        <DisabledUtilityButton label="Selector de layout">
-          <Columns3 className="h-3.5 w-3.5" aria-hidden="true" />
-        </DisabledUtilityButton>
+        <button
+          type="button"
+          onClick={toggleFullscreen}
+          aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+          title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-muted)] transition hover:bg-slate-900 hover:text-[var(--color-text)]"
+        >
+          {isFullscreen ? (
+            <Shrink className="h-3.5 w-3.5" aria-hidden="true" />
+          ) : (
+            <Expand className="h-3.5 w-3.5" aria-hidden="true" />
+          )}
+        </button>
 
         {/* TODO: MVP-PENDING - configuracion del editor */}
         <DisabledUtilityButton label="Configuracion del editor">

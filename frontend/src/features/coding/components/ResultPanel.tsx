@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { AlertTriangle, Check, CircleDotDashed, X } from 'lucide-react'
+import { AlertTriangle, Check, CircleDotDashed, Plus, Trash2, X } from 'lucide-react'
 import {
   Bar,
   BarChart,
@@ -15,6 +15,7 @@ import type {
   RunCodeResponse,
   SubmitCodeResponse,
   TestcaseRunResult,
+  CodingTestcase,
 } from '@/features/coding/types/coding.types'
 
 type ResultPanelProps = {
@@ -26,9 +27,11 @@ type ResultPanelProps = {
   errorMessage: string
   canRetry: boolean
   onRetry: () => void
+  testcases?: CodingTestcase[]
+  onTestcasesChange?: (testcases: CodingTestcase[]) => void
 }
 
-type ResultTab = 'test-result' | 'output'
+type ResultTab = 'testcases' | 'test-result' | 'output'
 
 function formatMemory(memoryKb?: number) {
   if (!memoryKb) return '-'
@@ -142,9 +145,14 @@ export function ResultPanel({
   errorMessage,
   canRetry,
   onRetry,
+  testcases = [],
+  onTestcasesChange,
 }: ResultPanelProps) {
-  const [activeTab, setActiveTab] = useState<ResultTab>('test-result')
-
+  // The user's explicit tab choice is remembered here.
+  // While code is running/submitting we override it to 'test-result'.
+  const [userTab, setUserTab] = useState<ResultTab>('testcases')
+  const isBusy = isRunning || isSubmitting
+  const activeTab: ResultTab = isBusy ? 'test-result' : userTab
   const currentRunLikeResult = useMemo(() => {
     if (activeAction === 'submit' && submitResult) {
       return submitResult.failedCase ? [submitResult.failedCase] : []
@@ -152,6 +160,38 @@ export function ResultPanel({
 
     return runResult?.testcases ?? []
   }, [activeAction, runResult?.testcases, submitResult])
+
+  const resultByCaseId = useMemo(
+    () => new Map(currentRunLikeResult.map((result) => [result.id, result])),
+    [currentRunLikeResult],
+  )
+
+  function updateTestcase(id: string, field: 'input' | 'expectedOutput', value: string) {
+    if (!onTestcasesChange) return
+    onTestcasesChange(
+      testcases.map((testcase) =>
+        testcase.id === id ? { ...testcase, [field]: value } : testcase,
+      ),
+    )
+  }
+
+  function addCustomTestcase() {
+    if (!onTestcasesChange) return
+    onTestcasesChange([
+      ...testcases,
+      {
+        id: `custom-${Date.now()}`,
+        input: '',
+        expectedOutput: '',
+        isCustom: true,
+      },
+    ])
+  }
+
+  function removeCustomTestcase(id: string) {
+    if (!onTestcasesChange) return
+    onTestcasesChange(testcases.filter((testcase) => testcase.id !== id))
+  }
 
   const stdout = runResult?.stdout ?? submitResult?.stdout ?? ''
   const stderr =
@@ -166,24 +206,23 @@ export function ResultPanel({
   const distribution = submitResult?.runtimeDistribution ?? []
   const hasRuntimeDistribution = distribution.length > 0
 
-  const isBusy = isRunning || isSubmitting
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-[var(--color-bg-soft)]">
       <div className="flex items-center justify-between gap-3 border-b border-slate-800/80 px-4 py-2">
         <div className="flex items-center gap-2">
-          {(['test-result', 'output'] as const).map((tab) => (
+          {(['testcases', 'test-result', 'output'] as const).map((tab) => (
             <button
               key={tab}
               type="button"
-              onClick={() => setActiveTab(tab)}
+              onClick={() => setUserTab(tab)}
               className={`h-8 rounded-lg px-3 text-xs font-bold transition ${
                 activeTab === tab
                   ? 'bg-sky-400/12 text-white'
                   : 'text-[var(--color-text-muted)] hover:bg-slate-900 hover:text-white'
               }`}
             >
-              {tab === 'test-result' ? 'Test Result' : 'Output'}
+              {tab === 'testcases' ? 'Testcases' : tab === 'test-result' ? 'Test Result' : 'Output'}
             </button>
           ))}
         </div>
@@ -255,7 +294,86 @@ export function ResultPanel({
           </div>
         )}
 
-        {activeTab === 'test-result' ? (
+        {activeTab === 'testcases' ? (
+          <section className="space-y-3">
+            <p className="text-xs text-[var(--color-text-subtle)]">
+              Run evalua los casos de muestra almacenados en el servidor. Enviar
+              `testcases: []` u omitir el campo tiene el mismo significado.
+            </p>
+            {testcases.map((testcase, index) => {
+              const result = resultByCaseId.get(testcase.id)
+              return (
+                <article
+                  key={testcase.id}
+                  className="rounded-xl border border-slate-800 bg-slate-950/55 p-3"
+                >
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h2 className="text-sm font-bold text-[var(--color-text)]">
+                      Case {index + 1}
+                    </h2>
+                    {testcase.isCustom && (
+                      <button
+                        type="button"
+                        onClick={() => removeCustomTestcase(testcase.id)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-error)] transition hover:bg-[var(--color-error-soft)]"
+                        aria-label="Remove testcase"
+                      >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
+                  <label className="grid gap-1">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
+                      Input
+                    </span>
+                    <textarea
+                      value={testcase.input}
+                      onChange={(event) =>
+                        updateTestcase(testcase.id, 'input', event.target.value)
+                      }
+                      className="min-h-20 resize-y rounded-lg border border-slate-800 bg-slate-950/80 p-3 font-mono text-xs text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)]"
+                    />
+                  </label>
+                  <label className="mt-3 grid gap-1">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
+                      Expected output
+                    </span>
+                    <textarea
+                      value={testcase.expectedOutput}
+                      onChange={(event) =>
+                        updateTestcase(
+                          testcase.id,
+                          'expectedOutput',
+                          event.target.value,
+                        )
+                      }
+                      className="min-h-16 resize-y rounded-lg border border-slate-800 bg-slate-950/80 p-3 font-mono text-xs text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)]"
+                    />
+                  </label>
+                  {result && (
+                    <div className="mt-3 rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+                      <p className="text-xs font-bold text-[var(--color-text-muted)]">
+                        Obtained
+                      </p>
+                      <pre className="mt-2 whitespace-pre-wrap font-mono text-xs text-[var(--color-text-soft)]">
+                        {result.actualOutput ?? result.stdout ?? '-'}
+                      </pre>
+                    </div>
+                  )}
+                </article>
+              )
+            })}
+
+            <button
+              type="button"
+              onClick={addCustomTestcase}
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:text-white"
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              Add custom case
+            </button>
+          </section>
+        ) : activeTab === 'test-result' ? (
           <div className="space-y-3">
             {runResult && <JudgeStatusBadge status={runResult.status} />}
             {currentRunLikeResult.length > 0 ? (

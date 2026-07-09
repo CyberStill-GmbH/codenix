@@ -3,6 +3,8 @@ import Editor, { loader, type BeforeMount, type OnMount } from '@monaco-editor/r
 
 import type { ProblemCodeLanguage } from '@/features/problems/types/problem.types'
 
+import { useAppSettings } from '@/features/settings/hooks/useAppSettings'
+
 type MonacoEditorLanguage = ProblemCodeLanguage | 'java' | 'cpp'
 
 type CodeEditorProps = {
@@ -54,6 +56,7 @@ export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
   const resizeObserverRef = useRef<ResizeObserver | null>(null)
   const layoutFrameRef = useRef(0)
+  const { settings } = useAppSettings()
 
   useEffect(() => {
     return () => {
@@ -87,19 +90,20 @@ export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
         value={value}
         onChange={(nextValue) => onChange(nextValue ?? '')}
         options={{
-          automaticLayout: true,
+          automaticLayout: false,
           minimap: { enabled: false },
-          wordWrap: 'on',
-          fontSize: 14,
-          fontFamily: '"JetBrains Mono", "Cascadia Code", Consolas, monospace',
-          fontLigatures: true,
+          wordWrap: settings.editorWordWrap ? 'on' : 'off',
+          fontSize: settings.editorFontSize,
+          fontFamily: settings.editorFontFamily,
+          fontLigatures: settings.editorLigatures,
+          tabSize: settings.editorTabSize,
           lineNumbersMinChars: 3,
           scrollBeyondLastLine: false,
           smoothScrolling: true,
           padding: { top: 16, bottom: 16 },
           bracketPairColorization: { enabled: true },
-          cursorBlinking: 'smooth',
-          cursorSmoothCaretAnimation: 'on',
+          cursorBlinking: settings.editorCursorAnimation,
+          cursorSmoothCaretAnimation: settings.editorCursorAnimation === 'smooth' ? 'on' : 'off',
         }}
       />
     </div>

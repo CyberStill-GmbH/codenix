@@ -10,12 +10,10 @@ import {
 } from '@/features/coding/components/CodeWorkspace'
 import { EditorNavbar } from '@/features/coding/components/editor/navbar'
 import { ProblemContentTabs } from '@/features/coding/components/ProblemContentTabs'
-import { ResizableSplitPane } from '@/features/coding/components/ResizableSplitPane'
 import type {
   CodingTestcase,
   TestcaseRunResult,
 } from '@/features/coding/types/coding.types'
-import { readStoredSplitPercent } from '@/features/coding/utils/splitPaneStorage'
 import { useAuth } from '@/features/auth/context/useAuth'
 import { getProblemBySlug, getProblems } from '@/features/problems/services/problemsApi'
 import type { Problem, ProblemCodeLanguage } from '@/features/problems/types/problem.types'
@@ -55,6 +53,9 @@ function useIsMobileViewport() {
   return isMobile
 }
 
+import { WorkspaceProvider, useWorkspace } from '@/features/coding/context/WorkspaceContext'
+import { ResizeHandleHorizontal } from '@/features/coding/components/ResizeHandles'
+
 const initialActionState: CodeWorkspaceActionState = {
   isRunning: false,
   isSubmitting: false,
@@ -62,7 +63,7 @@ const initialActionState: CodeWorkspaceActionState = {
   isEditorEmpty: false,
 }
 
-export function ProblemDetailPage() {
+function ProblemDetailContent() {
   const { problemSlug } = useParams<{ problemSlug: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -92,12 +93,7 @@ export function ProblemDetailPage() {
     version: 0,
   })
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true)
-  const [horizontalPanelPercent, setHorizontalPanelPercent] = useState(() =>
-    readStoredSplitPercent(
-      'codenix_split_horizontal',
-      window.innerWidth >= 1024 ? 50 : 40,
-    ),
-  )
+  const { problemWidthPercent, isCollapsed, isFullscreen, setIsCollapsed } = useWorkspace()
   const [actionState, setActionState] =
     useState<CodeWorkspaceActionState>(initialActionState)
 
@@ -298,41 +294,61 @@ export function ProblemDetailPage() {
             />
           )}
         </div>
+        ) : isFullscreen ? (
+            <PageSection delay={100} className="h-full min-h-0 w-full">
+            <CodeWorkspace
+              ref={workspaceRef}
+              key={`${problem.slug}:${codeLoadState.version}`}
+              problemId={problem.apiId ?? problem.id}
+              codeTemplates={problem.codeTemplates}
+              testcases={testcases}
+              initialCodeLoad={codeLoadState.request}
+              onRunResultsChange={setRunResults}
+              onAcceptedSubmit={handleAcceptedSubmit}
+              onActionStateChange={setActionState}
+              onTestcasesChange={setTestcases}
+            />
+          </PageSection>
         ) : (
-
-        <ResizableSplitPane
-          orientation="horizontal"
-          storageKey="codenix_split_horizontal"
-          defaultPrimaryPercent={window.innerWidth >= 1024 ? 50 : 40}
-          primaryPercent={horizontalPanelPercent}
-          onPrimaryPercentChange={setHorizontalPanelPercent}
-          minPrimaryPx={280}
-          minSecondaryPx={400}
-          maxPrimaryPercent={50}
-          className="hidden h-full md:flex"
-          ariaLabel="Redimensionar paneles"
-          onHandleDoubleClick={({ setPercent }) =>
-            setPercent(window.innerWidth >= 1024 ? 50 : 40)
-          }
-          primary={
-            <PageSection className="h-full min-h-0">
-              <ProblemContentTabs
-                problem={problem}
-                testcases={testcases}
-                runResults={runResults}
-                submissionsRefreshKey={submissionsRefreshKey}
-                onTestcasesChange={setTestcases}
-                onLoadSubmissionCode={(request) =>
-                  setCodeLoadState((current) => ({
-                    request,
-                    version: current.version + 1,
-                  }))
-                }
-              />
+          <div
+            className="hidden h-full md:grid"
+            style={{
+              gridTemplateColumns: isCollapsed ? '48px 8px 1fr' : `var(--problem-width, ${problemWidthPercent}%) 8px 1fr`
+            }}
+          >
+            <PageSection className="h-full min-h-0 min-w-0 overflow-hidden">
+              {isCollapsed ? (
+                <div className="flex h-full flex-col items-center border border-slate-700/50 bg-slate-950/60 py-4 shadow-[0_18px_50px_rgba(2,8,23,0.22)] rounded-xl">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsCollapsed(false)}
+                    aria-label="Expand problem panel"
+                    className="rounded-full"
+                  >
+                    <ChevronDown className="w-5 h-5 -rotate-90" />
+                  </Button>
+                </div>
+              ) : (
+                <ProblemContentTabs
+                  problem={problem}
+                  testcases={testcases}
+                  runResults={runResults}
+                  submissionsRefreshKey={submissionsRefreshKey}
+                  onTestcasesChange={setTestcases}
+                  onLoadSubmissionCode={(request) =>
+                    setCodeLoadState((current) => ({
+                      request,
+                      version: current.version + 1,
+                    }))
+                  }
+                />
+              )}
             </PageSection>
-          }
-          secondary={
-            <PageSection delay={100} className="h-full min-h-0">
+
+            <ResizeHandleHorizontal />
+
+            <PageSection delay={100} className="h-full min-h-0 min-w-0 overflow-hidden">
               <CodeWorkspace
                 ref={workspaceRef}
                 key={`${problem.slug}:${codeLoadState.version}`}
@@ -343,12 +359,20 @@ export function ProblemDetailPage() {
                 onRunResultsChange={setRunResults}
                 onAcceptedSubmit={handleAcceptedSubmit}
                 onActionStateChange={setActionState}
+                onTestcasesChange={setTestcases}
               />
             </PageSection>
-          }
-        />
+          </div>
         )}
       </main>
     </div>
+  )
+}
+
+export function ProblemDetailPage() {
+  return (
+    <WorkspaceProvider>
+      <ProblemDetailContent />
+    </WorkspaceProvider>
   )
 }

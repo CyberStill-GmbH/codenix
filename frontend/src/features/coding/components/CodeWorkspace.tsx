@@ -10,8 +10,9 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { CodeEditor } from '@/features/coding/components/CodeEditor'
-import { ResizableSplitPane } from '@/features/coding/components/ResizableSplitPane'
+import { ResizeHandleVertical } from '@/features/coding/components/ResizeHandles'
 import { ResultPanel } from '@/features/coding/components/ResultPanel'
+import { useWorkspace } from '@/features/coding/context/WorkspaceContext'
 import {
   getRunResult,
   getSubmissionResult,
@@ -25,7 +26,6 @@ import type {
   TestcaseRunResult,
 } from '@/features/coding/types/coding.types'
 import { useJudgePolling } from '@/features/coding/hooks/useJudgePolling'
-import { readStoredSplitPercent } from '@/features/coding/utils/splitPaneStorage'
 import { useAuth } from '@/features/auth/context/useAuth'
 import { ApiError } from '@/shared/api/apiClient'
 import type {
@@ -44,6 +44,7 @@ type CodeWorkspaceProps = {
   codeTemplates: ProblemCodeTemplate[]
   testcases: CodingTestcase[]
   initialCodeLoad?: CodeLoadRequest | null
+  onTestcasesChange?: (testcases: CodingTestcase[]) => void
   onRunResultsChange: (results: TestcaseRunResult[]) => void
   onAcceptedSubmit: () => void
   onActionStateChange: (state: CodeWorkspaceActionState) => void
@@ -142,6 +143,7 @@ function CodeWorkspace(
     codeTemplates,
     testcases,
     initialCodeLoad,
+    onTestcasesChange,
     onRunResultsChange,
     onAcceptedSubmit,
     onActionStateChange,
@@ -151,6 +153,7 @@ function CodeWorkspace(
   const { user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const { bottomHeightPx, setBottomHeightPx } = useWorkspace()
   const actionSequenceRef = useRef(0)
   const { cancelPolling, pollUntilTerminal } = useJudgePolling()
   const templates = useMemo(() => getTemplates(codeTemplates), [codeTemplates])
@@ -178,9 +181,6 @@ function CodeWorkspace(
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [canRetry, setCanRetry] = useState(false)
-  const [editorPanelPercent, setEditorPanelPercent] = useState(() =>
-    readStoredSplitPercent('codenix_split_vertical', 88),
-  )
 
   const selectedTemplate = useMemo(
     () =>
@@ -194,8 +194,10 @@ function CodeWorkspace(
   const hasEditedCurrentTemplate = code !== selectedTemplate.starterCode
 
   const expandResultPanel = useCallback(() => {
-    setEditorPanelPercent((current) => (current > 76 ? 70 : current))
-  }, [])
+    if (bottomHeightPx < 200) {
+       setBottomHeightPx(240)
+    }
+  }, [bottomHeightPx, setBottomHeightPx])
 
   useEffect(() => {
     window.localStorage.setItem(createDraftKey(user?.id, problemId, language), code)
@@ -433,41 +435,32 @@ function CodeWorkspace(
         </div>
       )}
 
-      <div className="min-h-0 flex-1">
-        <ResizableSplitPane
-          orientation="vertical"
-          storageKey="codenix_split_vertical"
-          defaultPrimaryPercent={88}
-          primaryPercent={editorPanelPercent}
-          onPrimaryPercentChange={setEditorPanelPercent}
-          minPrimaryPx={120}
-          minSecondaryPx={80}
-          className="h-full"
-          primaryClassName="border-b border-[var(--color-border-soft)]"
-          ariaLabel="Redimensionar editor y consola"
-          onHandleDoubleClick={({ currentPercent, setPercent }) => {
-            setPercent(currentPercent > 76 ? 70 : 88)
-          }}
-          primary={
-            <CodeEditor
-              language={selectedTemplate.language}
-              value={code}
-              onChange={setCode}
-            />
-          }
-          secondary={
-            <ResultPanel
-              activeAction={activeAction}
-              isRunning={isRunning}
-              isSubmitting={isSubmitting}
-              runResult={runResult}
-              submitResult={submitResult}
-              errorMessage={errorMessage}
-              canRetry={canRetry}
-              onRetry={activeAction === 'submit' ? handleSubmit : handleRun}
-            />
-          }
-        />
+      <div 
+        className="min-h-0 flex-1 grid"
+        style={{ gridTemplateRows: `1fr 8px var(--bottom-height, ${bottomHeightPx}px)` }}
+      >
+        <div className="min-h-0 min-w-0 border-b border-[var(--color-border-soft)]">
+          <CodeEditor
+            language={selectedTemplate.language}
+            value={code}
+            onChange={setCode}
+          />
+        </div>
+        <ResizeHandleVertical />
+        <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
+          <ResultPanel
+            activeAction={activeAction}
+            isRunning={isRunning}
+            isSubmitting={isSubmitting}
+            runResult={runResult}
+            submitResult={submitResult}
+            errorMessage={errorMessage}
+            canRetry={canRetry}
+            onRetry={activeAction === 'submit' ? handleSubmit : handleRun}
+            testcases={testcases}
+            onTestcasesChange={onTestcasesChange}
+          />
+        </div>
       </div>
     </section>
   )
