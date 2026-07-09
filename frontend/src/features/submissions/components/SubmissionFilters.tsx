@@ -1,10 +1,34 @@
-import { Filter, Search } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Check, ChevronDown, Filter, RotateCcw, Search } from 'lucide-react'
 
 import type {
   SubmissionDifficultyFilter,
   SubmissionResultFilter,
   SubmissionSort,
 } from '@/features/submissions/types/submission.types'
+
+const RESULT_OPTIONS = [
+  { value: 'All', label: 'Todos' },
+  { value: 'Accepted', label: 'Accepted' },
+  { value: 'Wrong Answer', label: 'Wrong Answer' },
+  { value: 'Runtime Error', label: 'Runtime Error' },
+  { value: 'Time Limit Exceeded', label: 'Time Limit Exceeded' },
+  { value: 'Compilation Error', label: 'Compilation Error' },
+] as const
+
+const DIFFICULTY_OPTIONS = [
+  { value: 'All', label: 'Todas' },
+  { value: 'Easy', label: 'Easy' },
+  { value: 'Medium', label: 'Medium' },
+  { value: 'Hard', label: 'Hard' },
+] as const
+
+const SORT_OPTIONS = [
+  { value: 'submitted-desc', label: 'Más recientes' },
+  { value: 'submitted-asc', label: 'Más antiguos' },
+  { value: 'submissions-desc', label: 'Más intentos' },
+  { value: 'acceptance-desc', label: 'Mayor aceptación' },
+] as const
 
 type SubmissionFiltersProps = {
   query: string
@@ -18,6 +42,80 @@ type SubmissionFiltersProps = {
   onDifficultyChange: (difficulty: SubmissionDifficultyFilter) => void
   onTopicChange: (topic: string) => void
   onSortChange: (sort: SubmissionSort) => void
+  onReset: () => void
+}
+
+function CustomSelect<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+  displayValue,
+}: {
+  label: string
+  value: T
+  options: readonly { readonly value: T; readonly label: string }[] | { value: T; label: string }[]
+  onChange: (value: T) => void
+  displayValue: string
+}) {
+  const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handlePointerDown(e: PointerEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    window.addEventListener('pointerdown', handlePointerDown)
+    return () => window.removeEventListener('pointerdown', handlePointerDown)
+  }, [])
+
+  return (
+    <div ref={containerRef} className="relative flex flex-col gap-1.5 w-full">
+      <span className="text-xs font-bold text-[var(--color-text-muted)]">{label}</span>
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="flex h-10 w-full items-center justify-between rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text-soft)] hover:border-slate-500 hover:text-white transition cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
+      >
+        <span className="truncate">{displayValue}</span>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        />
+      </button>
+
+      {isOpen && (
+        <div className="absolute left-0 top-[4.25rem] z-50 max-h-52 w-full overflow-y-auto rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-surface-elevated)] py-1 shadow-2xl scrollbar-thin">
+          {options.map((opt) => {
+            const isSelected = opt.value === value
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  onChange(opt.value)
+                  setIsOpen(false)
+                }}
+                className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface)] ${
+                  isSelected
+                    ? 'bg-[var(--color-surface)] font-semibold text-[var(--color-primary)]'
+                    : 'text-[var(--color-text-soft)] hover:text-white'
+                }`}
+              >
+                <span>{opt.label}</span>
+                {isSelected && (
+                  <Check className="h-4 w-4 shrink-0 text-[var(--color-primary)]" />
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
 }
 
 export function SubmissionFilters({
@@ -32,7 +130,33 @@ export function SubmissionFilters({
   onDifficultyChange,
   onTopicChange,
   onSortChange,
+  onReset,
 }: SubmissionFiltersProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const filterContainerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handlePointerDown(e: PointerEvent) {
+      if (filterContainerRef.current && !filterContainerRef.current.contains(e.target as Node)) {
+        setIsExpanded(false)
+      }
+    }
+    window.addEventListener('pointerdown', handlePointerDown)
+    return () => window.removeEventListener('pointerdown', handlePointerDown)
+  }, [])
+
+  const hasActiveFilters =
+    query !== '' ||
+    result !== 'All' ||
+    difficulty !== 'All' ||
+    topic !== 'All' ||
+    sort !== 'submitted-desc'
+
+  const topicOptions = [
+    { value: 'All', label: 'Todos' },
+    ...topics.map((t) => ({ value: t, label: t })),
+  ]
+
   return (
     <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-4 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -48,63 +172,73 @@ export function SubmissionFilters({
           />
         </label>
 
-        <div className="flex flex-wrap items-center gap-2 lg:ml-auto">
-          <span className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/50 bg-slate-900/70 px-3 text-sm font-semibold text-[var(--color-text-muted)]">
+        <div ref={filterContainerRef} className="relative flex flex-wrap items-center gap-2 lg:ml-auto">
+          <button
+            type="button"
+            aria-expanded={isExpanded}
+            onClick={() => setIsExpanded((v) => !v)}
+            className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(14,165,233,0.22)] ${
+              isExpanded
+                ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
+                : 'border-slate-700/50 bg-slate-900/70 text-[var(--color-text-muted)] hover:border-slate-500 hover:text-white'
+            }`}
+          >
             <Filter className="h-4 w-4" aria-hidden="true" />
             Filter
-          </span>
+          </button>
 
-          <select
-            value={result}
-            onChange={(event) => onResultChange(event.target.value as SubmissionResultFilter)}
-            className="h-10 rounded-full border border-slate-700/50 bg-slate-900/70 px-3 text-sm text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]"
-            aria-label="Filtrar por resultado"
-          >
-            <option value="All">Resultado</option>
-            <option value="Accepted">Accepted</option>
-            <option value="Wrong Answer">Wrong Answer</option>
-            <option value="Runtime Error">Runtime Error</option>
-            <option value="Time Limit Exceeded">Time Limit Exceeded</option>
-            <option value="Compilation Error">Compilation Error</option>
-          </select>
+          {isExpanded && (
+            <div className="absolute right-0 top-12 z-50 w-72 rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-surface-elevated)] p-4 shadow-[var(--shadow-xl)] animate-[user-menu-fade-in_120ms_ease-out_both] space-y-3">
+              <div className="flex items-center justify-between border-b border-[var(--color-border-soft)] pb-2 mb-2">
+                <span className="text-xs font-bold text-[var(--color-text)]">Filtros</span>
+                {hasActiveFilters && (
+                  <button
+                    type="button"
+                    onClick={onReset}
+                    className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-error)] transition cursor-pointer"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                    Restablecer
+                  </button>
+                )}
+              </div>
 
-          <select
-            value={difficulty}
-            onChange={(event) => onDifficultyChange(event.target.value as SubmissionDifficultyFilter)}
-            className="h-10 rounded-full border border-slate-700/50 bg-slate-900/70 px-3 text-sm text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]"
-            aria-label="Filtrar por dificultad"
-          >
-            <option value="All">Dificultad</option>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
-          </select>
+              <CustomSelect
+                label="Resultado"
+                value={result}
+                options={RESULT_OPTIONS}
+                onChange={onResultChange}
+                displayValue={RESULT_OPTIONS.find((o) => o.value === result)?.label ?? result}
+              />
 
-          <select
-            value={topic}
-            onChange={(event) => onTopicChange(event.target.value)}
-            className="h-10 rounded-full border border-slate-700/50 bg-slate-900/70 px-3 text-sm text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]"
-            aria-label="Filtrar por tema"
-          >
-            <option value="All">Tema</option>
-            {topics.map((item) => (
-              <option key={item} value={item}>{item}</option>
-            ))}
-          </select>
+              <CustomSelect
+                label="Dificultad"
+                value={difficulty}
+                options={DIFFICULTY_OPTIONS}
+                onChange={onDifficultyChange}
+                displayValue={DIFFICULTY_OPTIONS.find((o) => o.value === difficulty)?.label ?? difficulty}
+              />
 
-          <select
-            value={sort}
-            onChange={(event) => onSortChange(event.target.value as SubmissionSort)}
-            className="h-10 rounded-full border border-slate-700/50 bg-slate-900/70 px-3 text-sm text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]"
-            aria-label="Ordenar envios"
-          >
-            <option value="submitted-desc">Mas recientes</option>
-            <option value="submitted-asc">Mas antiguos</option>
-            <option value="submissions-desc">Mas intentos</option>
-            <option value="acceptance-desc">Mayor aceptacion</option>
-          </select>
+              <CustomSelect
+                label="Tema"
+                value={topic}
+                options={topicOptions}
+                onChange={onTopicChange}
+                displayValue={topicOptions.find((o) => o.value === topic)?.label ?? topic}
+              />
+
+              <CustomSelect
+                label="Ordenar por"
+                value={sort}
+                options={SORT_OPTIONS}
+                onChange={onSortChange}
+                displayValue={SORT_OPTIONS.find((o) => o.value === sort)?.label ?? sort}
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>
   )
 }
+

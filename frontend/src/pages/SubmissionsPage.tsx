@@ -101,6 +101,14 @@ export function SubmissionsPage() {
       })
   }, [difficulty, query, result, sort, submissions, topic])
 
+  const handleResetFilters = () => {
+    setQuery('')
+    setResult('All')
+    setDifficulty('All')
+    setTopic('All')
+    setSort('submitted-desc')
+  }
+
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <AppNavbar />
@@ -117,7 +125,7 @@ export function SubmissionsPage() {
               </p>
             </PageSection>
 
-            <PageSection delay={100}>
+            <PageSection delay={100} className="relative z-20">
               <SubmissionFilters
                 query={query}
                 result={result}
@@ -130,10 +138,11 @@ export function SubmissionsPage() {
                 onDifficultyChange={setDifficulty}
                 onTopicChange={setTopic}
                 onSortChange={setSort}
+                onReset={handleResetFilters}
               />
             </PageSection>
 
-            <PageSection delay={200}>
+            <PageSection delay={200} className="relative z-10">
               {isLoading && (
                 <div className="mb-3 rounded-xl border border-slate-800 bg-slate-950/55 px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)]">
                   Cargando submissions...
