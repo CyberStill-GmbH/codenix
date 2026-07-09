@@ -1,9 +1,10 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ShieldCheck } from 'lucide-react'
+import { Search, ShieldCheck } from 'lucide-react'
 
 import logo from '@/assets/icons/logo.png'
 import { useAuth } from '@/features/auth/context/useAuth'
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
 import { UserMenu } from '@/features/user/components/UserMenu'
 import { landingTokens } from '@/features/landing/theme/tokens'
@@ -27,6 +28,7 @@ const cx = (...classes: Array<string | false | undefined>) =>
 export function AppNavbar() {
   const location = useLocation()
   const { user } = useAuth()
+  const isMobile = useMediaQuery('(max-width: 767px)')
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const userMenuButtonRef = useRef<HTMLButtonElement>(null)
   const adminHref = getLastAdminPath()
@@ -41,7 +43,7 @@ export function AppNavbar() {
     <header className="sticky top-0 z-50 bg-[var(--color-navbar-bg)] shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl">
       <nav
         className={cx(
-          'mx-auto flex h-[50px] w-full items-center justify-between gap-6 px-6',
+          'mx-auto flex h-14 w-full items-center justify-between gap-6 px-6',
           isProfileRoute
             ? 'md:max-w-[888px] lg:max-w-screen-xl'
             : 'max-w-[90rem]',
@@ -81,7 +83,7 @@ export function AppNavbar() {
                   onMouseEnter={() => preloadRoute(item.preload)}
                   onFocus={() => preloadRoute(item.preload)}
                   className={cx(
-                    'relative rounded-[var(--radius-lg)] px-1 py-2 text-sm font-semibold tracking-normal transition duration-200',
+                    'relative rounded-[var(--radius-lg)] px-1 py-2 text-sm font-semibold tracking-normal transition duration-150',
                     isActive
                       ? 'text-[var(--color-text)] after:absolute after:inset-x-1 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-[var(--color-primary)]'
                       : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
@@ -96,7 +98,7 @@ export function AppNavbar() {
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-4">
+        <div className="flex shrink-0 items-center gap-3">
           {user?.role === 'admin' && (
             <Link
               to={adminHref}
@@ -109,11 +111,26 @@ export function AppNavbar() {
             </Link>
           )}
 
-          <ProblemSearchBox />
+          {/* Search: full box on desktop, icon button on mobile (ready for Ctrl+K palette) */}
+          {isMobile ? (
+            <button
+              type="button"
+              id="navbar-search-trigger"
+              aria-label="Buscar problemas (Ctrl+K)"
+              title="Buscar problemas"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700/60 bg-slate-950/70 text-[var(--color-text-muted)] transition hover:border-slate-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+            >
+              <Search className="h-4 w-4" aria-hidden="true" />
+            </button>
+          ) : (
+            <ProblemSearchBox />
+          )}
 
+          {/* Avatar + Dropdown */}
           <div className="relative">
             <button
               ref={userMenuButtonRef}
+              id="navbar-user-avatar"
               type="button"
               className={cx(
                 'rounded-full border border-slate-700/50 bg-slate-950/50 p-0.5 transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]',
@@ -122,14 +139,18 @@ export function AppNavbar() {
               aria-label="Abrir menu de usuario"
               aria-haspopup="menu"
               aria-expanded={isUserMenuOpen}
-              onClick={() => setIsUserMenuOpen((current) => !current)}
+              onClick={() => setIsUserMenuOpen((v) => !v)}
             >
-              <UserAvatar src={user?.avatarUrl} name={user?.name ?? 'Usuario'} size="sm" />
+              <UserAvatar
+                src={user?.avatarUrl}
+                name={user?.name ?? 'Usuario'}
+                size={isMobile ? 'sm' : 'md'}
+              />
             </button>
 
             {isUserMenuOpen && user && (
               <div
-                className="absolute right-0 top-12"
+                className="absolute right-0 top-12 z-50"
                 role="menu"
                 aria-label="Menu de usuario"
               >

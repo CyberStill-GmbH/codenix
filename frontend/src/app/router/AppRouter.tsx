@@ -16,6 +16,7 @@ import {
   LazyProblemDetailPage,
   LazyProblemsPage,
   LazyProfilePage,
+  LazySettingsPage,
   LazySubmissionsPage,
 } from '@/routes/lazyRoutes'
 
@@ -100,6 +101,16 @@ export function AppRouter() {
           <RequireAuth fallback="profile">
             <AppSuspenseBoundary fallback="profile">
               <LazyProfilePage />
+            </AppSuspenseBoundary>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <RequireAuth fallback="profile">
+            <AppSuspenseBoundary fallback="profile">
+              <LazySettingsPage />
             </AppSuspenseBoundary>
           </RequireAuth>
         }

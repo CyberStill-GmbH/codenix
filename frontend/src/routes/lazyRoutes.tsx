@@ -35,3 +35,8 @@ export const LazyAdminProblemTestcasesPage = lazy(() =>
     .adminProblemTestcases()
     .then((module) => ({ default: module.AdminProblemTestcasesPage })),
 )
+
+export const LazySettingsPage = lazy(() =>
+  pageImports.settings().then((module) => ({ default: module.SettingsPage })),
+)
+

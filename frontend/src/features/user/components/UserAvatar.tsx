@@ -1,14 +1,17 @@
 import { useState } from 'react'
 
+type UserAvatarSize = 'sm' | 'md' | 'menu' | 'lg'
+
 type UserAvatarProps = {
   src?: string
   name: string
-  size?: 'sm' | 'md' | 'lg'
+  size?: UserAvatarSize
 }
 
-const sizeClassNames: Record<NonNullable<UserAvatarProps['size']>, string> = {
-  sm: 'h-8 w-8 text-xs',
-  md: 'h-10 w-10 text-sm',
+const sizeClassNames: Record<UserAvatarSize, string> = {
+  sm: 'h-9 w-9 text-xs',       // 36px — navbar mobile
+  md: 'h-10 w-10 text-sm',     // 40px — navbar desktop/tablet
+  menu: 'h-14 w-14 text-xl',   // 56px — dropdown header
   lg: 'h-16 w-16 text-2xl md:h-20 md:w-20 md:text-3xl',
 }
 
