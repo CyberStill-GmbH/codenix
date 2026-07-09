@@ -1,4 +1,5 @@
-import type { DockerExecutionResult } from "../docker-runner";
+import type { Sandbox, SandboxExecutionResult } from "../types";
+import type { Workspace } from "../workspace";
 
 export interface RunnerConfig {
   sourceCode: string;
@@ -6,31 +7,52 @@ export interface RunnerConfig {
   memoryLimitMb: number;
 }
 
+export interface CompileResult {
+  success: boolean;
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+  executionTimeMs: number;
+}
+
+export type ExecutionResult = SandboxExecutionResult;
+
 export class CompileError extends Error {
-  constructor(public compileOutput: string) {
+  constructor(public readonly result: CompileResult) {
     super("Compilation failed");
     this.name = "CompileError";
+  }
+
+  get compileOutput(): string {
+    return this.result.stderr || this.result.stdout;
   }
 }
 
 export abstract class BaseRunner {
-  protected config: RunnerConfig;
+  protected readonly config: RunnerConfig;
 
-  constructor(config: RunnerConfig) {
+  constructor(
+    config: RunnerConfig,
+    protected readonly sandbox: Sandbox,
+    protected readonly workspace: Workspace,
+  ) {
     this.config = config;
   }
 
   /**
-   * Prepares the execution environment.
-   * If compilation is required, it must be done here.
-   * Throws CompileError if compilation fails.
+   * Prepares local files required by the runner.
    */
-  abstract prepare(): Promise<{ compileOutput?: string }>;
+  abstract prepare(): Promise<void>;
 
+  abstract compile(): Promise<CompileResult>;
   /**
    * Executes the code with the given standard input.
    */
-  abstract run(input: string): Promise<DockerExecutionResult>;
+  abstract execute(input: string): Promise<ExecutionResult>;
+
+  run(input: string): Promise<ExecutionResult> {
+    return this.execute(input);
+  }
 
   /**
    * Cleans up any resources (like temporary directories).

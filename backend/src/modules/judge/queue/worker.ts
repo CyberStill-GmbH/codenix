@@ -25,12 +25,12 @@ async function persistInternalError(payload: JudgeJobPayload, message: string) {
   if (payload.submissionId) {
     await prisma.submission.updateMany({
       where: { id: payload.submissionId, result: "pending" },
-      data: { result: "internal_error", compileOutput: message }
+      data: { result: "internal_error", compileOutput: message },
     });
   } else if (payload.runId) {
     await prisma.codeRun.updateMany({
       where: { id: payload.runId, status: { in: ["pending", "running"] } },
-      data: { status: "internal_error", error: message }
+      data: { status: "internal_error", error: message },
     });
   }
 }
@@ -41,7 +41,7 @@ async function persistResult(
   compileOutput: string,
   results: TestcaseResultData[],
   totalTimeMs: number,
-  maxMemoryKb: number
+  maxMemoryKb: number,
 ) {
   if (payload.submissionId) {
     const submissionId = payload.submissionId;
@@ -52,8 +52,8 @@ async function persistResult(
           result: verdict,
           compileOutput: compileOutput || null,
           executionTimeMs: totalTimeMs,
-          memoryKb: maxMemoryKb
-        }
+          memoryKb: maxMemoryKb,
+        },
       });
       await tx.submissionTestcaseResult.deleteMany({ where: { submissionId } });
       if (results.length > 0) {
@@ -65,8 +65,8 @@ async function persistResult(
             error: result.error || null,
             passed: result.passed,
             executionTimeMs: result.executionTimeMs,
-            memoryKb: result.memoryKb
-          }))
+            memoryKb: result.memoryKb,
+          })),
         });
       }
     });
@@ -81,10 +81,14 @@ async function persistResult(
         status: verdict,
         compileOutput: compileOutput || null,
         stdout: results.map((result) => result.actualOutput).join("\n") || null,
-        stderr: results.map((result) => result.error).filter(Boolean).join("\n") || null,
+        stderr:
+          results
+            .map((result) => result.error)
+            .filter(Boolean)
+            .join("\n") || null,
         executionTimeMs: totalTimeMs,
-        memoryKb: maxMemoryKb
-      }
+        memoryKb: maxMemoryKb,
+      },
     });
     await tx.codeRunTestcaseResult.deleteMany({ where: { runId } });
     if (results.length > 0) {
@@ -98,8 +102,8 @@ async function persistResult(
           error: result.error || null,
           passed: result.passed,
           executionTimeMs: result.executionTimeMs,
-          memoryKb: result.memoryKb
-        }))
+          memoryKb: result.memoryKb,
+        })),
       });
     }
   });
@@ -114,7 +118,7 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
   const runner = createRunner(payload.language, {
     sourceCode: payload.sourceCode,
     timeLimitMs: payload.timeLimitMs,
-    memoryLimitMb: payload.memoryLimitMb
+    memoryLimitMb: payload.memoryLimitMb,
   });
   let compileOutput = "";
   const results: TestcaseResultData[] = [];
@@ -126,17 +130,19 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
     if (payload.runId) {
       await prisma.codeRun.update({
         where: { id: payload.runId },
-        data: { status: "running" }
+        data: { status: "running" },
       });
     }
 
     try {
-      const prepared = await runner.prepare();
-      compileOutput = prepared.compileOutput ?? "";
+      await runner.prepare();
+
+      const compile = await runner.compile();
+      compileOutput = compile.stderr || compile.stdout;
     } catch (error) {
       if (error instanceof CompileError) {
         overallVerdict = "compilation_error";
-        compileOutput = error.compileOutput;
+        compileOutput = error.result.stderr || error.result.stdout;
       } else {
         throw error;
       }
@@ -144,7 +150,7 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
 
     if (overallVerdict !== "compilation_error") {
       for (const testcase of payload.testcases) {
-        const execution = await runner.run(testcase.input);
+        const execution = await runner.execute(testcase.input);
         const isCorrect =
           testcase.expectedOutput == null ||
           compareOutput(execution.stdout, testcase.expectedOutput);
@@ -153,7 +159,7 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
           execution.isOOM,
           execution.isOutputLimitExceeded,
           execution.exitCode,
-          isCorrect
+          isCorrect,
         );
 
         totalTimeMs += execution.executionTimeMs;
@@ -166,7 +172,7 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
           error: execution.stderr,
           passed: verdict === "accepted",
           executionTimeMs: execution.executionTimeMs,
-          memoryKb: execution.memoryKb
+          memoryKb: execution.memoryKb,
         });
 
         if (overallVerdict === "accepted" && verdict !== "accepted") {
@@ -181,10 +187,11 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
       compileOutput,
       results,
       totalTimeMs,
-      maxMemoryKb
+      maxMemoryKb,
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown judge error";
+    const message =
+      error instanceof Error ? error.message : "Unknown judge error";
     await persistInternalError(payload, message);
     throw error;
   } finally {
@@ -199,6 +206,6 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
 export function createJudgeWorker() {
   return new Worker<JudgeJobPayload>(JUDGE_QUEUE_NAME, processJudgeJob, {
     connection: { url: env.REDIS_URL },
-    concurrency: 5
+    concurrency: 5,
   });
 }

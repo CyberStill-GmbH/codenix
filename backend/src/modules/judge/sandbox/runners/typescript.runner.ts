@@ -1,90 +1,113 @@
-import fs from "node:fs/promises";
 import path from "node:path";
-import os from "node:os";
-import { randomUUID } from "node:crypto";
 import { BaseRunner, CompileError } from "./base.runner";
-import type { RunnerConfig } from "./base.runner";
-import {
-  runDockerContainer,
-  type DockerExecutionResult
-} from "../docker-runner";
+import type {
+  RunnerConfig,
+  CompileResult,
+  ExecutionResult,
+} from "./base.runner";
+import type { Sandbox } from "../types";
+import { Workspace } from "../workspace";
+
+const DOCKER_IMAGE = "node:20-alpine";
+const CONTAINER_WORKDIR = "/usr/src/app";
+const CONTAINER_TS_DIR = "/opt/typescript";
+const COMPILE_TIMEOUT_MS = 10_000;
+const COMPILE_MEMORY_MB = 512;
+const SOURCE_FILE = "solution.ts";
+const OUTPUT_FILE = "solution.js";
+
+interface SandboxSecurityOptions {
+  image: string;
+  workdir: string;
+  networkNone: boolean;
+  dropCapabilities: boolean;
+  readOnlyRootfs: boolean;
+  user: string;
+}
 
 export class TypescriptRunner extends BaseRunner {
-  private readonly tempDir: string;
-  private readonly sourceFile: string;
   private readonly typescriptDir = path.resolve(
     process.cwd(),
     "node_modules",
-    "typescript"
+    "typescript",
   );
 
-  constructor(config: RunnerConfig) {
-    super(config);
-    this.tempDir = path.join(os.tmpdir(), `codenix-judge-${randomUUID()}`);
-    this.sourceFile = path.join(this.tempDir, "solution.ts");
+  constructor(
+    config: RunnerConfig,
+    sandbox: Sandbox,
+    workspace = new Workspace(),
+  ) {
+    super(config, sandbox, workspace);
   }
 
-  async prepare(): Promise<{ compileOutput?: string }> {
-    await fs.mkdir(this.tempDir, { recursive: true });
-    await fs.writeFile(this.sourceFile, this.config.sourceCode, "utf8");
+  private baseDockerOptions(): SandboxSecurityOptions {
+    return {
+      image: DOCKER_IMAGE,
+      workdir: CONTAINER_WORKDIR,
+      networkNone: true,
+      dropCapabilities: true,
+      readOnlyRootfs: true,
+      user: "1000:1000",
+    };
+  }
 
-    const compileResult = await runDockerContainer({
-      image: "node:20-alpine",
+  async prepare(): Promise<void> {
+    await this.workspace.prepare();
+    await this.workspace.writeFile(SOURCE_FILE, this.config.sourceCode);
+  }
+
+  async compile(): Promise<CompileResult> {
+    const raw = await this.sandbox.run({
+      ...this.baseDockerOptions(),
       command: [
         "node",
-        "/opt/typescript/bin/tsc",
-        "solution.ts",
+        `${CONTAINER_TS_DIR}/bin/tsc`,
+        SOURCE_FILE,
         "--target",
         "ES2022",
         "--module",
         "CommonJS",
-        "--skipLibCheck"
+        "--skipLibCheck",
       ],
-      workdir: "/usr/src/app",
       bindMounts: [
-        { hostPath: this.tempDir, containerPath: "/usr/src/app", readOnly: false },
-        { hostPath: this.typescriptDir, containerPath: "/opt/typescript", readOnly: true }
+        this.workspace.mount(CONTAINER_WORKDIR, false),
+        {
+          hostPath: this.typescriptDir,
+          containerPath: CONTAINER_TS_DIR,
+          readOnly: true,
+        },
       ],
-      memoryLimitMb: 512,
-      timeLimitMs: 10_000,
-      networkNone: true,
-      dropCapabilities: true,
-      readOnlyRootfs: true,
-      user: "1000:1000"
+      memoryLimitMb: COMPILE_MEMORY_MB,
+      timeLimitMs: COMPILE_TIMEOUT_MS,
     });
 
-    if (
-      compileResult.exitCode !== 0 ||
-      compileResult.isTLE ||
-      compileResult.isOOM
-    ) {
-      throw new CompileError(
-        compileResult.stderr || compileResult.stdout || "TypeScript compilation failed."
-      );
+    const result: CompileResult = {
+      success: raw.exitCode === 0 && !raw.isTLE && !raw.isOOM,
+      stdout: raw.stdout,
+      stderr: raw.stderr,
+      exitCode: raw.exitCode,
+      executionTimeMs: raw.executionTimeMs,
+    };
+
+    if (!result.success) {
+      throw new CompileError(result);
     }
 
-    return { compileOutput: compileResult.stderr || compileResult.stdout };
+    return result;
   }
 
-  async run(input: string): Promise<DockerExecutionResult> {
-    return runDockerContainer({
-      image: "node:20-alpine",
-      command: ["node", "/usr/src/app/solution.js"],
-      workdir: "/usr/src/app",
-      bindMounts: [
-        { hostPath: this.tempDir, containerPath: "/usr/src/app", readOnly: true }
-      ],
+  async execute(input: string): Promise<ExecutionResult> {
+    return this.sandbox.run({
+      ...this.baseDockerOptions(),
+      command: ["node", `${CONTAINER_WORKDIR}/${OUTPUT_FILE}`],
+      bindMounts: [this.workspace.mount(CONTAINER_WORKDIR, true)],
       memoryLimitMb: this.config.memoryLimitMb,
       timeLimitMs: this.config.timeLimitMs,
       input,
-      networkNone: true,
-      dropCapabilities: true,
-      readOnlyRootfs: true,
-      user: "1000:1000"
     });
   }
 
   async cleanup(): Promise<void> {
-    await fs.rm(this.tempDir, { recursive: true, force: true });
+    await this.workspace.cleanup();
   }
 }

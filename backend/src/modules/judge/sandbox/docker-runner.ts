@@ -1,34 +1,16 @@
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import type { SandboxExecutionResult, SandboxRunOptions } from "./types";
 
 const MAX_OUTPUT_BYTES = 1024 * 1024;
+const MEMORY_MARKER = "__CODENIX_MEMORY_KB__:";
 
-export interface DockerExecutionResult {
-  stdout: string;
-  stderr: string;
-  executionTimeMs: number;
-  memoryKb: number;
-  isTLE: boolean;
-  isOOM: boolean;
-  isOutputLimitExceeded: boolean;
-  exitCode: number | null;
-}
+export type DockerExecutionResult = SandboxExecutionResult;
+export type DockerRunOptions = SandboxRunOptions;
 
-export interface DockerRunOptions {
-  image: string;
-  command: string[];
-  workdir: string;
-  bindMounts?: { hostPath: string; containerPath: string; readOnly: boolean }[];
-  memoryLimitMb: number;
-  timeLimitMs: number;
-  input?: string;
-  networkNone?: boolean;
-  dropCapabilities?: boolean;
-  readOnlyRootfs?: boolean;
-  user?: string;
-}
-
-function runDockerCommand(args: string[]): Promise<{ stdout: string; exitCode: number | null }> {
+function runDockerCommand(
+  args: string[],
+): Promise<{ stdout: string; exitCode: number | null }> {
   return new Promise((resolve) => {
     const child = spawn("docker", args, { windowsHide: true });
     let stdout = "";
@@ -40,9 +22,62 @@ function runDockerCommand(args: string[]): Promise<{ stdout: string; exitCode: n
   });
 }
 
+const CGROUP_MEMORY_SCRIPT = `
+"$@"
+exit_code=$?
+peak_bytes=""
+if [ -r /sys/fs/cgroup/memory.peak ]; then
+  peak_bytes=$(cat /sys/fs/cgroup/memory.peak)
+elif [ -r /sys/fs/cgroup/memory/memory.max_usage_in_bytes ]; then
+  peak_bytes=$(cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes)
+fi
+case "$peak_bytes" in
+  ""|"max") ;;
+  *[!0-9]*) ;;
+  *) printf "\\n${MEMORY_MARKER}%s\\n" $(((peak_bytes + 1023) / 1024)) >&2 ;;
+esac
+exit "$exit_code"
+`.trim();
+
+export function wrapCommandWithMetrics(command: string[]): string[] {
+  return ["sh", "-c", CGROUP_MEMORY_SCRIPT, "codenix-metrics", ...command];
+}
+
+export function extractMemoryMetric(stderr: string): {
+  stderr: string;
+  memoryKb: number;
+} {
+  const markerPattern = new RegExp(`^${MEMORY_MARKER}(\\d+)$`);
+  let memoryKb = 0;
+  const lines = stderr.split(/\r?\n/);
+  const cleanedLines: string[] = [];
+
+  for (const line of lines) {
+    const match = line.match(markerPattern);
+    if (!match) {
+      cleanedLines.push(line);
+      continue;
+    }
+
+    memoryKb = Math.max(memoryKb, Number.parseInt(match[1]!, 10));
+  }
+
+  const penultimateLine = lines.at(-2);
+  if (
+    lines.at(-1) === "" &&
+    penultimateLine !== undefined &&
+    markerPattern.test(penultimateLine) &&
+    cleanedLines.at(-1) === ""
+  ) {
+    cleanedLines.pop();
+  }
+
+  return { stderr: memoryKb > 0 ? cleanedLines.join("\n") : stderr, memoryKb };
+}
+
 export function buildDockerArgs(
   options: DockerRunOptions,
-  containerName: string
+  containerName: string,
 ): string[] {
   const args = [
     "run",
@@ -64,7 +99,7 @@ export function buildDockerArgs(
     `${options.memoryLimitMb}m`,
     "--cpus",
     "1",
-    "-i"
+    "-i",
   ];
 
   if (options.networkNone) args.push("--network", "none");
@@ -75,7 +110,7 @@ export function buildDockerArgs(
     args.push(
       "--read-only",
       "--tmpfs",
-      "/tmp:rw,noexec,nosuid,nodev,size=50m,mode=1777"
+      "/tmp:rw,noexec,nosuid,nodev,size=50m,mode=1777",
     );
   }
   if (options.user) args.push("--user", options.user);
@@ -83,16 +118,21 @@ export function buildDockerArgs(
   for (const mount of options.bindMounts ?? []) {
     args.push(
       "--mount",
-      `type=bind,src=${mount.hostPath},dst=${mount.containerPath}${mount.readOnly ? ",readonly" : ""}`
+      `type=bind,src=${mount.hostPath},dst=${mount.containerPath}${mount.readOnly ? ",readonly" : ""}`,
     );
   }
 
-  args.push("-w", options.workdir, options.image, ...options.command);
+  args.push(
+    "-w",
+    options.workdir,
+    options.image,
+    ...wrapCommandWithMetrics(options.command),
+  );
   return args;
 }
 
 export async function runDockerContainer(
-  options: DockerRunOptions
+  options: DockerRunOptions,
 ): Promise<DockerExecutionResult> {
   const containerName = `codenix-judge-${randomUUID()}`;
   const args = buildDockerArgs(options, containerName);
@@ -113,7 +153,7 @@ export async function runDockerContainer(
   const exitCode = await new Promise<number | null>((resolve, reject) => {
     const child = spawn("docker", args, {
       windowsHide: true,
-      env: { PATH: process.env.PATH ?? "" }
+      env: { PATH: process.env.PATH ?? "" },
     });
 
     const capture = (chunk: Buffer, stream: "stdout" | "stderr") => {
@@ -152,21 +192,22 @@ export async function runDockerContainer(
     "inspect",
     "--format",
     "{{.State.OOMKilled}}",
-    containerName
+    containerName,
   ]);
   const isOOM = inspect.stdout.trim().toLowerCase() === "true";
   await runDockerCommand(["rm", "--force", containerName]);
+  const memoryMetric = extractMemoryMetric(stderr);
 
   return {
     stdout,
     stderr: isOutputLimitExceeded
-      ? `${stderr}\nOutput limit exceeded (1 MiB).`.trim()
-      : stderr,
+      ? `${memoryMetric.stderr}\nOutput limit exceeded (1 MiB).`.trim()
+      : memoryMetric.stderr,
     executionTimeMs: Date.now() - startTime,
-    memoryKb: 0,
+    memoryKb: memoryMetric.memoryKb,
     isTLE,
     isOOM,
     isOutputLimitExceeded,
-    exitCode
+    exitCode,
   };
 }
