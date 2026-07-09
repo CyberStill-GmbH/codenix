@@ -11,6 +11,15 @@ function buildActiveDayIndexes() {
   return activeIndexes
 }
 
+// Misma fecha en calendario LOCAL (no UTC) que en ActivityHeatmap.tsx, para que este
+// fallback de desarrollo se comporte igual que los datos reales de la API.
+function toLocalDateKey(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 export function useActivityHeatmapData() {
   // Development fallback for isolated visual rendering; ProfilePage passes API data.
   return useMemo<ActivityDay[]>(() => {
@@ -31,7 +40,7 @@ export function useActivityHeatmapData() {
           : 4
 
       return {
-        date: date.toISOString().split('T')[0],
+        date: toLocalDateKey(date),
         count,
         accepted: count,
       }

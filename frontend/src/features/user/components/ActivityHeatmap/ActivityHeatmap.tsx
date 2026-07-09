@@ -1,14 +1,18 @@
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Info } from 'lucide-react'
 import { ActivityCalendar, type Activity } from 'react-activity-calendar'
 import 'react-activity-calendar/tooltips.css'
 
 import { UserCard } from '@/features/user/components/UserCard'
 import {
-  profileDividerClassName,
   profileInteractiveSurfaceClassName,
 } from '@/features/user/components/profileStyles'
 import type { ActivityDay } from '@/features/user/types/user.types'
 import { formatDate } from '@/shared/utils/date'
+import {
+  ACTIVITY_HEAT_COLORS,
+  getActivityLevel,
+  LEGEND_SAMPLE_COUNTS,
+} from './activityHeatmap.constants'
 import { getHeatmapColor } from './heatmapColorScale'
 import { useActivityHeatmapData } from './useActivityHeatmapData'
 
@@ -17,31 +21,25 @@ type ActivityHeatmapProps = {
   year?: number
 }
 
+// El theme del calendario lee de la MISMA paleta que la leyenda (activityHeatmap.constants),
+// así nunca se vuelven a desincronizar como antes.
+// El nivel 0 (sin actividad) se sobreescribe a algo casi imperceptible contra el fondo de la card:
+// si se deja el token --heat-0 tal cual, en LeetCode ese contraste es mínimo, y si el token
+// definido en el design system tiene demasiado contraste los cuadros vacíos se ven "gordos"
+// y con borde visible en vez de fundirse con el fondo.
 const heatmapTheme = {
-  dark: [
-    'rgba(255,255,255,0.04)',
-    'rgba(56,189,248,0.22)',
-    'rgba(56,189,248,0.50)',
-    '#38bdf8',
-    '#0ea5e9',
-  ],
+  dark: ['rgba(255,255,255,0.045)', ...ACTIVITY_HEAT_COLORS.slice(1)],
 }
 
 const labels = {
+  // Weekday labels alineadas con weekStart={1} (Lunes primero). Solo se usan si
+  // showWeekdayLabels se activa en el futuro; antes empezaban en Domingo y quedaban desfasadas.
   months: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-  weekdays: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  weekdays: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
   legend: {
     less: 'Menos',
     more: 'Mas',
   },
-}
-
-function getActivityLevel(count: number) {
-  if (count === 0) return 0
-  if (count <= 2) return 1
-  if (count <= 5) return 2
-  if (count <= 10) return 3
-  return 4
 }
 
 function getMaxStreak(data: Activity[]) {
@@ -60,14 +58,44 @@ function getMaxStreak(data: Activity[]) {
   return maxStreak
 }
 
-function buildYearCalendar(activityDays: ActivityDay[], year: number): ActivityDay[] {
+// Arma la clave de fecha (YYYY-MM-DD) usando el calendario LOCAL del navegador, no UTC.
+// Antes se usaba toISOString(), que siempre devuelve la fecha en UTC: para alguien en
+// UTC-5 (Perú), pasadas las 7pm hora local ya es "mañana" en UTC, así que el punto de
+// "hoy" aparecía corrido un día. GitHub y LeetCode arman la fecha con el calendario
+// local del usuario, no con UTC — esto replica ese comportamiento.
+function toLocalDateKey(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+// Ventana móvil de 12 meses terminando HOY (mes actual siempre visible al final),
+// igual que "past one year" en GitHub/LeetCode. Alineada al día 1 del mes de hace 11
+// meses, para que ningún mes quede partido en dos pedazos distintos. Se usa para "Año actual".
+function buildRollingYearCalendar(activityDays: ActivityDay[]): ActivityDay[] {
   const activityByDate = new Map(activityDays.map((day) => [day.date, day]))
-  const start = new Date(Date.UTC(year, 0, 1))
-  const end = new Date(Date.UTC(year + 1, 0, 1))
+  const today = new Date()
+  const start = new Date(today.getFullYear(), today.getMonth() - 11, 1)
   const days: ActivityDay[] = []
 
-  for (const date = new Date(start); date < end; date.setUTCDate(date.getUTCDate() + 1)) {
-    const dateKey = date.toISOString().slice(0, 10)
+  for (const date = new Date(start); date <= today; date.setDate(date.getDate() + 1)) {
+    const dateKey = toLocalDateKey(date)
+    days.push(activityByDate.get(dateKey) ?? { date: dateKey, count: 0, accepted: 0 })
+  }
+
+  return days
+}
+
+// Año calendario fijo (Ene 1 - Dic 31) para cuando se navega a un año pasado específico.
+function buildCalendarYear(activityDays: ActivityDay[], year: number): ActivityDay[] {
+  const activityByDate = new Map(activityDays.map((day) => [day.date, day]))
+  const start = new Date(year, 0, 1)
+  const end = new Date(year + 1, 0, 1)
+  const days: ActivityDay[] = []
+
+  for (const date = new Date(start); date < end; date.setDate(date.getDate() + 1)) {
+    const dateKey = toLocalDateKey(date)
     days.push(activityByDate.get(dateKey) ?? { date: dateKey, count: 0, accepted: 0 })
   }
 
@@ -79,7 +107,12 @@ export function ActivityHeatmap({
   year = new Date().getFullYear(),
 }: ActivityHeatmapProps) {
   const fallbackData = useActivityHeatmapData()
-  const sourceData = activityDays ? buildYearCalendar(activityDays, year) : fallbackData
+  const isCurrentYear = year === new Date().getFullYear()
+  const sourceData = activityDays
+    ? isCurrentYear
+      ? buildRollingYearCalendar(activityDays)
+      : buildCalendarYear(activityDays, year)
+    : fallbackData
   const data = sourceData.map<Activity>((day) => ({
     ...day,
     level: getActivityLevel(day.count),
@@ -92,35 +125,47 @@ export function ActivityHeatmap({
   return (
     <UserCard>
       <div className="p-3.5">
-        <header className={`mb-3 flex flex-col gap-3 pb-3 md:flex-row md:items-center md:justify-between ${profileDividerClassName}`}>
-          <div>
-            <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
-              Actividad
-            </h2>
-            <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-              <span className="font-mono font-bold text-[var(--color-text)]">{totalSubmissions}</span> envios
-              <span className="text-[var(--color-text-subtle)]"> · </span>
-              <span className="font-mono font-bold text-[var(--color-text)]">{activeDays}</span> dias activos
-              <span className="text-[var(--color-text-subtle)]"> · </span>
-              racha maxima de <span className="font-mono font-bold text-[var(--color-text)]">{maxStreak}</span> dias
-            </p>
+        {/* Header estilo LeetCode: total + label a la izquierda, stats compactas a la derecha */}
+        <header className="mb-3 flex flex-col gap-2 pb-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className="font-mono text-lg font-bold text-[var(--color-text)]">
+              {totalSubmissions}
+            </span>
+            <span className="text-sm text-[var(--color-text-muted)]">
+              {isCurrentYear ? 'envios en el ultimo año' : `envios en ${year}`}
+            </span>
+            <Info
+              className="h-3.5 w-3.5 text-[var(--color-text-subtle)]"
+              aria-hidden="true"
+            />
           </div>
 
-          <button className={`inline-flex min-h-10 w-fit items-center gap-2 rounded-lg px-3 text-sm font-semibold text-[var(--color-text-soft)] ${profileInteractiveSurfaceClassName}`}>
-            {year === new Date().getFullYear() ? 'Año actual' : year}
-            <ChevronDown className="h-4 w-4" aria-hidden="true" />
-          </button>
+          <div className="flex items-center gap-4 text-sm text-[var(--color-text-muted)]">
+            <span>
+              Dias activos:{' '}
+              <span className="font-mono font-semibold text-[var(--color-text)]">{activeDays}</span>
+            </span>
+            <span>
+              Racha maxima:{' '}
+              <span className="font-mono font-semibold text-[var(--color-text)]">{maxStreak}</span>
+            </span>
+
+            <button className={`inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold text-[var(--color-text-soft)] ${profileInteractiveSurfaceClassName}`}>
+              {isCurrentYear ? 'Año actual' : year}
+              <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+            </button>
+          </div>
         </header>
 
-        <div className="w-full overflow-x-auto pb-1">
-          <div className="min-w-max">
+        <div className="flex w-full justify-center overflow-x-auto pb-1">
+          <div className="w-fit">
             <ActivityCalendar
               data={data}
-              blockSize={10}
-              blockMargin={3}
-              blockRadius={3}
+              blockSize={12}
+              blockMargin={4}
+              blockRadius={2}
               colorScheme="dark"
-              fontSize={10}
+              fontSize={9}
               labels={labels}
               showColorLegend={false}
               showTotalCount={false}
@@ -139,8 +184,8 @@ export function ActivityHeatmap({
 
         <div className="mt-3 flex justify-end">
           <div className="flex items-center gap-1.5 text-[0.6875rem] text-[var(--color-text-subtle)]">
-            <span>Menos</span>
-            {[0, 1, 3, 6, 11].map((count) => (
+            <span>{labels.legend.less}</span>
+            {LEGEND_SAMPLE_COUNTS.map((count) => (
               <span
                 key={count}
                 className="h-3 w-3 rounded-[3px] border border-[rgba(255,255,255,0.06)]"
@@ -148,10 +193,11 @@ export function ActivityHeatmap({
                 aria-hidden="true"
               />
             ))}
-            <span>Mas</span>
+            <span>{labels.legend.more}</span>
           </div>
         </div>
       </div>
     </UserCard>
   )
 }
+
