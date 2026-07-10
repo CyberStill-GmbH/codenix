@@ -6,7 +6,7 @@
     "module": "esnext",
     "target": "ES2023",
     "moduleResolution": "bundler",
-    "types": ["node", "vitest/globals"],
+    "types": ["node"],
 
     "sourceMap": true,
     "declaration": true,
@@ -19,13 +19,11 @@
     "strict": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
   },
   "include": [
-    "src",
-    "vitest.config.ts"
+    "src"
   ],
   "exclude": [
     "node_modules",
