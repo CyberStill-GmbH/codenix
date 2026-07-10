@@ -107,7 +107,7 @@ export function UserRecentSubmissions({ submissions }: UserRecentSubmissionsProp
                 onClick={() => setActiveTab(tab.id)}
                 className={`h-8 rounded-md px-3 text-xs font-bold transition ${
                   activeTab === tab.id
-                    ? 'bg-[#1b222c] text-[var(--color-accent)]'
+                    ? 'bg-[var(--color-surface-elevated)] text-[var(--color-accent)] shadow-sm border border-[var(--color-border-soft)]'
                     : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
                 }`}
               >

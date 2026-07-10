@@ -52,7 +52,7 @@ export function RankingCard({
                   fill={
                     bar.bucket === userBucket
                       ? 'var(--color-accent)'
-                      : 'rgba(148,163,184,0.16)'
+                      : 'var(--color-border)'
                   }
                 />
               ))}
@@ -63,7 +63,7 @@ export function RankingCard({
 
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <span className={profilePillClassName}>
-          <span className="h-2 w-2 rounded-sm bg-slate-600/80" />
+          <span className="h-2 w-2 rounded-sm bg-[var(--color-text-subtle)]" />
           Distribucion
         </span>
         <span className={profilePillClassName}>

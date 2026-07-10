@@ -73,7 +73,7 @@ function SkeletonRows() {
       {[0, 1, 2].map((item) => (
         <div
           key={item}
-          className="h-16 animate-pulse rounded-xl border border-slate-800 bg-slate-900/55"
+          className="h-16 animate-pulse rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)]"
         />
       ))}
     </div>
@@ -82,7 +82,7 @@ function SkeletonRows() {
 
 function EmptyPanel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4 text-sm font-semibold text-[var(--color-text-muted)]">
+    <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-4 text-sm font-semibold text-[var(--color-text-muted)]">
       {children}
     </div>
   );
@@ -181,8 +181,8 @@ export function ProblemContentTabs({
   }
 
   return (
-    <aside className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
-      <div className="shrink-0 border-b border-slate-800/80 p-4">
+    <aside className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)]">
+      <div className="shrink-0 border-b border-[var(--color-border-soft)] p-4">
         <Link
           to="/problems"
           className="inline-flex items-center gap-2 rounded-full text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
@@ -204,7 +204,7 @@ export function ProblemContentTabs({
           {problem.topics.map((topic) => (
             <span
               key={topic}
-              className="rounded-full border border-slate-700/60 bg-slate-900/70 px-2 py-1 text-xs font-medium text-[var(--color-text-muted)]"
+              className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-2 py-1 text-xs font-medium text-[var(--color-text-muted)]"
             >
               {topic}
             </span>
@@ -212,7 +212,7 @@ export function ProblemContentTabs({
         </div>
       </div>
 
-      <div className="flex shrink-0 gap-1 border-b border-slate-800/80 bg-slate-950/70 px-2 py-2">
+      <div className="flex shrink-0 gap-1 border-b border-[var(--color-border-soft)] bg-[var(--color-bg-soft)] px-2 py-2">
         {tabItems.map((tab) => (
           <button
             key={tab.id}
@@ -223,8 +223,8 @@ export function ProblemContentTabs({
             }}
             className={`min-h-9 rounded-lg px-3 text-sm font-bold transition ${
               activeTab === tab.id
-                ? "bg-sky-400/12 text-white"
-                : "text-[var(--color-text-muted)] hover:bg-slate-900 hover:text-white"
+                ? "bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
+                : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]"
             }`}
           >
             {tab.label}
@@ -245,7 +245,7 @@ export function ProblemContentTabs({
               </p>
             )}
             {problem.inputFormat && (
-              <div className="rounded-xl border border-slate-800 bg-slate-900/55 p-4">
+              <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4">
                 <h2 className="text-base font-bold text-[var(--color-text)]">
                   Input format
                 </h2>
@@ -255,7 +255,7 @@ export function ProblemContentTabs({
               </div>
             )}
             {problem.outputFormat && (
-              <div className="rounded-xl border border-slate-800 bg-slate-900/55 p-4">
+              <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4">
                 <h2 className="text-base font-bold text-[var(--color-text)]">
                   Output format
                 </h2>
@@ -267,7 +267,7 @@ export function ProblemContentTabs({
             {problem.examples.map((example, index) => (
               <div
                 key={example.id}
-                className="rounded-xl border border-slate-800 bg-slate-900/55 p-4"
+                className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4"
               >
                 <h2 className="text-base font-bold text-[var(--color-text)]">
                   Example {index + 1}
@@ -284,7 +284,7 @@ export function ProblemContentTabs({
               </div>
             ))}
             {problem.constraints && (
-              <div className="rounded-xl border border-slate-800 bg-slate-900/55 p-4">
+              <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4">
                 <h2 className="text-base font-bold text-[var(--color-text)]">
                   Constraints
                 </h2>
@@ -317,7 +317,7 @@ export function ProblemContentTabs({
                   type="button"
                   disabled={loadingSubmissionId === submission.id}
                   onClick={() => handleSubmissionClick(submission)}
-                  className="grid w-full gap-3 rounded-xl border border-slate-800 bg-slate-950/55 p-3 text-left transition hover:border-slate-700 disabled:cursor-not-allowed disabled:opacity-75"
+                  className="grid w-full gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-3 text-left transition hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-elevated)] disabled:cursor-not-allowed disabled:opacity-75"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <JudgeStatusBadge status={submission.result} />

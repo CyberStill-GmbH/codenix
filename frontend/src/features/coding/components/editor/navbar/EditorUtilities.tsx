@@ -27,7 +27,7 @@ function DisabledUtilityButton({
       aria-label={label}
       title="Próximamente"
       disabled
-      className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] bg-slate-950/50 text-[var(--color-text-muted)] opacity-40 disabled:cursor-not-allowed"
+      className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface)] text-[var(--color-text-muted)] opacity-40 disabled:cursor-not-allowed"
     >
       {children}
     </button>
@@ -48,7 +48,7 @@ export function EditorUtilities({ user, problemId }: EditorUtilitiesProps) {
           onClick={toggleFullscreen}
           aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
           title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-muted)] transition hover:bg-slate-900 hover:text-[var(--color-text)]"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]"
         >
           {isFullscreen ? (
             <Shrink className="h-3.5 w-3.5" aria-hidden="true" />
@@ -71,7 +71,7 @@ export function EditorUtilities({ user, problemId }: EditorUtilitiesProps) {
         <button
           ref={userMenuButtonRef}
           type="button"
-          className="rounded-full bg-slate-950/50 p-0.5 transition duration-200 hover:bg-[var(--color-primary-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          className="rounded-full bg-[var(--color-surface)] p-0.5 transition duration-200 hover:bg-[var(--color-primary-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           aria-label="Abrir menu de usuario"
           aria-haspopup="menu"
           aria-expanded={isUserMenuOpen}

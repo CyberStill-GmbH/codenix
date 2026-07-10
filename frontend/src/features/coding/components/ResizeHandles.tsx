@@ -58,7 +58,7 @@ export function ResizeHandleHorizontal() {
       className="group relative z-10 flex w-2 shrink-0 cursor-col-resize items-center justify-center outline-none"
       onPointerDown={handlePointerDown}
     >
-      <div className="h-full w-0.5 bg-slate-800 transition group-hover:bg-[var(--color-primary)]" />
+      <div className="h-full w-0.5 bg-[var(--color-border)] transition group-hover:bg-[var(--color-primary)]" />
     </div>
   )
 }
@@ -119,7 +119,7 @@ export function ResizeHandleVertical() {
       className="group relative z-10 flex h-2 shrink-0 cursor-row-resize items-center justify-center outline-none"
       onPointerDown={handlePointerDown}
     >
-      <div className="h-0.5 w-full bg-slate-800 transition group-hover:bg-[var(--color-primary)]" />
+      <div className="h-0.5 w-full bg-[var(--color-border)] transition group-hover:bg-[var(--color-primary)]" />
     </div>
   )
 }

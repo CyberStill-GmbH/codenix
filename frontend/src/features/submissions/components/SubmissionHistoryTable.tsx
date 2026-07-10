@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Check, ChevronDown, XCircle } from 'lucide-react'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -33,7 +34,7 @@ function formatSubmittedAt(value: string) {
 export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTableProps) {
   if (submissions.length === 0) {
     return (
-      <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-8 text-center shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+      <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 text-center shadow-[var(--shadow-lg)]">
         <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
           Aun no hay envios.
         </h2>
@@ -45,8 +46,8 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
-      <div className="hidden grid-cols-[10rem_minmax(0,1fr)_10rem_8rem] border-b border-slate-800 px-5 py-4 md:grid">
+    <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)]">
+      <div className="hidden grid-cols-[10rem_minmax(0,1fr)_10rem_8rem] border-b border-[var(--color-border-soft)] px-5 py-4 md:grid">
         {['Last Submitted', 'Problem', 'Last Result', 'Submissions'].map((heading) => (
           <span
             key={heading}
@@ -59,15 +60,15 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
 
       <div className="space-y-2 p-3">
         {submissions.map((submission, index) => {
-          const rowSurface = index % 2 === 0 ? 'bg-slate-900/55' : 'bg-slate-800/45'
+          const rowSurface = index % 2 === 0 ? 'bg-[var(--color-surface-soft)]' : 'bg-[var(--color-surface-elevated)]'
           const isAccepted = submission.result === 'Accepted'
+          const problemSlug = submission.problemSlug ?? submission.problemId
 
           return (
-            <button
+            <Link
               key={submission.id}
-              type="button"
-              onClick={() => console.log('Submission selected: ', submission.id)}
-              className={`grid w-full gap-3 rounded-xl px-4 py-4 text-left transition hover:bg-slate-800/75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:grid-cols-[10rem_minmax(0,1fr)_10rem_8rem] md:items-center ${rowSurface}`}
+              to={`/problems/${problemSlug}?submission=${submission.id}`}
+              className={`grid w-full gap-3 rounded-xl px-4 py-4 text-left transition hover:bg-[var(--color-surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:grid-cols-[10rem_minmax(0,1fr)_10rem_8rem] md:items-center ${rowSurface}`}
             >
               <time
                 dateTime={submission.submittedAt}
@@ -85,8 +86,8 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
                   )}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-sm font-semibold text-[var(--color-text)]">
-                    {submission.problemId}. {submission.problemTitle}
+                  <span className="block truncate text-sm font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+                    {submission.problemTitle}
                   </span>
                   <span className={`mt-1 block text-sm font-semibold ${difficultyClassName[submission.difficulty]}`}>
                     {submission.difficulty}
@@ -102,7 +103,7 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
                 {submission.submissionsCount}
                 <ChevronDown className="h-4 w-4 text-[var(--color-text-subtle)]" aria-hidden="true" />
               </span>
-            </button>
+            </Link>
           )
         })}
       </div>

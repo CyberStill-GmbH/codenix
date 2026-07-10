@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { ChevronDown, Pencil } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 import type { Submission, User } from '@/features/user/types/user.types'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
@@ -16,6 +17,7 @@ type LangEntry = {
   id: string
   label: string
   icon: string
+  color: string
   solved: number
 }
 
@@ -26,10 +28,11 @@ type SkillGroup = {
 }
 
 const supportedLanguages = [
-  { id: 'JavaScript', label: 'JavaScript', icon: '/javascript.svg' },
-  { id: 'Python', label: 'Python', icon: '/python.svg' },
-  { id: 'Java', label: 'Java', icon: '/java.svg' },
-  { id: 'C++', label: 'C++', icon: '/rust.svg' },
+  { id: 'javascript', label: 'JavaScript', icon: '/javascript.svg', color: '#f7df1e' },
+  { id: 'typescript', label: 'TypeScript', icon: '/typescript.svg', color: '#3178c6' },
+  { id: 'python', label: 'Python', icon: '/python.svg', color: '#3776ab' },
+  { id: 'c', label: 'C', icon: '/c.svg', color: '#a8b9cc' },
+  { id: 'rust', label: 'Rust', icon: '/rust.svg', color: '#dea584' },
 ]
 
 const skillLevels = [
@@ -66,8 +69,9 @@ function buildLanguageStats(submissions: Submission[]): LangEntry[] {
 
   for (const submission of submissions) {
     if (submission.status === 'accepted') {
-      if (!solved[submission.language]) solved[submission.language] = new Set()
-      solved[submission.language].add(submission.problemId)
+      const langKey = submission.language.toLowerCase()
+      if (!solved[langKey]) solved[langKey] = new Set()
+      solved[langKey].add(submission.problemId)
     }
   }
 
@@ -118,7 +122,22 @@ function getHandle(url: string) {
 }
 
 function solvedLabel(count: number) {
-  return `${count} ${count === 1 ? 'resuelto' : 'resueltos'}`
+  return `x${count}`
+}
+
+function LanguageIcon({ src, label, color }: { src: string; label: string; color: string }) {
+  return (
+    <span
+      className="h-5 w-5 shrink-0"
+      style={{
+        backgroundColor: color,
+        mask: `url(${src}) center / contain no-repeat`,
+        WebkitMask: `url(${src}) center / contain no-repeat`,
+      }}
+      role="img"
+      aria-label={label}
+    />
+  )
 }
 
 function Divider() {
@@ -133,26 +152,13 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   )
 }
 
-function LanguageIcon({ src, label }: { src: string; label: string }) {
-  return (
-    <span
-      className="h-5 w-5 shrink-0 bg-[var(--color-accent)]"
-      style={{
-        mask: `url(${src}) center / contain no-repeat`,
-        WebkitMask: `url(${src}) center / contain no-repeat`,
-      }}
-      role="img"
-      aria-label={label}
-    />
-  )
-}
-
 type UserProfileCardProps = {
   user: User
   submissions?: Submission[]
 }
 
 export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps) {
+  const navigate = useNavigate()
   const [showAllSkills, setShowAllSkills] = useState(false)
   const langEntries = buildLanguageStats(submissions)
   const skillGroups = buildSkillGroups(submissions)
@@ -194,9 +200,9 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
 
           <button
             type="button"
-            disabled
             aria-label="Editar perfil"
-            className="inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-[var(--radius-md)] border border-slate-600/70 bg-slate-900/60 px-3 text-xs font-semibold text-[var(--color-text-muted)] disabled:opacity-80"
+            onClick={() => navigate('/settings')}
+            className="inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-3 text-xs font-semibold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]"
           >
             <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
             Editar
@@ -257,22 +263,18 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
       <Divider />
       <div className="px-4 pb-4 pt-4">
         <SectionLabel>Languages</SectionLabel>
-        <ul className="flex flex-col gap-3">
+        <div className="flex flex-wrap gap-2">
           {langEntries.map((language) => (
-            <li
+            <span
               key={language.id}
-              className={`grid grid-cols-[1.25rem_minmax(0,1fr)_auto] items-center gap-3 rounded-lg px-3 py-2 ${profileInsetSurfaceClassName}`}
+              className={`${profilePillClassName} flex items-center gap-1.5`}
             >
-              <LanguageIcon src={language.icon} label={language.label} />
-              <span className="text-sm font-semibold text-[var(--color-text-soft)]">
-                {language.label}
-              </span>
-              <span className="font-mono text-xs tabular-nums text-[var(--color-text-muted)]">
-                {solvedLabel(language.solved)}
-              </span>
-            </li>
+              <LanguageIcon src={language.icon} label={language.label} color={language.color} />
+              {language.label}
+              <span className="text-[var(--color-text-subtle)]">{solvedLabel(language.solved)}</span>
+            </span>
           ))}
-        </ul>
+        </div>
       </div>
 
       <Divider />

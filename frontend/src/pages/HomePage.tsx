@@ -8,16 +8,16 @@ import { FooterSection } from '@/features/landing/components/FooterSection'
 import { ProblemsSection } from '@/features/landing/components/ProblemsSection'
 
 export function HomePage() {
-    return (
-        <>
-            <NavbarSection />
-            <HeroSection />
-            <FeatureSection />
-            <VisionSection />
-            <ProblemsSection />
-            <CommunitySection />
-            <CtaSection />
-            <FooterSection />
-        </>
-    )
-}
+  return (
+    <div data-theme="dark">
+      <NavbarSection />
+      <HeroSection />
+      <FeatureSection />
+      <VisionSection />
+      <ProblemsSection />
+      <CommunitySection />
+      <CtaSection />
+      <FooterSection />
+    </div>
+  )
+}

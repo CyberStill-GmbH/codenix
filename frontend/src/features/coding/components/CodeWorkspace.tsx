@@ -68,12 +68,24 @@ const fallbackTemplate: ProblemCodeTemplate = {
   starterCode: 'function solve(input: string): string {\n  return ""\n}\n',
 }
 
+const LAST_LANGUAGE_KEY = 'codenix-last-language'
+
 function getTemplates(codeTemplates: ProblemCodeTemplate[]) {
   return codeTemplates.length > 0 ? codeTemplates : [fallbackTemplate]
 }
 
 function getInitialTemplate(codeTemplates: ProblemCodeTemplate[]) {
   const templates = getTemplates(codeTemplates)
+  // Prefer the user's last-used language if the problem supports it
+  try {
+    const lastLang = window.localStorage.getItem(LAST_LANGUAGE_KEY) as ProblemCodeLanguage | null
+    if (lastLang) {
+      const match = templates.find((t) => t.language === lastLang)
+      if (match) return match
+    }
+  } catch {
+    // ignore
+  }
   return (
     templates.find((template) => template.language === 'typescript') ??
     templates[0]
@@ -381,6 +393,12 @@ function CodeWorkspace(
     setLanguage(nextTemplate.language)
     setCode(savedDraft ?? nextTemplate.starterCode)
     setPendingLanguage(null)
+    // Persist last-used language preference
+    try {
+      window.localStorage.setItem(LAST_LANGUAGE_KEY, nextTemplate.language)
+    } catch {
+      // ignore
+    }
   }
 
   return (
@@ -396,7 +414,7 @@ function CodeWorkspace(
             onChange={(event) =>
               requestLanguageChange(event.target.value as ProblemCodeLanguage)
             }
-            className="h-9 rounded-lg border border-slate-700/70 bg-slate-900/90 px-3 text-sm font-semibold text-[var(--color-text)] outline-none transition hover:border-slate-600 focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)] disabled:opacity-60"
+            className="h-9 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-3 text-sm font-semibold text-[var(--color-text)] outline-none transition hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 disabled:opacity-60"
           >
             {templates.map((template) => (
               <option key={template.language} value={template.language}>
@@ -426,7 +444,7 @@ function CodeWorkspace(
               <button
                 type="button"
                 onClick={() => setPendingLanguage(null)}
-                className="rounded-full border border-slate-700/60 px-3 py-1 text-xs font-bold text-[var(--color-text-muted)]"
+                className="rounded-full border border-[var(--color-border)] px-3 py-1 text-xs font-bold text-[var(--color-text-muted)] transition hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)]"
               >
                 Cancelar
               </button>

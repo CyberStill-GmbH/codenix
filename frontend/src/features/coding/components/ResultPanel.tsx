@@ -49,7 +49,7 @@ function CodeBlock({ label, value }: { label: string; value?: string | null }) {
       <p className="mb-1 text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
         {label}
       </p>
-      <pre className="min-h-10 overflow-auto rounded-lg border border-slate-800 bg-slate-950/80 p-3 font-mono text-xs text-[var(--color-text-soft)]">
+      <pre className="min-h-10 overflow-auto rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 font-mono text-xs text-[var(--color-text-soft)]">
         {value || '-'}
       </pre>
     </div>
@@ -61,11 +61,11 @@ function TestcaseResultRow({ result }: { result: TestcaseRunResult }) {
   const isHidden = result.visibility === 'hidden' && !result.input && !result.expectedOutput
 
   return (
-    <article className="rounded-xl border border-slate-800/90 bg-slate-950/55 p-3">
+    <article className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-3">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           {isPending ? (
-            <CircleDotDashed className="h-4 w-4 animate-spin text-sky-300" aria-hidden="true" />
+            <CircleDotDashed className="h-4 w-4 animate-spin text-[var(--color-accent)]" aria-hidden="true" />
           ) : result.passed ? (
             <Check className="h-4 w-4 text-[var(--color-success)]" aria-hidden="true" />
           ) : (
@@ -80,7 +80,7 @@ function TestcaseResultRow({ result }: { result: TestcaseRunResult }) {
         </span>
       </div>
       {isHidden ? (
-        <p className="rounded-lg border border-slate-800 bg-slate-950/80 p-3 text-sm font-semibold text-[var(--color-text-muted)]">
+        <p className="rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 text-sm font-semibold text-[var(--color-text-muted)]">
           Caso oculto. El backend no expone input ni output esperado para este testcase.
         </p>
       ) : (
@@ -148,8 +148,6 @@ export function ResultPanel({
   testcases = [],
   onTestcasesChange,
 }: ResultPanelProps) {
-  // The user's explicit tab choice is remembered here.
-  // While code is running/submitting we override it to 'test-result'.
   const [userTab, setUserTab] = useState<ResultTab>('testcases')
   const isBusy = isRunning || isSubmitting
   const activeTab: ResultTab = isBusy ? 'test-result' : userTab
@@ -157,7 +155,6 @@ export function ResultPanel({
     if (activeAction === 'submit' && submitResult) {
       return submitResult.failedCase ? [submitResult.failedCase] : []
     }
-
     return runResult?.testcases ?? []
   }, [activeAction, runResult?.testcases, submitResult])
 
@@ -206,10 +203,9 @@ export function ResultPanel({
   const distribution = submitResult?.runtimeDistribution ?? []
   const hasRuntimeDistribution = distribution.length > 0
 
-
   return (
     <div className="flex h-full min-h-0 flex-col bg-[var(--color-bg-soft)]">
-      <div className="flex items-center justify-between gap-3 border-b border-slate-800/80 px-4 py-2">
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-soft)] px-4 py-2">
         <div className="flex items-center gap-2">
           {(['testcases', 'test-result', 'output'] as const).map((tab) => (
             <button
@@ -218,8 +214,8 @@ export function ResultPanel({
               onClick={() => setUserTab(tab)}
               className={`h-8 rounded-lg px-3 text-xs font-bold transition ${
                 activeTab === tab
-                  ? 'bg-sky-400/12 text-white'
-                  : 'text-[var(--color-text-muted)] hover:bg-slate-900 hover:text-white'
+                  ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
+                  : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]'
               }`}
             >
               {tab === 'testcases' ? 'Testcases' : tab === 'test-result' ? 'Test Result' : 'Output'}
@@ -260,7 +256,7 @@ export function ResultPanel({
           <div className="mb-4 space-y-4">
             <SubmitBanner submitResult={submitResult} />
             {submitResult.status === 'accepted' && hasRuntimeDistribution && (
-              <div className="rounded-xl border border-slate-800 bg-slate-950/55 p-4">
+              <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-4">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <h3 className="text-sm font-bold text-[var(--color-text)]">
@@ -276,16 +272,17 @@ export function ResultPanel({
                 <div className="h-32">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={distribution}>
-                      <XAxis dataKey="runtimeMs" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                      <YAxis tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                      <XAxis dataKey="runtimeMs" tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }} />
+                      <YAxis tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }} />
                       <Tooltip
                         contentStyle={{
-                          background: '#020617',
-                          border: '1px solid rgba(148,163,184,0.25)',
+                          background: 'var(--color-surface)',
+                          border: '1px solid var(--color-border)',
                           borderRadius: 8,
+                          color: 'var(--color-text)',
                         }}
                       />
-                      <Bar dataKey="submissions" fill="#38bdf8" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="submissions" fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -305,7 +302,7 @@ export function ResultPanel({
               return (
                 <article
                   key={testcase.id}
-                  className="rounded-xl border border-slate-800 bg-slate-950/55 p-3"
+                  className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-3"
                 >
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <h2 className="text-sm font-bold text-[var(--color-text)]">
@@ -331,7 +328,7 @@ export function ResultPanel({
                       onChange={(event) =>
                         updateTestcase(testcase.id, 'input', event.target.value)
                       }
-                      className="min-h-20 resize-y rounded-lg border border-slate-800 bg-slate-950/80 p-3 font-mono text-xs text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)]"
+                      className="min-h-20 resize-y rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 font-mono text-xs text-[var(--color-text-soft)] outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     />
                   </label>
                   <label className="mt-3 grid gap-1">
@@ -347,11 +344,11 @@ export function ResultPanel({
                           event.target.value,
                         )
                       }
-                      className="min-h-16 resize-y rounded-lg border border-slate-800 bg-slate-950/80 p-3 font-mono text-xs text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)]"
+                      className="min-h-16 resize-y rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 font-mono text-xs text-[var(--color-text-soft)] outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     />
                   </label>
                   {result && (
-                    <div className="mt-3 rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+                    <div className="mt-3 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3">
                       <p className="text-xs font-bold text-[var(--color-text-muted)]">
                         Obtained
                       </p>
@@ -367,7 +364,7 @@ export function ResultPanel({
             <button
               type="button"
               onClick={addCustomTestcase}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:text-white"
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 text-sm font-bold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               Add custom case

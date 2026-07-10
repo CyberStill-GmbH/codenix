@@ -212,9 +212,9 @@ export function AdminProblemsPage() {
               <AdminProblemsTable
                 problems={filteredProblems}
                 updatingProblemId={updatingProblemId}
-                onEdit={(problem) => navigate(`/admin/problems/${problem.slug}/edit`)}
+                onEdit={(problem) => navigate(`/admin/problems/${problem.id}/edit`)}
                 onManageTestcases={(problem) =>
-                  navigate(`/admin/problems/${problem.slug}/testcases`)
+                  navigate(`/admin/problems/${problem.id}/edit`)
                 }
                 onTogglePublish={handleTogglePublish}
               />

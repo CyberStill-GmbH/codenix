@@ -11,8 +11,11 @@ import {
 import MDEditor from "@uiw/react-md-editor";
 import {
   Bold,
+  CheckCircle2,
+  Circle,
   Code2,
   Eye,
+  FileText,
   Heading2,
   ImagePlus,
   Italic,
@@ -23,6 +26,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Pilcrow,
+  Play,
   Quote,
   Save,
   Send,
@@ -53,6 +57,8 @@ import { slugify } from "@/features/admin/problems/components/problem-form/utils
 import { useProblemForm } from "@/features/admin/problems/components/problem-form/hooks/useProblemForm";
 import { uploadAdminProblemImage } from "@/features/admin/problems/services/adminUploads.service";
 import { toBackendProblemPayload } from "@/features/admin/problems/utils/problemPayload";
+import { TestcasesSection } from "@/features/admin/problems/components/problem-form/sections/TestcasesSection";
+import { StarterCodeSection } from "@/features/admin/problems/components/problem-form/sections/StarterCodeSection";
 
 type ProblemFormProps = {
   initialValues: AdminProblemFormValues;
@@ -71,6 +77,8 @@ type InsertSnippetOptions = {
 };
 
 const autosaveDelayMs = 7000;
+
+type FormTab = "statement" | "testcases" | "starterCode";
 
 const difficultyOptions: Array<{ value: ProblemDifficulty; label: string }> = [
   { value: "easy", label: "Easy" },
@@ -103,7 +111,17 @@ export function ProblemForm({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [lastAutosavedAt, setLastAutosavedAt] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState("");
+  const [activeTab, setActiveTab] = useState<FormTab>("statement");
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const hasSampleTestcase = values.testcases.some((tc) => tc.isSample);
+  const hasHiddenTestcase = values.testcases.some((tc) => !tc.isSample);
+  const testcasesComplete = hasSampleTestcase && hasHiddenTestcase;
+  const starterCodeComplete = values.supportedLanguages.length > 0 &&
+    values.supportedLanguages.every(
+      (lang) => (values.starterCode[lang] ?? "").trim().length > 0,
+    );
+  const statementComplete = values.descriptionMarkdown.trim().length > 0;
 
   const errorSummary = useMemo(
     () => Object.values(publishErrors).filter(Boolean) as string[],
@@ -273,41 +291,49 @@ export function ProblemForm({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 px-4 text-sm font-bold text-[var(--color-text-soft)]"
-            >
-              <X className="h-4 w-4" />
-              Cancelar
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsPreviewVisible((current) => !current)}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 px-4 text-sm font-bold text-[var(--color-text-soft)]"
-            >
-              <Eye className="h-4 w-4" />
-              Preview
-            </button>
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={saveDraft}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] disabled:opacity-60"
-            >
-              <Save className="h-4 w-4" />
-              {isSaving ? "Guardando..." : "Guardar"}
-            </button>
-            <button
-              type="button"
-              disabled={isSaving || errorSummary.length > 0}
-              onClick={publish}
-              className="inline-flex h-10 items-center gap-2 rounded-full bg-[var(--color-success-soft)] px-4 text-sm font-bold text-[var(--color-success)] disabled:opacity-60"
-            >
-              <Send className="h-4 w-4" />
-              {isSaving ? "Publicando..." : "Publicar"}
-            </button>
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-2 sm:flex">
+              <CompletionBadge label="Enunciado" complete={statementComplete} />
+              <CompletionBadge label="Testcases" complete={testcasesComplete} />
+              <CompletionBadge label="Starter Code" complete={starterCodeComplete} />
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 px-4 text-sm font-bold text-[var(--color-text-soft)]"
+              >
+                <X className="h-4 w-4" />
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsPreviewVisible((current) => !current)}
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 px-4 text-sm font-bold text-[var(--color-text-soft)]"
+              >
+                <Eye className="h-4 w-4" />
+                Preview
+              </button>
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={saveDraft}
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] disabled:opacity-60"
+              >
+                <Save className="h-4 w-4" />
+                {isSaving ? "Guardando..." : "Guardar"}
+              </button>
+              <button
+                type="button"
+                disabled={isSaving || errorSummary.length > 0}
+                onClick={publish}
+                className="inline-flex h-10 items-center gap-2 rounded-full bg-[var(--color-success-soft)] px-4 text-sm font-bold text-[var(--color-success)] disabled:opacity-60"
+              >
+                <Send className="h-4 w-4" />
+                {isSaving ? "Publicando..." : "Publicar"}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -331,67 +357,184 @@ export function ProblemForm({
           />
         )}
 
-        <section className="min-w-0 overflow-hidden rounded-xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 p-3">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setIsSidebarOpen((current) => !current)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/60 text-[var(--color-text-muted)] hover:text-white"
-                aria-label={
-                  isSidebarOpen ? "Ocultar metadata" : "Mostrar metadata"
-                }
-              >
-                {isSidebarOpen ? (
-                  <PanelLeftClose className="h-4 w-4" />
-                ) : (
-                  <PanelLeftOpen className="h-4 w-4" />
-                )}
-              </button>
-              <p className="text-sm font-bold text-[var(--color-text)]">
-                Statement Markdown
-              </p>
-            </div>
-            <EditorToolbar
-              insertSnippet={insertSnippet}
-              onImageChange={handleImageChange}
+        <div className="min-w-0 space-y-4">
+          <nav className="flex gap-1 rounded-xl border border-slate-700/50 bg-slate-950/70 p-1.5 shadow-[0_18px_50px_rgba(2,8,23,0.18)]">
+            <FormTabButton
+              active={activeTab === "statement"}
+              onClick={() => setActiveTab("statement")}
+              icon={<FileText className="h-4 w-4" />}
+              label="Enunciado"
+              complete={statementComplete}
             />
-          </div>
+            <FormTabButton
+              active={activeTab === "testcases"}
+              onClick={() => setActiveTab("testcases")}
+              icon={<Play className="h-4 w-4" />}
+              label="Testcases"
+              complete={testcasesComplete}
+              count={values.testcases.length}
+            />
+            <FormTabButton
+              active={activeTab === "starterCode"}
+              onClick={() => setActiveTab("starterCode")}
+              icon={<Code2 className="h-4 w-4" />}
+              label="Starter Code"
+              complete={starterCodeComplete}
+            />
+          </nav>
 
-          <div
-            className={`grid min-h-[680px] ${isPreviewVisible ? "lg:grid-cols-2" : "grid-cols-1"}`}
-            data-color-mode="dark"
-            onPaste={handlePaste}
-            onDrop={handleDrop}
-            onDragOver={(event) => event.preventDefault()}
-          >
-            <div className="min-w-0 border-b border-slate-800 lg:border-b-0 lg:border-r">
-              <MDEditor
-                value={values.descriptionMarkdown}
-                onChange={(nextValue, event) => {
-                  editorRef.current = event?.currentTarget ?? editorRef.current;
-                  setStatement(nextValue ?? "");
-                }}
-                preview="edit"
-                height={680}
-                textareaProps={{
-                  placeholder: markdownPlaceholder,
-                  "aria-label": "Problem statement Markdown",
-                }}
-              />
-            </div>
-
-            {isPreviewVisible && (
-              <div className="min-h-[680px] min-w-0 overflow-auto bg-slate-950/45 p-5">
-                <ProblemDescription
-                  markdown={values.descriptionMarkdown || markdownPlaceholder}
+          {activeTab === "statement" && (
+            <section className="min-w-0 overflow-hidden rounded-xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 p-3">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsSidebarOpen((current) => !current)}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/60 text-[var(--color-text-muted)] hover:text-white"
+                    aria-label={
+                      isSidebarOpen ? "Ocultar metadata" : "Mostrar metadata"
+                    }
+                  >
+                    {isSidebarOpen ? (
+                      <PanelLeftClose className="h-4 w-4" />
+                    ) : (
+                      <PanelLeftOpen className="h-4 w-4" />
+                    )}
+                  </button>
+                  <p className="text-sm font-bold text-[var(--color-text)]">
+                    Statement Markdown
+                  </p>
+                </div>
+                <EditorToolbar
+                  insertSnippet={insertSnippet}
+                  onImageChange={handleImageChange}
                 />
               </div>
-            )}
-          </div>
-        </section>
+
+              <div
+                className={`grid min-h-[680px] ${isPreviewVisible ? "lg:grid-cols-2" : "grid-cols-1"}`}
+                data-color-mode="dark"
+                onPaste={handlePaste}
+                onDrop={handleDrop}
+                onDragOver={(event) => event.preventDefault()}
+              >
+                <div className="min-w-0 border-b border-slate-800 lg:border-b-0 lg:border-r">
+                  <MDEditor
+                    value={values.descriptionMarkdown}
+                    onChange={(nextValue, event) => {
+                      editorRef.current = event?.currentTarget ?? editorRef.current;
+                      setStatement(nextValue ?? "");
+                    }}
+                    preview="edit"
+                    height={680}
+                    textareaProps={{
+                      placeholder: markdownPlaceholder,
+                      "aria-label": "Problem statement Markdown",
+                    }}
+                  />
+                </div>
+
+                {isPreviewVisible && (
+                  <div className="min-h-[680px] min-w-0 overflow-auto bg-slate-950/45 p-5">
+                    <ProblemDescription
+                      markdown={values.descriptionMarkdown || markdownPlaceholder}
+                    />
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+
+          {activeTab === "testcases" && (
+            <TestcasesSection
+              parameters={values.parameters}
+              outputType={values.outputType}
+              testcases={values.testcases}
+              error={publishErrors.testcases}
+              onParametersChange={(parameters) => updateField("parameters", parameters)}
+              onOutputTypeChange={(outputType) => updateField("outputType", outputType)}
+              onTestcasesChange={(testcases) => updateField("testcases", testcases)}
+            />
+          )}
+
+          {activeTab === "starterCode" && (
+            <StarterCodeSection
+              supportedLanguages={values.supportedLanguages}
+              starterCode={values.starterCode}
+              onChange={(starterCode) => updateField("starterCode", starterCode)}
+            />
+          )}
+        </div>
       </div>
     </div>
+  );
+}
+
+type FormTabButtonProps = {
+  active: boolean;
+  onClick: () => void;
+  icon: ReactNode;
+  label: string;
+  complete: boolean;
+  count?: number;
+};
+
+function FormTabButton({
+  active,
+  onClick,
+  icon,
+  label,
+  complete,
+  count,
+}: FormTabButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-bold transition ${
+        active
+          ? "bg-slate-800 text-white shadow-sm"
+          : "text-[var(--color-text-muted)] hover:bg-slate-900/60 hover:text-[var(--color-text-soft)]"
+      }`}
+    >
+      {icon}
+      {label}
+      {count !== undefined && count > 0 && (
+        <span className="rounded-full bg-slate-700/60 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-[var(--color-text-subtle)]">
+          {count}
+        </span>
+      )}
+      {complete ? (
+        <CheckCircle2 className="h-3.5 w-3.5 text-[var(--color-success)]" />
+      ) : (
+        <Circle className="h-3.5 w-3.5 text-slate-600" />
+      )}
+    </button>
+  );
+}
+
+function CompletionBadge({
+  label,
+  complete,
+}: {
+  label: string;
+  complete: boolean;
+}) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+        complete
+          ? "bg-[var(--color-success-soft)] text-[var(--color-success)]"
+          : "bg-slate-800/60 text-[var(--color-text-subtle)]"
+      }`}
+    >
+      {complete ? (
+        <CheckCircle2 className="h-3 w-3" />
+      ) : (
+        <Circle className="h-3 w-3" />
+      )}
+      {label}
+    </span>
   );
 }
 

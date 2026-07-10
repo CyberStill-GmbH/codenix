@@ -6,7 +6,6 @@ import { AdminNavbar } from '@/features/admin/problems/components/AdminNavbar'
 import { AdminProblemForm } from '@/features/admin/problems/components/AdminProblemForm'
 import {
   createDefaultCodeTemplates,
-  createDefaultProblemParameters,
   createDefaultStarterCode,
   createDefaultStructuredTestcases,
 } from '@/features/admin/problems/utils/problemFormDefaults'
@@ -30,9 +29,9 @@ const emptyProblemFormValues: AdminProblemFormValues = {
   tags: [],
   descriptionMarkdown:
     '## Descripcion\n\nEscribe el enunciado del problema aqui...\n\n## Ejemplos\n\n...',
-  constraintsList: ['1 <= nums.length <= 10^4', 'nums[i] es unico'],
-  parameters: createDefaultProblemParameters(),
-  outputType: 'number[]',
+  constraintsList: [],
+  parameters: [],
+  outputType: 'number',
   testcases: createDefaultStructuredTestcases(),
   supportedLanguages: ['typescript', 'javascript', 'python', 'c', 'rust'],
   starterCode: createDefaultStarterCode(),

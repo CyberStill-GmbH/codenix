@@ -77,11 +77,11 @@ function CustomSelect<T extends string>({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex h-10 w-full items-center justify-between rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text-soft)] hover:border-slate-500 hover:text-white transition cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
+        className="flex h-10 w-full items-center justify-between rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text-soft)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)] transition cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
       >
         <span className="truncate">{displayValue}</span>
         <ChevronDown
-          className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 ${
+          className={`h-4 w-4 shrink-0 text-[var(--color-text-subtle)] transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />
@@ -158,7 +158,7 @@ export function SubmissionFilters({
   ]
 
   return (
-    <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-4 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-lg)]">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <label className="relative block w-full lg:max-w-sm">
           <span className="sr-only">Buscar envio</span>
@@ -168,7 +168,7 @@ export function SubmissionFilters({
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
             placeholder="Search submissions"
-            className="h-11 w-full rounded-full border border-slate-700/50 bg-slate-900/70 pl-10 pr-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]"
+            className="h-11 w-full rounded-full border border-[var(--color-border)] bg-[var(--color-surface-soft)] pl-10 pr-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
           />
         </label>
 
@@ -177,10 +177,10 @@ export function SubmissionFilters({
             type="button"
             aria-expanded={isExpanded}
             onClick={() => setIsExpanded((v) => !v)}
-            className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(14,165,233,0.22)] ${
+            className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/20 ${
               isExpanded
                 ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
-                : 'border-slate-700/50 bg-slate-900/70 text-[var(--color-text-muted)] hover:border-slate-500 hover:text-white'
+                : 'border-[var(--color-border)] bg-[var(--color-surface-soft)] text-[var(--color-text-muted)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)]'
             }`}
           >
             <Filter className="h-4 w-4" aria-hidden="true" />

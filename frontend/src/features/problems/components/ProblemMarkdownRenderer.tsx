@@ -57,7 +57,7 @@ function MermaidDiagram({ chart }: { chart: string }) {
 
   if (error) {
     return (
-      <pre className="my-4 overflow-x-auto rounded-lg border border-[var(--color-error)]/30 bg-[var(--color-error-soft)] p-4 text-xs text-[var(--color-error)]">
+      <pre className="my-3 overflow-x-auto text-xs text-[var(--color-error)]">
         {chart}
       </pre>
     );
@@ -65,7 +65,7 @@ function MermaidDiagram({ chart }: { chart: string }) {
 
   return (
     <div
-      className="my-4 overflow-x-auto rounded-lg border border-slate-800 bg-slate-950/60 p-4"
+      className="my-3 overflow-x-auto text-[var(--color-text)]"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
@@ -79,12 +79,14 @@ function Code({ children, className }: CodeProps) {
     return <MermaidDiagram chart={value} />;
   }
 
-  if (className) {
-    return <code className={className}>{children}</code>;
+  const isBlock = String(children).includes("\n");
+
+  if (className || isBlock) {
+    return <code className={`${className ?? ""} !bg-transparent !p-0`}>{children}</code>;
   }
 
   return (
-    <code className="rounded bg-slate-900 px-1.5 py-0.5 font-mono text-[var(--color-text)]">
+    <code className="rounded-sm bg-[var(--color-surface-soft)] px-1 py-0.5 font-mono text-[13px] text-[var(--color-text)]">
       {children}
     </code>
   );
@@ -135,7 +137,7 @@ export function ProblemMarkdownRenderer({
             </strong>
           ),
           blockquote: ({ children }) => (
-            <blockquote className="my-4 border-l-4 border-[var(--color-primary)] bg-slate-900/45 px-4 py-2 text-[var(--color-text-soft)]">
+            <blockquote className="my-3 border-l-2 border-[var(--color-border-strong)] pl-3 text-[var(--color-text-muted)] italic">
               {children}
             </blockquote>
           ),
@@ -153,7 +155,7 @@ export function ProblemMarkdownRenderer({
             }
 
             return (
-              <pre className="my-4 overflow-x-auto rounded-xl bg-slate-950 p-4 text-sm text-[var(--color-text-soft)]">
+              <pre className="my-2 overflow-x-auto pl-3 border-l-2 border-[var(--color-border-soft)] font-mono text-[13px] leading-relaxed text-[var(--color-text-soft)] !bg-transparent !p-0">
                 {children}
               </pre>
             );
@@ -169,32 +171,32 @@ export function ProblemMarkdownRenderer({
             </ol>
           ),
           li: ({ children }) => <li className="pl-1">{children}</li>,
-          hr: () => <hr className="my-6 border-slate-800" />,
+          hr: () => <hr className="my-6 border-[var(--color-border)]" />,
           img: ({ alt, src }) => (
             <img
               alt={alt ?? ""}
               src={src ?? ""}
-              className="my-4 max-h-[520px] rounded-lg border border-slate-800 object-contain"
+              className="my-3 max-h-[400px] object-contain"
               loading="lazy"
             />
           ),
           table: ({ children }) => (
             <div className="my-4 overflow-x-auto">
-              <table className="w-full border-collapse overflow-hidden rounded-xl border border-slate-800 text-sm">
+              <table className="my-3 w-full border-collapse text-sm">
                 {children}
               </table>
             </div>
           ),
           thead: ({ children }) => (
-            <thead className="bg-slate-900">{children}</thead>
+            <thead className="border-b border-[var(--color-border-strong)] text-left">{children}</thead>
           ),
           th: ({ children }) => (
-            <th className="border border-slate-800 px-3 py-2 text-left font-bold text-[var(--color-text)]">
+            <th className="py-2 pr-4 font-bold text-[var(--color-text)]">
               {children}
             </th>
           ),
           td: ({ children }) => (
-            <td className="border border-slate-800 px-3 py-2 text-[var(--color-text-soft)]">
+            <td className="border-b border-[var(--color-border-soft)] py-2 pr-4 text-[var(--color-text-soft)]">
               {children}
             </td>
           ),

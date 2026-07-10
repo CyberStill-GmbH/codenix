@@ -36,7 +36,7 @@ function IconButton({
       title={title}
       disabled={disabled}
       onClick={onClick}
-      className={`inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] bg-slate-950/50 text-[var(--color-text-muted)] transition hover:bg-slate-900/80 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-slate-950/50 disabled:hover:text-[var(--color-text-muted)] ${
+      className={`inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface)] text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[var(--color-surface)] disabled:hover:text-[var(--color-text-muted)] ${
         hideOnMobile ? 'hidden md:inline-flex' : ''
       }`}
     >
@@ -77,7 +77,7 @@ export function ProblemNavigator({
         to="/problems"
         aria-label="Volver a problemas"
         title="Volver a problemas"
-        className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition hover:bg-slate-900/80"
+        className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition hover:bg-[var(--color-surface-elevated)]"
       >
         <span
           className="h-6 w-6 bg-[var(--color-logo-mark)]"

@@ -6,15 +6,18 @@ import { BrowserRouter } from 'react-router-dom'
 import { AppRouter } from '@/app/router/AppRouter'
 import { AppBootstrap } from '@/components/app/AppBootstrap'
 import { AuthProvider } from '@/features/auth/context/AuthProvider'
+import { ThemeProvider } from '@/shared/providers/ThemeProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <AppBootstrap>
-          <AppRouter />
-        </AppBootstrap>
-      </AuthProvider>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppBootstrap>
+            <AppRouter />
+          </AppBootstrap>
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   </StrictMode>,
 )

@@ -1,6 +1,7 @@
 import { Monitor, Moon, Sun } from 'lucide-react'
 import type { AppSettings } from '@/features/settings/types/settings.types'
 import { SettingsCard } from '@/features/settings/components/SettingsCard'
+import { useTheme } from '@/shared/providers/ThemeProvider'
 
 type ThemeOption = AppSettings['theme']
 
@@ -16,6 +17,13 @@ type Props = {
 }
 
 export function AppearanceSettings({ settings, onUpdate }: Props) {
+  const { theme, setTheme } = useTheme()
+
+  function handleThemeChange(value: ThemeOption) {
+    setTheme(value)
+    onUpdate('theme', value) // keep localStorage settings in sync
+  }
+
   return (
     <div className="space-y-6">
       <SettingsCard
@@ -24,17 +32,17 @@ export function AppearanceSettings({ settings, onUpdate }: Props) {
       >
         <div className="grid grid-cols-3 gap-3">
           {THEME_OPTIONS.map(({ value, label, icon: Icon }) => {
-            const isActive = settings.theme === value
+            const isActive = theme === value
             return (
               <button
                 key={value}
                 id={`settings-theme-${value}`}
                 type="button"
-                onClick={() => onUpdate('theme', value)}
+                onClick={() => handleThemeChange(value)}
                 className={`flex flex-col items-center gap-2 rounded-xl border-2 px-4 py-4 text-sm font-semibold transition ${
                   isActive
                     ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
-                    : 'border-slate-700 bg-slate-900 text-[var(--color-text-muted)] hover:border-slate-500 hover:text-white'
+                    : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)]'
                 }`}
                 aria-pressed={isActive}
               >

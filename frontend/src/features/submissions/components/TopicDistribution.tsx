@@ -18,7 +18,7 @@ export function TopicDistribution({ submissions }: TopicDistributionProps) {
   const max = Math.max(...topics.map(([, count]) => count), 1)
 
   return (
-    <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-lg)]">
       <div className="mb-5">
         <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
           Topic Distribution
@@ -35,7 +35,7 @@ export function TopicDistribution({ submissions }: TopicDistributionProps) {
               <span className="font-medium text-[var(--color-text-soft)]">{topic}</span>
               <span className="font-mono text-xs text-[var(--color-text-muted)]">{count}</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-slate-800/80">
+            <div className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-elevated)]">
               <div
                 className="h-full rounded-full bg-[var(--color-accent)]"
                 style={{ width: `${Math.max(12, Math.round((count / max) * 100))}%` }}

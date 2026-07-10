@@ -77,7 +77,7 @@ export function ProblemsView({
         {cards.map(({ title, description, Icon, imageSrc, imageAlt }) => (
           <article
             key={title}
-            className={`overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)] ${
+            className={`overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)] ${
               imageSrc ? 'relative min-h-[12.5rem]' : 'min-h-[12.5rem] p-5'
             }`}
           >
@@ -96,23 +96,23 @@ export function ProblemsView({
               </>
             ) : (
               <>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700/50 bg-slate-900/70 text-[var(--color-accent)]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-accent)]">
                   {Icon && <Icon className="h-5 w-5" aria-hidden="true" />}
                 </div>
                 <h2 className="mt-5 font-display text-xl font-bold text-[var(--color-text)]">
                   {title}
                 </h2>
-                <p className="mt-2 text-sm text-slate-400">{description}</p>
+                <p className="mt-2 text-sm text-[var(--color-text-muted)]">{description}</p>
               </>
             )}
           </article>
         ))}
       </section>
 
-      <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+      <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-lg)]">
         <TopicFilters topics={topics} selected={selectedTopic} onSelect={onTopicChange} />
 
-        <div className="mt-5 flex flex-col gap-3 border-t border-slate-800 pt-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mt-5 flex flex-col gap-3 border-t border-[var(--color-border-soft)] pt-5 lg:flex-row lg:items-center lg:justify-between">
           <SearchBar value={query} onSearch={onSearch} />
           <div className="flex flex-wrap items-center gap-2">
             <DifficultySelector value={difficulty} onChange={onDifficultyChange} />
@@ -122,7 +122,7 @@ export function ProblemsView({
         </div>
 
         {totalCount > 0 && (
-          <div className="mt-4 flex items-center justify-end gap-2 text-sm text-slate-400">
+          <div className="mt-4 flex items-center justify-end gap-2 text-sm text-[var(--color-text-muted)]">
             <span className="h-2.5 w-2.5 rounded-full border border-emerald-300/40 bg-emerald-400/20" />
             <span>{t('status.solvedCount', { solved: solvedCount, total: totalCount })}</span>
           </div>
@@ -130,7 +130,7 @@ export function ProblemsView({
       </section>
 
       {isLoading && (
-        <div className="rounded-xl border border-slate-800 bg-slate-950/55 px-4 py-3 text-sm font-semibold text-slate-400">
+        <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)]">
           {t('feedback.loading')}
         </div>
       )}

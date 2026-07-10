@@ -7,7 +7,7 @@ export function AuthLayout() {
   const location = useLocation()
 
   return (
-    <div className={landingTokens.auth.page}>
+    <div data-theme="dark" className={landingTokens.auth.page}>
       <AuthBrandPanel />
 
       <main className={landingTokens.auth.main}>

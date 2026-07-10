@@ -118,7 +118,7 @@ export function AppNavbar() {
               id="navbar-search-trigger"
               aria-label="Buscar problemas (Ctrl+K)"
               title="Buscar problemas"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700/60 bg-slate-950/70 text-[var(--color-text-muted)] transition hover:border-slate-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] transition hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
             >
               <Search className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -133,7 +133,7 @@ export function AppNavbar() {
               id="navbar-user-avatar"
               type="button"
               className={cx(
-                'rounded-full border border-slate-700/50 bg-slate-950/50 p-0.5 transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]',
+                'rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5 transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]',
                 landingTokens.focus,
               )}
               aria-label="Abrir menu de usuario"

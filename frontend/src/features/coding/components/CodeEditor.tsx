@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react'
 import Editor, { loader, type BeforeMount, type OnMount } from '@monaco-editor/react'
 
 import type { ProblemCodeLanguage } from '@/features/problems/types/problem.types'
-
 import { useAppSettings } from '@/features/settings/hooks/useAppSettings'
+import { useTheme } from '@/shared/providers/ThemeProvider'
 
 type MonacoEditorLanguage = ProblemCodeLanguage | 'java' | 'cpp'
 
@@ -29,10 +29,12 @@ loader.config({
   },
 })
 
-const CODENIX_EDITOR_THEME = 'codenix-dark'
+const CODENIX_DARK_THEME = 'codenix-dark'
+const CODENIX_LIGHT_THEME = 'codenix-light'
 
-const defineCodenixTheme: BeforeMount = (monaco) => {
-  monaco.editor.defineTheme(CODENIX_EDITOR_THEME, {
+const defineCodenixThemes: BeforeMount = (monaco) => {
+  // Dark theme — matches the dark token set
+  monaco.editor.defineTheme(CODENIX_DARK_THEME, {
     base: 'vs-dark',
     inherit: true,
     rules: [],
@@ -49,6 +51,30 @@ const defineCodenixTheme: BeforeMount = (monaco) => {
       'editorIndentGuide.activeBackground1': '#285174',
     },
   })
+
+  // Light theme — crisp white surface, dark text, same cyan accent
+  monaco.editor.defineTheme(CODENIX_LIGHT_THEME, {
+    base: 'vs',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#FFFFFF',
+      'editor.foreground': '#1E293B',
+      'editorCursor.foreground': '#0369A1',
+      'editor.lineHighlightBackground': '#F8FAFC',
+      'editor.selectionBackground': '#0369A133',
+      'editor.inactiveSelectionBackground': '#0369A11A',
+      'editorLineNumber.foreground': '#94A3B8',
+      'editorLineNumber.activeForeground': '#475569',
+      'editorIndentGuide.background1': '#E2E8F0',
+      'editorIndentGuide.activeBackground1': '#CBD5E1',
+      'editorWidget.background': '#FFFFFF',
+      'editorWidget.border': '#CBD5E1',
+      'editorSuggestWidget.background': '#FFFFFF',
+      'editorSuggestWidget.border': '#CBD5E1',
+      'editorSuggestWidget.selectedBackground': '#F0F4F8',
+    },
+  })
 }
 
 export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
@@ -57,6 +83,18 @@ export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
   const resizeObserverRef = useRef<ResizeObserver | null>(null)
   const layoutFrameRef = useRef(0)
   const { settings } = useAppSettings()
+  const { resolvedTheme } = useTheme()
+
+  const monacoTheme = resolvedTheme === 'light' ? CODENIX_LIGHT_THEME : CODENIX_DARK_THEME
+
+  // Switch Monaco theme when the app theme changes, even if editor is already mounted
+  useEffect(() => {
+    import('@monaco-editor/react').then(({ loader: l }) => {
+      l.init().then((monaco) => {
+        monaco.editor.setTheme(monacoTheme)
+      })
+    })
+  }, [monacoTheme])
 
   useEffect(() => {
     return () => {
@@ -78,14 +116,16 @@ export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
     if (containerRef.current) resizeObserverRef.current.observe(containerRef.current)
   }
 
+  const editorBg = resolvedTheme === 'light' ? '#FFFFFF' : '#071225'
+
   return (
-    <div ref={containerRef} className="h-full min-h-0 w-full overflow-hidden bg-[#071225]">
+    <div ref={containerRef} className="h-full min-h-0 w-full overflow-hidden" style={{ background: editorBg }}>
       <Editor
         height="100%"
         width="100%"
-        beforeMount={defineCodenixTheme}
+        beforeMount={defineCodenixThemes}
         onMount={handleMount}
-        theme={CODENIX_EDITOR_THEME}
+        theme={monacoTheme}
         language={monacoLanguageByProblemLanguage[language]}
         value={value}
         onChange={(nextValue) => onChange(nextValue ?? '')}

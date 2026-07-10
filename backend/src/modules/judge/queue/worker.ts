@@ -69,6 +69,18 @@ async function persistResult(
           })),
         });
       }
+
+      const totalSubmissions = await tx.submission.count({
+        where: { problemId: payload.problemId }
+      });
+      const acceptedSubmissions = await tx.submission.count({
+        where: { problemId: payload.problemId, result: "accepted" }
+      });
+      const acceptance = totalSubmissions > 0 ? (acceptedSubmissions / totalSubmissions) * 100 : 0;
+      await tx.problem.update({
+        where: { id: payload.problemId },
+        data: { acceptance }
+      });
     });
     return;
   }
