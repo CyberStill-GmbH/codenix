@@ -1,0 +1,1 @@
+{"version":3,"file":"problems.controller.d.ts","sourceRoot":"","sources":["problems.controller.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAmBjD,eAAO,MAAM,iBAAiB;cACZ,OAAO,OAAO,QAAQ;iBAOnB,OAAO,OAAO,QAAQ;qBAOlB,OAAO,OAAO,QAAQ;oBAMvB,OAAO,OAAO,QAAQ;iBAOzB,OAAO,OAAO,QAAQ;oBAanB,OAAO,OAAO,QAAQ;CAY7C,CAAC"}

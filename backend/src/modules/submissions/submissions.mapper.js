@@ -1,0 +1,83 @@
+const resultLabels = {
+    accepted: "Accepted",
+    wrong_answer: "Wrong Answer",
+    runtime_error: "Runtime Error",
+    time_limit_exceeded: "Time Limit Exceeded",
+    memory_limit_exceeded: "Memory Limit Exceeded",
+    compilation_error: "Compilation Error",
+    internal_error: "Internal Error",
+    pending: "Pending"
+};
+function mapTopics(submission) {
+    return submission.problem.topics.map((item) => item.topic.name);
+}
+export function toSubmissionListItem(submission) {
+    return {
+        id: submission.id,
+        problemId: submission.problemId,
+        problemTitle: submission.problem.title,
+        problemSlug: submission.problem.slug,
+        difficulty: submission.problem.difficulty,
+        result: resultLabels[submission.result],
+        language: submission.language,
+        submittedAt: submission.submittedAt.toISOString(),
+        executionTimeMs: submission.executionTimeMs,
+        memoryKb: submission.memoryKb,
+        submissionsCount: 1,
+        acceptance: submission.problem.acceptance,
+        topics: mapTopics(submission)
+    };
+}
+export function toSubmissionDetail(submission, testcaseResults) {
+    const runtimeSubmission = submission;
+    const passedCases = testcaseResults.filter((result) => result.passed).length;
+    const failedResult = testcaseResults.find((result) => !result.passed);
+    const mapTestcase = (result, index) => {
+        return {
+            id: result.id,
+            index: index + 1,
+            testcaseId: result.testcaseId,
+            visibility: result.testcase.visibility,
+            input: result.testcase.visibility === "sample" ? result.testcase.input : null,
+            expectedOutput: result.testcase.visibility === "sample" ? result.testcase.expectedOutput : null,
+            actualOutput: result.actualOutput,
+            error: result.error,
+            passed: result.passed,
+            executionTimeMs: result.executionTimeMs,
+            memoryKb: result.memoryKb
+        };
+    };
+    return {
+        id: submission.id,
+        problemId: submission.problemId,
+        problemTitle: submission.problem.title,
+        problemSlug: submission.problem.slug,
+        difficulty: submission.problem.difficulty,
+        topics: mapTopics(submission),
+        result: resultLabels[submission.result],
+        resultCode: submission.result,
+        status: submission.result,
+        language: submission.language,
+        submittedAt: submission.submittedAt.toISOString(),
+        sourceCode: runtimeSubmission.sourceCode ?? "",
+        stdout: runtimeSubmission.stdout ?? null,
+        stderr: runtimeSubmission.stderr ?? null,
+        error: runtimeSubmission.error ?? runtimeSubmission.compileOutput
+            ? {
+                message: runtimeSubmission.error ??
+                    runtimeSubmission.compileOutput ??
+                    "Judge execution failed."
+            }
+            : null,
+        stackTrace: runtimeSubmission.stackTrace ?? null,
+        executionTimeMs: submission.executionTimeMs,
+        memoryKb: submission.memoryKb,
+        passedCases,
+        totalCases: testcaseResults.length,
+        failedCase: failedResult
+            ? mapTestcase(failedResult, testcaseResults.indexOf(failedResult))
+            : undefined,
+        testcaseResults: testcaseResults.map(mapTestcase)
+    };
+}
+//# sourceMappingURL=submissions.mapper.js.map

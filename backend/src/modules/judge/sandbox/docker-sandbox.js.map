@@ -1,0 +1,1 @@
+{"version":3,"file":"docker-sandbox.js","sourceRoot":"","sources":["docker-sandbox.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,kBAAkB,EAAE,MAAM,iBAAiB,CAAC;AAOrD,MAAM,OAAO,aAAa;IACxB,GAAG,CAAC,OAA0B;QAC5B,OAAO,kBAAkB,CAAC,OAAO,CAAC,CAAC;IACrC,CAAC;CACF"}

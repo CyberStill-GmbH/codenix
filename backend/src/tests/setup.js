@@ -1,0 +1,10 @@
+import "dotenv/config";
+import { afterAll, beforeAll } from "vitest";
+import { prisma } from "../db/prisma";
+beforeAll(async () => {
+    await prisma.$connect();
+});
+afterAll(async () => {
+    await prisma.$disconnect();
+});
+//# sourceMappingURL=setup.js.map

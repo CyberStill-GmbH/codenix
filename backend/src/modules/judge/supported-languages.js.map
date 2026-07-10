@@ -1,0 +1,1 @@
+{"version":3,"file":"supported-languages.js","sourceRoot":"","sources":["supported-languages.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,yBAAyB,GAAG;IACvC,QAAQ;IACR,YAAY;IACZ,YAAY;IACZ,GAAG;IACH,MAAM;CACE,CAAC;AAKX,MAAM,oBAAoB,GAAG,IAAI,GAAG,CAAS,yBAAyB,CAAC,CAAC;AAExE,MAAM,UAAU,wBAAwB,CACtC,QAAgB;IAEhB,OAAO,oBAAoB,CAAC,GAAG,CAAC,QAAQ,CAAC,CAAC;AAC5C,CAAC"}

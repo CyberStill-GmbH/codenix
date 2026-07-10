@@ -1,0 +1,2 @@
+export declare const uploadAdminImage: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
+//# sourceMappingURL=admin-uploads.middleware.d.ts.map

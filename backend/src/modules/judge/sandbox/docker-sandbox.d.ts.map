@@ -1,0 +1,1 @@
+{"version":3,"file":"docker-sandbox.d.ts","sourceRoot":"","sources":["docker-sandbox.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EACV,OAAO,EACP,sBAAsB,EACtB,iBAAiB,EAClB,MAAM,SAAS,CAAC;AAEjB,qBAAa,aAAc,YAAW,OAAO;IAC3C,GAAG,CAAC,OAAO,EAAE,iBAAiB,GAAG,OAAO,CAAC,sBAAsB,CAAC;CAGjE"}
