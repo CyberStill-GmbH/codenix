@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "seed:problems": "tsx prisma/seed-problems.ts",
     "seed:admin": "tsx prisma/seed-admin.ts",
+    "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
