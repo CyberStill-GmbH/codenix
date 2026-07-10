@@ -3,9 +3,9 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
-    "module": "NodeNext",
+    "module": "esnext",
     "target": "ES2023",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "bundler",
     "types": ["node"],
 
     "sourceMap": true,
