@@ -3,15 +3,13 @@ import type { InputHTMLAttributes } from 'react'
 import { Eye, EyeOff, LockKeyhole } from 'lucide-react'
 
 import { landingTokens } from '@/features/landing/theme/tokens'
+import { cn } from '@/shared/lib/utils'
 
 type PasswordInputProps = {
   label: string
   error?: string
   forgotHref?: string
 } & InputHTMLAttributes<HTMLInputElement>
-
-const cx = (...classes: Array<string | false | undefined>) =>
-  classes.filter(Boolean).join(' ')
 
 export function PasswordInput({
   label,
@@ -42,7 +40,7 @@ export function PasswordInput({
       </div>
 
       <div
-        className={cx(
+        className={cn(
           landingTokens.auth.inputShell,
           error
             ? landingTokens.auth.inputShellError
@@ -51,7 +49,7 @@ export function PasswordInput({
         )}
       >
         <LockKeyhole
-          className={cx(
+          className={cn(
             landingTokens.auth.inputIcon,
             error && landingTokens.auth.inputIconError,
           )}
@@ -62,7 +60,7 @@ export function PasswordInput({
           id={id}
           type={isVisible ? 'text' : 'password'}
           disabled={disabled}
-          className={cx(landingTokens.auth.inputWithAction, className)}
+          className={cn(landingTokens.auth.inputWithAction, className)}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
           {...props}

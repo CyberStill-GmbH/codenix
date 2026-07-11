@@ -1,39 +1,14 @@
 import type { NextFunction, Request, Response } from "express";
 import { prisma } from "../../db/prisma";
 import { AppError } from "../errors/app-error";
-
-type AuthenticatedRequest = Request & {
-  user?: {
-    id?: string;
-    userId?: string;
-  };
-  userId?: string;
-  auth?: {
-    userId?: string;
-  };
-};
-
-function getAuthenticatedUserId(req: Request) {
-  const authReq = req as AuthenticatedRequest;
-
-  return (
-    authReq.user?.id ??
-    authReq.user?.userId ??
-    authReq.userId ??
-    authReq.auth?.userId
-  );
-}
+import { requireAuthenticatedUserId } from "../utils/authenticated-user";
 
 export async function adminMiddleware(
   req: Request,
   _res: Response,
   next: NextFunction
 ) {
-  const userId = getAuthenticatedUserId(req);
-
-  if (!userId) {
-    throw new AppError(401, "UNAUTHORIZED", "Authentication required.");
-  }
+  const userId = requireAuthenticatedUserId(req);
 
   const user = await prisma.user.findUnique({
     where: {

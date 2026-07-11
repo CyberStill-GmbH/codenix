@@ -1,27 +1,13 @@
-import rateLimit from "express-rate-limit";
+import { createRateLimiter } from "../../shared/middleware/rate-limit";
 
-export const loginRateLimiter = rateLimit({
+export const loginRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
   limit: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (_req, res) => {
-    return res.status(429).json({
-      code: "RATE_LIMITED",
-      message: "Too many login attempts. Try again later."
-    });
-  }
+  message: "Too many login attempts. Try again later."
 });
 
-export const registerRateLimiter = rateLimit({
+export const registerRateLimiter = createRateLimiter({
   windowMs: 60 * 60 * 1000,
   limit: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (_req, res) => {
-    return res.status(429).json({
-      code: "RATE_LIMITED",
-      message: "Too many registration attempts. Try again later."
-    });
-  }
+  message: "Too many registration attempts. Try again later."
 });

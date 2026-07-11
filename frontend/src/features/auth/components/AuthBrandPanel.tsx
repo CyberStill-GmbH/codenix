@@ -6,8 +6,7 @@ import {
   authBrandContent,
 } from '@/features/auth/constants/authContent'
 import { landingTokens } from '@/features/landing/theme/tokens'
-
-const cx = (...classes: Array<string | undefined>) => classes.filter(Boolean).join(' ')
+import { cn } from '@/shared/lib/utils'
 
 export function AuthBrandPanel() {
   return (
@@ -32,7 +31,7 @@ export function AuthBrandPanel() {
       <div className={landingTokens.auth.brandInner}>
         <Link
           to="/"
-          className={cx(
+          className={cn(
             landingTokens.auth.brandLogoLink,
             'items-center gap-3',
             landingTokens.focus,
@@ -76,7 +75,7 @@ export function AuthBrandPanel() {
 
           <Link
             to="/"
-            className={cx(landingTokens.auth.brandLink, landingTokens.focus)}
+            className={cn(landingTokens.auth.brandLink, landingTokens.focus)}
           >
             {authBrandContent.linkLabel}
           </Link>
