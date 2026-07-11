@@ -4,11 +4,9 @@ import { ClipboardList, FilePenLine, LayoutDashboard, Plus, ShieldCheck } from '
 
 import logo from '@/assets/icons/logo.png'
 import { landingTokens } from '@/features/landing/theme/tokens'
+import { cn } from '@/shared/lib/utils'
 import { rememberAdminPath } from '@/shared/utils/adminConsolePath'
 import { preloadRoute, type PreloadRouteKey } from '@/routes/routePreload'
-
-const cx = (...classes: Array<string | false | undefined>) =>
-  classes.filter(Boolean).join(' ')
 
 const adminNavItems = [
   {
@@ -77,7 +75,7 @@ export function AdminNavbar() {
         <div className="flex min-w-0 items-center justify-between gap-4">
           <Link
             to="/admin/problems"
-            className={cx(
+            className={cn(
               'flex shrink-0 items-center gap-2.5 rounded-[var(--radius-md)]',
               landingTokens.focus,
             )}
@@ -120,7 +118,7 @@ export function AdminNavbar() {
                 to={item.href}
                 onMouseEnter={() => preloadRoute(item.preload)}
                 onFocus={() => preloadRoute(item.preload)}
-                className={cx(
+                className={cn(
                   'inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition duration-200',
                   isActive
                     ? 'border-sky-400/45 bg-sky-400/12 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'

@@ -8,6 +8,7 @@ import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
 import { UserMenu } from '@/features/user/components/UserMenu'
 import { landingTokens } from '@/features/landing/theme/tokens'
+import { cn } from '@/shared/lib/utils'
 import { getLastAdminPath } from '@/shared/utils/adminConsolePath'
 import { preloadRoute, type PreloadRouteKey } from '@/routes/routePreload'
 import { ProblemSearchBox } from '@/shared/components/navigation/ProblemSearchBox'
@@ -19,9 +20,6 @@ const appNavItems = [
 ] satisfies Array<{ label: string; href: string; preload: PreloadRouteKey }>
 
 const preloadAdminRoute = () => preloadRoute('adminProblems')
-
-const cx = (...classes: Array<string | false | undefined>) =>
-  classes.filter(Boolean).join(' ')
 
 // AppNavbar belongs to authenticated internal routes only.
 // Keep it separate from the public landing NavbarSection.
@@ -42,7 +40,7 @@ export function AppNavbar() {
   return (
     <header className="sticky top-0 z-50 bg-[var(--color-navbar-bg)] shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl">
       <nav
-        className={cx(
+        className={cn(
           'mx-auto flex h-14 w-full items-center justify-between gap-6 px-6',
           isProfileRoute
             ? 'md:max-w-[888px] lg:max-w-screen-xl'
@@ -53,7 +51,7 @@ export function AppNavbar() {
         <div className="flex min-w-0 items-center gap-8">
           <Link
             to="/problems"
-            className={cx(
+            className={cn(
               'flex shrink-0 items-center gap-2.5 rounded-[var(--radius-md)]',
               landingTokens.focus,
             )}
@@ -82,7 +80,7 @@ export function AppNavbar() {
                   to={item.href}
                   onMouseEnter={() => preloadRoute(item.preload)}
                   onFocus={() => preloadRoute(item.preload)}
-                  className={cx(
+                  className={cn(
                     'relative rounded-[var(--radius-lg)] px-1 py-2 text-sm font-semibold tracking-normal transition duration-150',
                     isActive
                       ? 'text-[var(--color-text)] after:absolute after:inset-x-1 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-[var(--color-primary)]'
@@ -132,7 +130,7 @@ export function AppNavbar() {
               ref={userMenuButtonRef}
               id="navbar-user-avatar"
               type="button"
-              className={cx(
+              className={cn(
                 'rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5 transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]',
                 landingTokens.focus,
               )}

@@ -2,15 +2,13 @@ import type { ComponentType, InputHTMLAttributes } from 'react'
 import type { LucideProps } from 'lucide-react'
 
 import { landingTokens } from '@/features/landing/theme/tokens'
+import { cn } from '@/shared/lib/utils'
 
 export type FormInputProps = {
   label: string
   error?: string
   icon: ComponentType<LucideProps>
 } & InputHTMLAttributes<HTMLInputElement>
-
-const cx = (...classes: Array<string | false | undefined>) =>
-  classes.filter(Boolean).join(' ')
 
 export function FormInput({
   label,
@@ -28,7 +26,7 @@ export function FormInput({
       </label>
 
       <div
-        className={cx(
+        className={cn(
           landingTokens.auth.inputShell,
           error
             ? landingTokens.auth.inputShellError
@@ -37,7 +35,7 @@ export function FormInput({
         )}
       >
         <Icon
-          className={cx(
+          className={cn(
             landingTokens.auth.inputIcon,
             error && landingTokens.auth.inputIconError,
           )}
@@ -47,7 +45,7 @@ export function FormInput({
         <input
           id={id}
           disabled={disabled}
-          className={cx(landingTokens.auth.input, className)}
+          className={cn(landingTokens.auth.input, className)}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
           {...props}

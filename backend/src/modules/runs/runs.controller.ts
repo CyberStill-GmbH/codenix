@@ -1,14 +1,11 @@
 import type { Request, Response } from "express";
+import { requireAuthenticatedUserId } from "../../shared/utils/authenticated-user";
 import { runsService } from "./runs.service";
 
 export class RunsController {
   async getRun(req: Request, res: Response) {
     const runId = res.locals.validatedParams.runId;
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ code: "UNAUTHORIZED", message: "Unauthorized" });
-    }
+    const userId = requireAuthenticatedUserId(req);
 
     const run = await runsService.getRunById(runId, userId);
 

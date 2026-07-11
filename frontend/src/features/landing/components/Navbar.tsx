@@ -6,9 +6,7 @@ import logo from '@/assets/icons/logo.png'
 import { navItems } from '@/features/landing/constants/landingContent'
 import type { NavItem } from '@/features/landing/types/landing.types'
 import { landingTokens } from '@/features/landing/theme/tokens'
-
-const cx = (...classes: Array<string | false | undefined>) =>
-  classes.filter(Boolean).join(' ')
+import { cn } from '@/shared/lib/utils'
 
 const getNavbarOffset = () => {
   const navbar = document.querySelector('[data-landing-navbar]')
@@ -58,7 +56,7 @@ export function Navbar() {
       <nav className={landingTokens.nav.inner} aria-label="Navegación principal">
         <Link
           to="/"
-          className={cx(
+          className={cn(
             'flex shrink-0 items-center gap-3 transition-opacity hover:opacity-80',
             landingTokens.focus,
           )}
@@ -66,7 +64,7 @@ export function Navbar() {
           onClick={closeMenu}
         >
           <span
-            className={cx('h-7 w-7 shrink-0', landingTokens.color.logo)}
+            className={cn('h-7 w-7 shrink-0', landingTokens.color.logo)}
             style={{
               mask: `url(${logo}) center / contain no-repeat`,
               WebkitMask: `url(${logo}) center / contain no-repeat`,
@@ -90,7 +88,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
-          <Link to="/login" className={cx(landingTokens.nav.cta, landingTokens.focus)}>
+          <Link to="/login" className={cn(landingTokens.nav.cta, landingTokens.focus)}>
             Empezar
             <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
@@ -98,7 +96,7 @@ export function Navbar() {
 
         <button
           type="button"
-          className={cx(landingTokens.nav.menuButton, landingTokens.focus)}
+          className={cn(landingTokens.nav.menuButton, landingTokens.focus)}
           aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
           aria-expanded={isOpen}
           aria-controls="landing-mobile-menu"
@@ -132,7 +130,7 @@ export function Navbar() {
             <div className="mt-3 flex flex-col gap-2 border-t border-[var(--color-glass-border)] pt-4">
               <Link
                 to="/login"
-                className={cx(landingTokens.nav.mobileCta, landingTokens.focus)}
+                className={cn(landingTokens.nav.mobileCta, landingTokens.focus)}
                 onClick={closeMenu}
               >
                 Empezar
@@ -161,7 +159,7 @@ function NavLink({
     return (
       <button
         type="button"
-        className={cx(landingTokens.nav.link, landingTokens.focus)}
+        className={cn(landingTokens.nav.link, landingTokens.focus)}
         onClick={() => onAnchorClick(item.href)}
       >
         <span>{item.label}</span>
@@ -171,7 +169,7 @@ function NavLink({
   }
 
   return (
-    <Link to={item.href} className={cx(landingTokens.nav.link, landingTokens.focus)}>
+    <Link to={item.href} className={cn(landingTokens.nav.link, landingTokens.focus)}>
       <span>{item.label}</span>
       {badge}
     </Link>
@@ -195,7 +193,7 @@ function MobileNavLink({
     return (
       <button
         type="button"
-        className={cx(landingTokens.nav.mobileLink, landingTokens.focus)}
+        className={cn(landingTokens.nav.mobileLink, landingTokens.focus)}
         onClick={() => onAnchorClick(item.href)}
       >
         <span>{item.label}</span>
@@ -207,7 +205,7 @@ function MobileNavLink({
   return (
     <Link
       to={item.href}
-      className={cx(landingTokens.nav.mobileLink, landingTokens.focus)}
+      className={cn(landingTokens.nav.mobileLink, landingTokens.focus)}
       onClick={onClick}
     >
       <span>{item.label}</span>

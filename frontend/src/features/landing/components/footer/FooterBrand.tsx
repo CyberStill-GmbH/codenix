@@ -4,15 +4,14 @@ import { Link } from 'react-router-dom'
 import logo from '@/assets/icons/logo.png'
 import { FooterBadge } from '@/features/landing/components/footer/FooterBadge'
 import { landingTokens } from '@/features/landing/theme/tokens'
-
-const cx = (...classes: Array<string | undefined>) => classes.filter(Boolean).join(' ')
+import { cn } from '@/shared/lib/utils'
 
 export function FooterBrand() {
   return (
     <div className={landingTokens.footer.brand}>
       <Link
         to="/"
-        className={cx(landingTokens.footer.brandLink, landingTokens.focus)}
+        className={cn(landingTokens.footer.brandLink, landingTokens.focus)}
         aria-label="Codenix — Inicio"
       >
         <span
