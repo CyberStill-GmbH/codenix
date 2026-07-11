@@ -47,7 +47,7 @@ El backend tiene CORS con `origin: FRONTEND_URL` y `credentials: false`; la sesi
 | `PUT /api/admin/problems/:problemId/testcases/:testcaseId` | Admin | testcase legacy o moderno | `Testcase` | Integrado |
 | `DELETE /api/admin/problems/:problemId/testcases/:testcaseId` | Admin | - | `204` | Integrado |
 | `POST /api/admin/uploads/images` | Admin | `multipart/form-data`, campo `file` | `{ url }` | Integrado en editor Markdown admin |
-| `POST /api/problems/:problemId/run` | Si | `{ language, sourceCode, testcases?, stdin?, testcaseIds? }` | `202` `{ id, status: "pending" }` | Integrado con polling |
+| `POST /api/problems/:problemId/run` | Si | `{ language, sourceCode, testcases?, stdin? }` | `202` `{ id, status: "pending" }` | Integrado con polling |
 | `GET /api/runs/:runId` | Si | UUID del run | Run con `status`, stdout, stderr, error, tiempo, memoria y `testcaseResults` | Integrado como fuente de polling |
 | `POST /api/problems/:problemId/submissions` | Si | `{ language, sourceCode }` | `202` `{ id, status, result, resultCode, submittedAt }` | Integrado con polling |
 

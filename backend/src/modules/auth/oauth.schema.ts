@@ -2,16 +2,16 @@ import { z } from "zod";
 
 export const oauthRedirectQuerySchema = z
   .object({
-    returnTo: z.string().optional()
+    returnTo: z.string().max(2048).optional(),
   })
   .strict();
 
 export const oauthCallbackQuerySchema = z
   .object({
-    code: z.string().optional(),
-    state: z.string().optional(),
-    error: z.string().optional(),
-    error_description: z.string().optional()
+    code: z.string().max(4096).optional(),
+    state: z.string().max(4096).optional(),
+    error: z.string().max(256).optional(),
+    error_description: z.string().max(2048).optional(),
   })
   .passthrough()
   .superRefine((value, ctx) => {
@@ -23,7 +23,7 @@ export const oauthCallbackQuerySchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["code"],
-        message: "OAuth code is required."
+        message: "OAuth code is required.",
       });
     }
 
@@ -31,7 +31,7 @@ export const oauthCallbackQuerySchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["state"],
-        message: "OAuth state is required."
+        message: "OAuth state is required.",
       });
     }
   });

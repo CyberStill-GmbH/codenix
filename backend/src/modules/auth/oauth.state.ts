@@ -1,20 +1,12 @@
-import {
-  createHmac,
-  randomBytes,
-  timingSafeEqual
-} from "node:crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { env } from "../../config/env";
 import { AppError } from "../../shared/errors/app-error";
-import type {
-  OAuthStatePayload,
-  SupportedOAuthProvider
-} from "./oauth.types";
+import type { OAuthStatePayload, SupportedOAuthProvider } from "./oauth.types";
 
 const STATE_TTL_MS = 10 * 60 * 1000;
 
 function base64UrlEncode(value: string | Buffer) {
-  return Buffer.from(value)
-    .toString("base64url");
+  return Buffer.from(value).toString("base64url");
 }
 
 function base64UrlDecode(value: string) {
@@ -52,15 +44,15 @@ function normalizeReturnTo(returnTo?: string) {
 
 export function createOAuthState(
   provider: SupportedOAuthProvider,
-  returnTo?: string
+  returnTo?: string,
 ) {
   const normalizedReturnTo = normalizeReturnTo(returnTo);
 
   const payload: OAuthStatePayload = {
-  provider,
-  nonce: randomBytes(24).toString("base64url"),
-  createdAt: Date.now(),
-  ...(normalizedReturnTo ? { returnTo: normalizedReturnTo } : {})
+    provider,
+    nonce: randomBytes(24).toString("base64url"),
+    createdAt: Date.now(),
+    ...(normalizedReturnTo ? { returnTo: normalizedReturnTo } : {}),
   };
 
   const encodedPayload = base64UrlEncode(JSON.stringify(payload));
@@ -71,9 +63,20 @@ export function createOAuthState(
 
 export function verifyOAuthState(
   state: string,
-  expectedProvider: SupportedOAuthProvider
+  expectedProvider: SupportedOAuthProvider,
+  expectedState: string | undefined,
 ) {
-  const [encodedPayload, signature] = state.split(".");
+  if (!expectedState || !safeCompare(state, expectedState)) {
+    throw new AppError(400, "INVALID_OAUTH_STATE", "Invalid OAuth state.");
+  }
+
+  const stateParts = state.split(".");
+
+  if (stateParts.length !== 2) {
+    throw new AppError(400, "INVALID_OAUTH_STATE", "Invalid OAuth state.");
+  }
+
+  const [encodedPayload, signature] = stateParts;
 
   if (!encodedPayload || !signature) {
     throw new AppError(400, "INVALID_OAUTH_STATE", "Invalid OAuth state.");
@@ -109,6 +112,6 @@ export function verifyOAuthState(
 
   return {
     provider: payload.provider,
-    returnTo: normalizeReturnTo(payload.returnTo)
+    returnTo: normalizeReturnTo(payload.returnTo),
   };
 }
