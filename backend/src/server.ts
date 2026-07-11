@@ -30,7 +30,18 @@ async function shutdown(signal: string) {
   });
 }
 
-void bootstrap();
+bootstrap().catch((error) => {
+  console.error("Failed to start Codenix API", error);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled promise rejection", reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught exception", error);
+});
 
 process.on("SIGINT", () => void shutdown("SIGINT"));
 process.on("SIGTERM", () => void shutdown("SIGTERM"));
