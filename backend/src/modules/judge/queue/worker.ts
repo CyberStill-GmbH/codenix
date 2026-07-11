@@ -204,7 +204,15 @@ export async function processJudgeJob(job: Job<JudgeJobPayload>) {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Unknown judge error";
-    await persistInternalError(payload, message);
+    try {
+      await persistInternalError(payload, message);
+    } catch (persistError) {
+      console.error("Failed to persist judge internal error", {
+        runId: payload.runId,
+        submissionId: payload.submissionId,
+        error: persistError
+      });
+    }
     throw error;
   } finally {
     try {

@@ -300,11 +300,19 @@ export const problemService = {
 
     try {
       await judgeProducer.addJob(judgeInput);
-    } catch {
-      await prisma.codeRun.update({
-        where: { id: run.id },
-        data: { status: "internal_error", error: "Judge queue unavailable." }
-      });
+    } catch (error) {
+      console.error("Failed to enqueue judge run job", { runId: run.id, error });
+      try {
+        await prisma.codeRun.update({
+          where: { id: run.id },
+          data: { status: "internal_error", error: "Judge queue unavailable." }
+        });
+      } catch (updateError) {
+        console.error("Failed to mark code run as internal_error", {
+          runId: run.id,
+          error: updateError
+        });
+      }
       throw new AppError(503, "JUDGE_UNAVAILABLE", "The judge is temporarily unavailable.");
     }
 
@@ -374,11 +382,22 @@ export const problemService = {
 
     try {
       await judgeProducer.addJob(judgeInput);
-    } catch {
-      await prisma.submission.update({
-        where: { id: submission.id },
-        data: { result: "internal_error" }
+    } catch (error) {
+      console.error("Failed to enqueue judge submission job", {
+        submissionId: submission.id,
+        error
       });
+      try {
+        await prisma.submission.update({
+          where: { id: submission.id },
+          data: { result: "internal_error" }
+        });
+      } catch (updateError) {
+        console.error("Failed to mark submission as internal_error", {
+          submissionId: submission.id,
+          error: updateError
+        });
+      }
       throw new AppError(503, "JUDGE_UNAVAILABLE", "The judge is temporarily unavailable.");
     }
 
