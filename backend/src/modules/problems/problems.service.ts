@@ -6,13 +6,13 @@ import {
   toProblemDetail,
   toProblemListItem,
   toProblemSearchItem,
-  toProblemTopicItem
+  toProblemTopicItem,
 } from "./problems.mapper";
 import type {
   ProblemsQueryInput,
   ProblemsSearchQueryInput,
   RunCodeRequestInput,
-  CreateSubmissionRequestInput
+  CreateSubmissionRequestInput,
 } from "./problems.schema";
 import { judgeProducer } from "../judge/queue/producer";
 
@@ -24,7 +24,7 @@ function slugify(value: string) {
 }
 
 function buildOrderBy(
-  sort: ProblemsQueryInput["sort"]
+  sort: ProblemsQueryInput["sort"],
 ): Prisma.ProblemOrderByWithRelationInput {
   if (sort === "numeric-desc") {
     return { numericId: "desc" };
@@ -43,7 +43,7 @@ function buildOrderBy(
 
 function buildWhere(query: ProblemsQueryInput): Prisma.ProblemWhereInput {
   const where: Prisma.ProblemWhereInput = {
-    status: "published"
+    status: "published",
   };
 
   if (query.difficulty) {
@@ -55,15 +55,15 @@ function buildWhere(query: ProblemsQueryInput): Prisma.ProblemWhereInput {
       {
         title: {
           contains: query.search,
-          mode: "insensitive"
-        }
+          mode: "insensitive",
+        },
       },
       {
         slug: {
           contains: query.search,
-          mode: "insensitive"
-        }
-      }
+          mode: "insensitive",
+        },
+      },
     ];
   }
 
@@ -71,9 +71,9 @@ function buildWhere(query: ProblemsQueryInput): Prisma.ProblemWhereInput {
     where.topics = {
       some: {
         topic: {
-          slug: slugify(query.topic)
-        }
-      }
+          slug: slugify(query.topic),
+        },
+      },
     };
   }
 
@@ -81,7 +81,7 @@ function buildWhere(query: ProblemsQueryInput): Prisma.ProblemWhereInput {
 }
 
 function buildSearchWhere(
-  query: ProblemsSearchQueryInput
+  query: ProblemsSearchQueryInput,
 ): Prisma.ProblemWhereInput {
   return {
     status: "published",
@@ -89,14 +89,14 @@ function buildSearchWhere(
       {
         title: {
           contains: query.q,
-          mode: "insensitive"
-        }
+          mode: "insensitive",
+        },
       },
       {
         slug: {
           contains: query.q,
-          mode: "insensitive"
-        }
+          mode: "insensitive",
+        },
       },
       {
         topics: {
@@ -104,13 +104,13 @@ function buildSearchWhere(
             topic: {
               name: {
                 contains: query.q,
-                mode: "insensitive"
-              }
-            }
-          }
-        }
-      }
-    ]
+                mode: "insensitive",
+              },
+            },
+          },
+        },
+      },
+    ],
   };
 }
 
@@ -132,34 +132,34 @@ export const problemService = {
         include: {
           topics: {
             include: {
-              topic: true
-            }
-          }
-        }
+              topic: true,
+            },
+          },
+        },
       }),
 
       prisma.problem.count({
-        where
-      })
+        where,
+      }),
     ]);
 
     const solvedProblemIds = userId
       ? await solvedProblemsService.getSolvedProblemIds(
           userId,
-          problems.map((problem) => problem.id)
+          problems.map((problem) => problem.id),
         )
       : new Set<string>();
 
     return {
       data: problems.map((problem) =>
-        toProblemListItem(problem, solvedProblemIds)
+        toProblemListItem(problem, solvedProblemIds),
       ),
       meta: {
         page,
         pageSize,
         total,
-        totalPages: Math.ceil(total / pageSize)
-      }
+        totalPages: Math.ceil(total / pageSize),
+      },
     };
   },
 
@@ -167,54 +167,54 @@ export const problemService = {
     const problems = await prisma.problem.findMany({
       where: buildSearchWhere(query),
       orderBy: {
-        numericId: "asc"
+        numericId: "asc",
       },
       take: query.limit,
       include: {
         topics: {
           include: {
-            topic: true
-          }
-        }
-      }
+            topic: true,
+          },
+        },
+      },
     });
 
     return {
-      data: problems.map(toProblemSearchItem)
+      data: problems.map(toProblemSearchItem),
     };
   },
 
   async listTopics() {
     const topics = await prisma.topic.findMany({
       orderBy: {
-        name: "asc"
+        name: "asc",
       },
       select: {
         id: true,
         name: true,
-        slug: true
-      }
+        slug: true,
+      },
     });
 
     return {
-      data: topics.map(toProblemTopicItem)
+      data: topics.map(toProblemTopicItem),
     };
   },
 
   async findBySlug(slug: string, userId?: string) {
     const problem = await prisma.problem.findUnique({
       where: {
-        slug
+        slug,
       },
       include: {
         topics: {
           include: {
-            topic: true
-          }
+            topic: true,
+          },
         },
         examples: true,
-        codeTemplates: true
-      }
+        codeTemplates: true,
+      },
     });
 
     if (!problem || problem.status !== "published") {
@@ -231,51 +231,56 @@ export const problemService = {
   async runCode(identifier: string, data: RunCodeRequestInput, userId: string) {
     const problem = await prisma.problem.findFirst({
       where: {
-        OR: [
-          { id: identifier },
-          { slug: identifier }
-        ],
-        status: "published"
+        OR: [{ id: identifier }, { slug: identifier }],
+        status: "published",
       },
       include: {
         codeTemplates: {
-          select: { language: true }
+          select: { language: true },
         },
         testcases: {
-          where: data.testcaseIds && data.testcaseIds.length > 0
-            ? { id: { in: data.testcaseIds } }
-            : { visibility: "sample" }
-        }
-      }
+          where: {
+            visibility: "sample",
+          },
+        },
+      },
     });
 
     if (!problem) {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
     }
 
-    if (!problem.codeTemplates.some((template) => template.language === data.language)) {
+    if (
+      !problem.codeTemplates.some(
+        (template) => template.language === data.language,
+      )
+    ) {
       throw new AppError(
         422,
         "UNSUPPORTED_LANGUAGE",
-        "This language is not enabled for the selected problem."
+        "This language is not enabled for the selected problem.",
       );
     }
 
     const selectedTestcases = data.testcases?.length
       ? data.testcases.map((testcase) => ({
           input: testcase.input,
-          expectedOutput: testcase.expectedOutput
+          expectedOutput: testcase.expectedOutput,
         }))
       : data.stdin !== undefined
         ? [{ input: data.stdin, expectedOutput: null }]
         : problem.testcases.map((testcase) => ({
             id: testcase.id,
             input: testcase.input,
-            expectedOutput: testcase.expectedOutput
+            expectedOutput: testcase.expectedOutput,
           }));
 
     if (selectedTestcases.length === 0) {
-      throw new AppError(422, "NO_TESTCASES", "This problem has no sample testcases.");
+      throw new AppError(
+        422,
+        "NO_TESTCASES",
+        "This problem has no sample testcases.",
+      );
     }
 
     const run = await prisma.codeRun.create({
@@ -285,7 +290,7 @@ export const problemService = {
         language: data.language,
         sourceCode: data.sourceCode,
         status: "pending" as const,
-      }
+      },
     });
 
     const judgeInput = {
@@ -295,7 +300,7 @@ export const problemService = {
       sourceCode: data.sourceCode,
       testcases: selectedTestcases,
       timeLimitMs: problem.timeLimitMs,
-      memoryLimitMb: problem.memoryLimitMb
+      memoryLimitMb: problem.memoryLimitMb,
     };
 
     try {
@@ -303,44 +308,52 @@ export const problemService = {
     } catch {
       await prisma.codeRun.update({
         where: { id: run.id },
-        data: { status: "internal_error", error: "Judge queue unavailable." }
+        data: { status: "internal_error", error: "Judge queue unavailable." },
       });
-      throw new AppError(503, "JUDGE_UNAVAILABLE", "The judge is temporarily unavailable.");
+      throw new AppError(
+        503,
+        "JUDGE_UNAVAILABLE",
+        "The judge is temporarily unavailable.",
+      );
     }
 
     return {
       id: run.id,
-      status: run.status
+      status: run.status,
     };
   },
 
-  async submitCode(identifier: string, data: CreateSubmissionRequestInput, userId: string) {
+  async submitCode(
+    identifier: string,
+    data: CreateSubmissionRequestInput,
+    userId: string,
+  ) {
     const problem = await prisma.problem.findFirst({
       where: {
-        OR: [
-          { id: identifier },
-          { slug: identifier }
-        ],
-        status: "published"
+        OR: [{ id: identifier }, { slug: identifier }],
+        status: "published",
       },
       include: {
         codeTemplates: {
-          select: { language: true }
+          select: { language: true },
         },
-        testcases: true
-      }
+        testcases: true,
+      },
     });
 
     if (!problem) {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
     }
 
-
-    if (!problem.codeTemplates.some((template) => template.language === data.language)) {
+    if (
+      !problem.codeTemplates.some(
+        (template) => template.language === data.language,
+      )
+    ) {
       throw new AppError(
         422,
         "UNSUPPORTED_LANGUAGE",
-        "This language is not enabled for the selected problem."
+        "This language is not enabled for the selected problem.",
       );
     }
 
@@ -355,7 +368,7 @@ export const problemService = {
         language: data.language,
         sourceCode: data.sourceCode,
         result: "pending" as const,
-      }
+      },
     });
 
     const judgeInput = {
@@ -363,13 +376,13 @@ export const problemService = {
       problemId: problem.id,
       language: data.language,
       sourceCode: data.sourceCode,
-      testcases: problem.testcases.map(tc => ({
+      testcases: problem.testcases.map((tc) => ({
         id: tc.id,
         input: tc.input,
-        expectedOutput: tc.expectedOutput
+        expectedOutput: tc.expectedOutput,
       })),
       timeLimitMs: problem.timeLimitMs,
-      memoryLimitMb: problem.memoryLimitMb
+      memoryLimitMb: problem.memoryLimitMb,
     };
 
     try {
@@ -377,9 +390,13 @@ export const problemService = {
     } catch {
       await prisma.submission.update({
         where: { id: submission.id },
-        data: { result: "internal_error" }
+        data: { result: "internal_error" },
       });
-      throw new AppError(503, "JUDGE_UNAVAILABLE", "The judge is temporarily unavailable.");
+      throw new AppError(
+        503,
+        "JUDGE_UNAVAILABLE",
+        "The judge is temporarily unavailable.",
+      );
     }
 
     return {
@@ -387,7 +404,7 @@ export const problemService = {
       status: submission.result,
       result: submission.result,
       resultCode: submission.result,
-      submittedAt: submission.submittedAt.toISOString()
+      submittedAt: submission.submittedAt.toISOString(),
     };
-  }
+  },
 };
