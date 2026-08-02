@@ -3,7 +3,7 @@ import type {
   Submission,
   SubmissionResult,
   SubmissionTestcaseResult,
-  Testcase
+  Testcase,
 } from "../../generated/prisma/client";
 
 type SubmissionListItemModel = Prisma.SubmissionGetPayload<{
@@ -55,10 +55,12 @@ const resultLabels: Record<SubmissionResult, string> = {
   memory_limit_exceeded: "Memory Limit Exceeded",
   compilation_error: "Compilation Error",
   internal_error: "Internal Error",
-  pending: "Pending"
+  pending: "Pending",
 };
 
-function mapTopics(submission: SubmissionListItemModel | SubmissionDetailModel) {
+function mapTopics(
+  submission: SubmissionListItemModel | SubmissionDetailModel,
+) {
   return submission.problem.topics.map((item) => item.topic.name);
 }
 
@@ -76,31 +78,33 @@ export function toSubmissionListItem(submission: SubmissionListItemModel) {
     memoryKb: submission.memoryKb,
     submissionsCount: 1,
     acceptance: submission.problem.acceptance,
-    topics: mapTopics(submission)
+    topics: mapTopics(submission),
   };
 }
 
 export function toSubmissionDetail(
   submission: SubmissionDetailModel,
-  testcaseResults: TestcaseResultWithTestcase[]
+  testcaseResults: TestcaseResultWithTestcase[],
 ) {
   const runtimeSubmission = submission as SubmissionWithOptionalRuntimeFields;
   const passedCases = testcaseResults.filter((result) => result.passed).length;
   const failedResult = testcaseResults.find((result) => !result.passed);
 
   const mapTestcase = (result: TestcaseResultWithTestcase, index: number) => {
+    const isSample = result.testcase.visibility === "sample";
+
     return {
       id: result.id,
       index: index + 1,
-      testcaseId: result.testcaseId,
+      testcaseId: isSample ? result.testcaseId : null,
       visibility: result.testcase.visibility,
-      input: result.testcase.visibility === "sample" ? result.testcase.input : null,
-      expectedOutput: result.testcase.visibility === "sample" ? result.testcase.expectedOutput : null,
-      actualOutput: result.actualOutput,
-      error: result.error,
+      input: isSample ? result.testcase.input : null,
+      expectedOutput: isSample ? result.testcase.expectedOutput : null,
+      actualOutput: isSample ? result.actualOutput : null,
+      error: isSample ? result.error : null,
       passed: result.passed,
       executionTimeMs: result.executionTimeMs,
-      memoryKb: result.memoryKb
+      memoryKb: result.memoryKb,
     };
   };
 
@@ -122,12 +126,12 @@ export function toSubmissionDetail(
     stdout: runtimeSubmission.stdout ?? null,
     stderr: runtimeSubmission.stderr ?? null,
     error:
-      runtimeSubmission.error ?? runtimeSubmission.compileOutput
+      (runtimeSubmission.error ?? runtimeSubmission.compileOutput)
         ? {
             message:
               runtimeSubmission.error ??
               runtimeSubmission.compileOutput ??
-              "Judge execution failed."
+              "Judge execution failed.",
           }
         : null,
     stackTrace: runtimeSubmission.stackTrace ?? null,
@@ -140,6 +144,6 @@ export function toSubmissionDetail(
     failedCase: failedResult
       ? mapTestcase(failedResult, testcaseResults.indexOf(failedResult))
       : undefined,
-    testcaseResults: testcaseResults.map(mapTestcase)
+    testcaseResults: testcaseResults.map(mapTestcase),
   };
 }

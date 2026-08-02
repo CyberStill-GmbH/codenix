@@ -16,7 +16,7 @@ type Props = {
   onUpdate: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void
 }
 
-export function AppearanceSettings({ settings, onUpdate }: Props) {
+export function AppearanceSettings({ onUpdate }: Props) {
   const { theme, setTheme } = useTheme()
 
   function handleThemeChange(value: ThemeOption) {

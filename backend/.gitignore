@@ -6,3 +6,18 @@ node_modules
 /generated/prisma
 
 src/generated/prisma/
+
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+src/**/*.d.ts.map
+!src/shared/types/express.d.ts
+
+prisma/seed.js
+prisma/seed.js.map
+prisma/seed.d.ts
+prisma/seed.d.ts.map
+prisma/seed-admin.js
+prisma/seed-admin.js.map
+prisma/seed-admin.d.ts
+prisma/seed-admin.d.ts.map

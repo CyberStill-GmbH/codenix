@@ -303,11 +303,16 @@ if lines:
       expect(pollRes.body.testcaseResults[0].passed).toBe(true);
       expect(pollRes.body.testcaseResults[1].passed).toBe(true);
 
-      // Verify hidden testcase fields exposure
-      const hiddenResult = pollRes.body.testcaseResults.find((tc: any) => tc.visibility === "hidden");
+      // Verify hidden testcase fields are not exposed
+      const hiddenResult = pollRes.body.testcaseResults.find(
+        (testcase: { visibility?: string }) =>
+          testcase.visibility === "hidden",
+      );
       expect(hiddenResult.input).toBeNull();
       expect(hiddenResult.expectedOutput).toBeNull();
-      expect(hiddenResult.actualOutput).toBeDefined();
+      expect(hiddenResult.actualOutput).toBeNull();
+      expect(hiddenResult.error).toBeNull();
+      expect(hiddenResult.testcaseId).toBeNull();
     });
   });
 });
