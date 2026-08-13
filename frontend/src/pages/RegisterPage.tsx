@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Mail, User, UserPlus } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { AuthCheckbox } from '@/features/auth/components/AuthCheckbox'
 import { AuthFormShell } from '@/features/auth/components/AuthFormShell'
@@ -67,7 +67,12 @@ export function RegisterPage() {
         ...current,
         ...getApiFieldErrors(error, ['name', 'email', 'password'] as const),
       }))
-      setServerError(getApiErrorMessage(error, 'Error al crear la cuenta. Intentalo de nuevo.'))
+      setServerError(
+        getApiErrorMessage(
+          error,
+          'Error al crear la cuenta. Intentalo de nuevo.',
+        ),
+      )
     } finally {
       setIsLoading(false)
     }
@@ -147,19 +152,19 @@ export function RegisterPage() {
         label={
           <span>
             Acepto los{' '}
-            <a
-              href="#"
+            <Link
+              to="/terms"
               className={`${landingTokens.auth.footerLink} ${landingTokens.focus}`}
             >
               terminos
-            </a>{' '}
+            </Link>{' '}
             y la{' '}
-            <a
-              href="#"
+            <Link
+              to="/privacy"
               className={`${landingTokens.auth.footerLink} ${landingTokens.focus}`}
             >
               privacidad
-            </a>
+            </Link>
           </span>
         }
         checked={values.terms}

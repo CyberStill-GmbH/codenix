@@ -7,8 +7,10 @@ import { AuthCallbackPage } from '@/pages/AuthCallbackPage'
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
 import { HomePage } from '@/pages/HomePage'
 import { LoginPage } from '@/pages/LoginPage'
+import { PrivacyPage } from '@/pages/PrivacyPage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
+import { TermsPage } from '@/pages/TermsPage'
 import {
   LazyAdminProblemFormPage,
   LazyAdminProblemTestcasesPage,
@@ -24,6 +26,8 @@ export function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
       <Route
         path="/problems"
         element={
@@ -44,7 +48,10 @@ export function AppRouter() {
           </RequireAuth>
         }
       />
-      <Route path="/admin" element={<Navigate to="/admin/problems" replace />} />
+      <Route
+        path="/admin"
+        element={<Navigate to="/admin/problems" replace />}
+      />
       <Route
         path="/admin/problems"
         element={
