@@ -34,7 +34,9 @@ export function HeroSection() {
             <HeroDescription>
               Codenix centraliza la práctica de programación competitiva mediante
               problemas, envíos de soluciones y seguimiento de avance para
-              estudiantes que quieren mejorar con disciplina.
+              estudiantes que quieren mejorar con disciplina. Si eliges iniciar
+              sesión con Google, usamos solo los datos básicos de perfil y correo
+              necesarios para autenticar tu cuenta.
             </HeroDescription>
 
             <HeroCTAs

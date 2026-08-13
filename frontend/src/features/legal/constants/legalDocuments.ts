@@ -19,10 +19,11 @@ export const privacyPolicy: LegalDocument = {
       ],
     },
     {
-      title: 'Google OAuth y permisos de Gmail',
+      title: 'Google OAuth y datos de usuario',
       paragraphs: [
         'Codenix utiliza Google OAuth únicamente para autenticar a los usuarios y crear o acceder a su cuenta de Codenix. Solicitamos la información mínima del perfil necesaria para iniciar sesión, como el identificador de tu cuenta de Google, dirección de correo electrónico, nombre y avatar cuando estén disponibles.',
         'Codenix no solicita acceso a mensajes de Gmail, contactos de Gmail, archivos de Google Drive, calendarios ni a ningún otro contenido de Google. No leemos, enviamos, modificamos ni eliminamos correos electrónicos de tu cuenta de Gmail.',
+        'Los datos de usuario obtenidos mediante Google OAuth se usan solo para iniciar sesión, identificar tu cuenta y operar funciones visibles para el usuario dentro de Codenix. No los usamos para publicidad dirigida, venta de datos, evaluación crediticia ni entrenamiento de modelos de inteligencia artificial.',
       ],
     },
     {
@@ -38,7 +39,7 @@ export const privacyPolicy: LegalDocument = {
     {
       title: 'Compartición y divulgación',
       paragraphs: [
-        'No vendemos información personal. Podemos compartir información limitada con proveedores de infraestructura, proveedores de autenticación o procesadores de servicios únicamente cuando sea necesario para operar Codenix. También podemos divulgar información cuando sea requerido por ley o cuando sea necesario para proteger a los usuarios, la plataforma o la comunidad.',
+        'No vendemos información personal ni datos de usuario de Google. Podemos compartir información limitada con proveedores de infraestructura, proveedores de autenticación o procesadores de servicios únicamente cuando sea necesario para operar Codenix. También podemos divulgar información cuando sea requerido por ley o cuando sea necesario para proteger a los usuarios, la plataforma o la comunidad.',
       ],
     },
     {
