@@ -128,4 +128,11 @@ export const footerGroups: FooterGroup[] = [
       { label: 'Prog. competitiva', href: '#problems' },
     ],
   },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacidad', href: '/privacy' },
+      { label: 'Terminos', href: '/terms' },
+    ],
+  },
 ]
