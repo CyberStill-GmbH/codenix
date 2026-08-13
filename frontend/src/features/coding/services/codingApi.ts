@@ -13,7 +13,6 @@ type RunCodePayload = {
   language: ProblemCodeLanguage
   sourceCode: string
   stdin?: string
-  testcaseIds?: string[]
   testcases?: Array<{
     input: string
     expectedOutput: string

@@ -12,6 +12,16 @@ if (!connectionString) {
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
+const seedPassword = process.env.SEED_PASSWORD;
+
+if (process.env.NODE_ENV === "production") {
+  throw new Error("The development seed cannot run in production.");
+}
+
+if (!seedPassword || seedPassword.length < 12 || seedPassword.length > 72) {
+  throw new Error("SEED_PASSWORD must contain between 12 and 72 characters.");
+}
+
 async function main() {
   console.log("Seeding Codenix database...");
 
@@ -25,7 +35,7 @@ async function main() {
   await prisma.problem.deleteMany();
   await prisma.user.deleteMany();
 
-  const passwordHash = await bcrypt.hash("Password123", 10);
+  const passwordHash = await bcrypt.hash(seedPassword, 12);
 
   const admin = await prisma.user.create({
     data: {
@@ -37,8 +47,8 @@ async function main() {
       avatarUrl: "",
       degree: "Cybersecurity Engineering",
       githubUrl: "https://github.com/CyberStill-GmbH",
-      linkedinUrl: ""
-    }
+      linkedinUrl: "",
+    },
   });
 
   const user = await prisma.user.create({
@@ -51,8 +61,8 @@ async function main() {
       avatarUrl: "",
       degree: "Cybersecurity Engineering",
       githubUrl: "https://github.com/CyberStill-GmbH",
-      linkedinUrl: ""
-    }
+      linkedinUrl: "",
+    },
   });
 
   const topicNames = [
@@ -65,7 +75,7 @@ async function main() {
     "Stack",
     "Queue",
     "String",
-    "Greedy"
+    "Greedy",
   ];
 
   const topics = new Map<string, string>();
@@ -74,8 +84,11 @@ async function main() {
     const topic = await prisma.topic.create({
       data: {
         name,
-        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-      }
+        slug: name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, ""),
+      },
     });
 
     topics.set(name, topic.id);
@@ -93,17 +106,16 @@ async function main() {
         "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
       inputFormat:
         "The first line contains an integer n. The second line contains n integers. The third line contains target.",
-      outputFormat:
-        "Print two indices separated by a space.",
+      outputFormat: "Print two indices separated by a space.",
       constraints:
         "2 <= nums.length <= 10^4\n-10^9 <= nums[i] <= 10^9\n-10^9 <= target <= 10^9",
       examples: [
         {
           input: "4\n2 7 11 15\n9",
           output: "0 1",
-          explanation: "nums[0] + nums[1] = 2 + 7 = 9."
-        }
-      ]
+          explanation: "nums[0] + nums[1] = 2 + 7 = 9.",
+        },
+      ],
     },
     {
       title: "Valid Parentheses",
@@ -114,19 +126,17 @@ async function main() {
       topics: ["Stack", "String"],
       statement:
         "Given a string containing only parentheses characters, determine if the input string is valid.",
-      inputFormat:
-        "The first line contains a string s.",
-      outputFormat:
-        "Print true if the string is valid, otherwise false.",
+      inputFormat: "The first line contains a string s.",
+      outputFormat: "Print true if the string is valid, otherwise false.",
       constraints:
         "1 <= s.length <= 10^4\ns consists only of parentheses characters.",
       examples: [
         {
           input: "()[]{}",
           output: "true",
-          explanation: "All brackets are closed in the correct order."
-        }
-      ]
+          explanation: "All brackets are closed in the correct order.",
+        },
+      ],
     },
     {
       title: "Binary Search",
@@ -139,17 +149,15 @@ async function main() {
         "Given a sorted array of integers and a target value, return the index if the target is found. Otherwise, return -1.",
       inputFormat:
         "The first line contains n. The second line contains n sorted integers. The third line contains target.",
-      outputFormat:
-        "Print the index of target or -1.",
-      constraints:
-        "1 <= nums.length <= 10^5\n-10^9 <= nums[i], target <= 10^9",
+      outputFormat: "Print the index of target or -1.",
+      constraints: "1 <= nums.length <= 10^5\n-10^9 <= nums[i], target <= 10^9",
       examples: [
         {
           input: "6\n-1 0 3 5 9 12\n9",
           output: "4",
-          explanation: "9 exists at index 4."
-        }
-      ]
+          explanation: "9 exists at index 4.",
+        },
+      ],
     },
     {
       title: "Maximum Subarray",
@@ -162,17 +170,15 @@ async function main() {
         "Given an integer array nums, find the subarray with the largest sum and return its sum.",
       inputFormat:
         "The first line contains n. The second line contains n integers.",
-      outputFormat:
-        "Print the maximum subarray sum.",
-      constraints:
-        "1 <= nums.length <= 10^5\n-10^4 <= nums[i] <= 10^4",
+      outputFormat: "Print the maximum subarray sum.",
+      constraints: "1 <= nums.length <= 10^5\n-10^4 <= nums[i] <= 10^4",
       examples: [
         {
           input: "9\n-2 1 -3 4 -1 2 1 -5 4",
           output: "6",
-          explanation: "The subarray [4,-1,2,1] has the largest sum 6."
-        }
-      ]
+          explanation: "The subarray [4,-1,2,1] has the largest sum 6.",
+        },
+      ],
     },
     {
       title: "Number of Islands",
@@ -185,18 +191,16 @@ async function main() {
         "Given a 2D grid of land and water, count the number of islands.",
       inputFormat:
         "The first line contains rows and columns. The next rows contain the grid.",
-      outputFormat:
-        "Print the number of islands.",
-      constraints:
-        "1 <= m, n <= 300",
+      outputFormat: "Print the number of islands.",
+      constraints: "1 <= m, n <= 300",
       examples: [
         {
           input: "4 5\n11110\n11010\n11000\n00000",
           output: "1",
-          explanation: "There is one connected island."
-        }
-      ]
-    }
+          explanation: "There is one connected island.",
+        },
+      ],
+    },
   ];
 
   const createdProblems = [];
@@ -218,34 +222,39 @@ async function main() {
             input: example.input,
             output: example.output,
             explanation: example.explanation,
-            orderIndex: index
-          }))
+            orderIndex: index,
+          })),
         },
         codeTemplates: {
           create: [
             {
               language: "python",
-              starterCode: "class Solution:\n    def solve(self):\n        pass\n"
+              starterCode:
+                "class Solution:\n    def solve(self):\n        pass\n",
             },
             {
               language: "javascript",
-              starterCode: "function solve(input) {\n  // Write your code here\n}\n"
+              starterCode:
+                "function solve(input) {\n  // Write your code here\n}\n",
             },
             {
               language: "typescript",
-              starterCode: "function solve(input: string): string {\n  return \"\";\n}\n"
+              starterCode:
+                'function solve(input: string): string {\n  return "";\n}\n',
             },
             {
               language: "cpp",
-              starterCode: "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n  return 0;\n}\n"
+              starterCode:
+                "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n  return 0;\n}\n",
             },
             {
               language: "java",
-              starterCode: "class Main {\n  public static void main(String[] args) {\n  }\n}\n"
-            }
-          ]
-        }
-      }
+              starterCode:
+                "class Main {\n  public static void main(String[] args) {\n  }\n}\n",
+            },
+          ],
+        },
+      },
     });
 
     for (const topicName of problemData.topics) {
@@ -258,15 +267,17 @@ async function main() {
       await prisma.problemTopic.create({
         data: {
           problemId: problem.id,
-          topicId
-        }
+          topicId,
+        },
       });
     }
 
     const sampleExample = problemData.examples[0];
 
     if (!sampleExample) {
-      throw new Error(`Problem ${problemData.title} must have at leat one example.`);
+      throw new Error(
+        `Problem ${problemData.title} must have at leat one example.`,
+      );
     }
 
     await prisma.testcase.createMany({
@@ -277,7 +288,7 @@ async function main() {
           expectedOutput: sampleExample.output,
           visibility: "sample",
           weight: 1,
-          orderIndex: 0
+          orderIndex: 0,
         },
         {
           problemId: problem.id,
@@ -285,17 +296,21 @@ async function main() {
           expectedOutput: sampleExample.output,
           visibility: "hidden",
           weight: 1,
-          orderIndex: 1
-        }
-      ]
+          orderIndex: 1,
+        },
+      ],
     });
 
     createdProblems.push(problem);
   }
 
   const twoSum = createdProblems.find((problem) => problem.slug === "two-sum");
-  const validParentheses = createdProblems.find((problem) => problem.slug === "valid-parentheses");
-  const maximumSubarray = createdProblems.find((problem) => problem.slug === "maximum-subarray");
+  const validParentheses = createdProblems.find(
+    (problem) => problem.slug === "valid-parentheses",
+  );
+  const maximumSubarray = createdProblems.find(
+    (problem) => problem.slug === "maximum-subarray",
+  );
 
   if (!twoSum || !validParentheses || !maximumSubarray) {
     throw new Error("Seed problems missing.");
@@ -307,28 +322,31 @@ async function main() {
         userId: user.id,
         problemId: twoSum.id,
         language: "python",
-        sourceCode: "class Solution:\n    def twoSum(self, nums, target):\n        seen = {}\n        for i, n in enumerate(nums):\n            if target - n in seen:\n                return [seen[target - n], i]\n            seen[n] = i\n",
+        sourceCode:
+          "class Solution:\n    def twoSum(self, nums, target):\n        seen = {}\n        for i, n in enumerate(nums):\n            if target - n in seen:\n                return [seen[target - n], i]\n            seen[n] = i\n",
         result: "accepted",
         executionTimeMs: 42,
-        memoryKb: 16384
+        memoryKb: 16384,
       },
       {
         userId: user.id,
         problemId: validParentheses.id,
         language: "javascript",
-        sourceCode: "function isValid(s) {\n  const stack = [];\n  return true;\n}\n",
+        sourceCode:
+          "function isValid(s) {\n  const stack = [];\n  return true;\n}\n",
         result: "wrong_answer",
         executionTimeMs: 31,
-        memoryKb: 12000
+        memoryKb: 12000,
       },
       {
         userId: user.id,
         problemId: maximumSubarray.id,
         language: "typescript",
-        sourceCode: "function maxSubArray(nums: number[]): number {\n  return 0;\n}\n",
-        result: "pending"
-      }
-    ]
+        sourceCode:
+          "function maxSubArray(nums: number[]): number {\n  return 0;\n}\n",
+        result: "pending",
+      },
+    ],
   });
 
   console.log("✅ Seed completed.");

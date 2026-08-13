@@ -9,12 +9,12 @@ import { getOAuthProviderConfig } from "./oauth.providers";
 import { hashPassword } from "./password.service";
 import type {
   OAuthCallbackQueryInput,
-  OAuthRedirectQueryInput
+  OAuthRedirectQueryInput,
 } from "./oauth.schema";
 import type {
   OAuthProfile,
   OAuthTokenResponse,
-  SupportedOAuthProvider
+  SupportedOAuthProvider,
 } from "./oauth.types";
 import type { User } from "../../generated/prisma/client";
 
@@ -60,7 +60,7 @@ function createFrontendCallbackUrl(params: {
 
   if (params.accessToken) {
     url.hash = new URLSearchParams({
-      accessToken: params.accessToken
+      accessToken: params.accessToken,
     }).toString();
   }
 
@@ -70,7 +70,7 @@ function createFrontendCallbackUrl(params: {
 function createAuthSession(user: User) {
   return {
     accessToken: signAccessToken(user.id),
-    user: toAuthUser(user)
+    user: toAuthUser(user),
   };
 }
 
@@ -92,11 +92,11 @@ async function generateUniqueUsername(source: string) {
 
     const existing = await prisma.user.findUnique({
       where: {
-        username
+        username,
       },
       select: {
-        id: true
-      }
+        id: true,
+      },
     });
 
     if (!existing) {
@@ -114,7 +114,7 @@ async function createUnusablePasswordHash() {
 
 async function exchangeCodeForToken(
   provider: SupportedOAuthProvider,
-  code: string
+  code: string,
 ): Promise<OAuthTokenResponse> {
   const config = getOAuthProviderConfig(provider);
 
@@ -123,16 +123,16 @@ async function exchangeCodeForToken(
     client_secret: config.clientSecret,
     code,
     redirect_uri: config.callbackUrl,
-    grant_type: "authorization_code"
+    grant_type: "authorization_code",
   });
 
   const response = await fetch(config.tokenUrl, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/x-www-form-urlencoded"
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    body
+    body,
   });
 
   const data = (await response.json()) as OAuthTokenResponse & {
@@ -144,7 +144,7 @@ async function exchangeCodeForToken(
     throw new AppError(
       400,
       "OAUTH_TOKEN_EXCHANGE_FAILED",
-      data.error_description ?? data.error ?? "OAuth token exchange failed."
+      data.error_description ?? data.error ?? "OAuth token exchange failed.",
     );
   }
 
@@ -157,14 +157,18 @@ async function fetchGoogleProfile(accessToken: string): Promise<OAuthProfile> {
   const response = await fetch(config.userInfoUrl, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      Accept: "application/json"
-    }
+      Accept: "application/json",
+    },
   });
 
   const data = (await response.json()) as GoogleUserInfo;
 
   if (!response.ok || !data.sub) {
-    throw new AppError(400, "OAUTH_PROFILE_FAILED", "Could not fetch Google profile.");
+    throw new AppError(
+      400,
+      "OAUTH_PROFILE_FAILED",
+      "Could not fetch Google profile.",
+    );
   }
 
   return {
@@ -177,7 +181,7 @@ async function fetchGoogleProfile(accessToken: string): Promise<OAuthProfile> {
     ...(data.name ? { name: data.name } : {}),
     ...(data.email ? { username: data.email.split("@")[0] } : {}),
     ...(data.picture ? { avatarUrl: data.picture } : {}),
-    ...(data.profile ? { profileUrl: data.profile } : {})
+    ...(data.profile ? { profileUrl: data.profile } : {}),
   };
 }
 
@@ -186,8 +190,8 @@ async function fetchGitHubPrimaryEmail(accessToken: string) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       Accept: "application/vnd.github+json",
-      "User-Agent": "Codenix"
-    }
+      "User-Agent": "Codenix",
+    },
   });
 
   if (!response.ok) {
@@ -197,7 +201,7 @@ async function fetchGitHubPrimaryEmail(accessToken: string) {
   const emails = (await response.json()) as GitHubEmail[];
 
   const primaryVerifiedEmail = emails.find(
-    (item) => item.primary && item.verified
+    (item) => item.primary && item.verified,
   );
 
   return primaryVerifiedEmail?.email.toLowerCase();
@@ -210,17 +214,21 @@ async function fetchGitHubProfile(accessToken: string): Promise<OAuthProfile> {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       Accept: "application/vnd.github+json",
-      "User-Agent": "Codenix"
-    }
+      "User-Agent": "Codenix",
+    },
   });
 
   const data = (await response.json()) as GitHubUserInfo;
 
   if (!response.ok || !data.id) {
-    throw new AppError(400, "OAUTH_PROFILE_FAILED", "Could not fetch GitHub profile.");
+    throw new AppError(
+      400,
+      "OAUTH_PROFILE_FAILED",
+      "Could not fetch GitHub profile.",
+    );
   }
 
-  const primaryEmail = data.email?.toLowerCase() ?? (await fetchGitHubPrimaryEmail(accessToken));
+  const primaryEmail = await fetchGitHubPrimaryEmail(accessToken);
 
   return {
     provider: "github",
@@ -230,13 +238,13 @@ async function fetchGitHubProfile(accessToken: string): Promise<OAuthProfile> {
     username: data.login,
     name: data.name ?? data.login,
     ...(data.avatar_url ? { avatarUrl: data.avatar_url } : {}),
-    ...(data.html_url ? { profileUrl: data.html_url } : {})
+    ...(data.html_url ? { profileUrl: data.html_url } : {}),
   };
 }
 
 async function fetchOAuthProfile(
   provider: SupportedOAuthProvider,
-  accessToken: string
+  accessToken: string,
 ) {
   if (provider === "google") {
     return fetchGoogleProfile(accessToken);
@@ -250,27 +258,27 @@ async function findOrCreateOAuthUser(profile: OAuthProfile) {
     where: {
       provider_providerAccountId: {
         provider: profile.provider,
-        providerAccountId: profile.providerAccountId
-      }
+        providerAccountId: profile.providerAccountId,
+      },
     },
     include: {
-      user: true
-    }
+      user: true,
+    },
   });
 
   if (existingAccount) {
     const user = await prisma.user.update({
       where: {
-        id: existingAccount.userId
+        id: existingAccount.userId,
       },
       data: {
-        ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {})
-      }
+        ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
+      },
     });
 
     await prisma.oAuthAccount.update({
       where: {
-        id: existingAccount.id
+        id: existingAccount.id,
       },
       data: {
         lastLoginAt: new Date(),
@@ -280,18 +288,21 @@ async function findOrCreateOAuthUser(profile: OAuthProfile) {
           : {}),
         ...(profile.username ? { username: profile.username } : {}),
         ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
-        ...(profile.profileUrl ? { profileUrl: profile.profileUrl } : {})
-      }
+        ...(profile.profileUrl ? { profileUrl: profile.profileUrl } : {}),
+      },
     });
 
     return user;
   }
 
-  const userByEmail = profile.email
+  const verifiedEmail =
+    profile.emailVerified === true ? profile.email : undefined;
+
+  const userByEmail = verifiedEmail
     ? await prisma.user.findUnique({
         where: {
-          email: profile.email
-        }
+          email: verifiedEmail,
+        },
       })
     : null;
 
@@ -308,8 +319,8 @@ async function findOrCreateOAuthUser(profile: OAuthProfile) {
         ...(profile.username ? { username: profile.username } : {}),
         ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
         ...(profile.profileUrl ? { profileUrl: profile.profileUrl } : {}),
-        lastLoginAt: new Date()
-      }
+        lastLoginAt: new Date(),
+      },
     });
 
     return userByEmail;
@@ -326,15 +337,15 @@ async function findOrCreateOAuthUser(profile: OAuthProfile) {
       name: profile.name ?? profile.username ?? "Codenix User",
       username,
       email:
-        profile.email ??
+        verifiedEmail ??
         `${profile.provider}-${profile.providerAccountId}@oauth.codenix.local`,
       passwordHash,
       role: "user",
       ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
       ...(profile.provider === "github" && profile.profileUrl
         ? { githubUrl: profile.profileUrl }
-        : {})
-    }
+        : {}),
+    },
   });
 
   await prisma.oAuthAccount.create({
@@ -349,17 +360,17 @@ async function findOrCreateOAuthUser(profile: OAuthProfile) {
       ...(profile.username ? { username: profile.username } : {}),
       ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
       ...(profile.profileUrl ? { profileUrl: profile.profileUrl } : {}),
-      lastLoginAt: new Date()
-    }
+      lastLoginAt: new Date(),
+    },
   });
 
   return user;
 }
 
 export const oauthService = {
-  createAuthorizationUrl(
+  createAuthorizationRequest(
     provider: SupportedOAuthProvider,
-    query: OAuthRedirectQueryInput
+    query: OAuthRedirectQueryInput,
   ) {
     const config = getOAuthProviderConfig(provider);
     const state = createOAuthState(provider, query.returnTo);
@@ -377,32 +388,43 @@ export const oauthService = {
       authorizationUrl.searchParams.set("prompt", "select_account");
     }
 
-    return authorizationUrl.toString();
+    return {
+      state,
+      url: authorizationUrl.toString(),
+    };
   },
 
   async handleCallback(
     provider: SupportedOAuthProvider,
-    query: OAuthCallbackQueryInput
+    query: OAuthCallbackQueryInput,
+    expectedState: string | undefined,
   ) {
     if (query.error) {
       return createFrontendCallbackUrl({
-        error: query.error
+        error: query.error,
       });
     }
 
     if (!query.code || !query.state) {
-      throw new AppError(400, "INVALID_OAUTH_CALLBACK", "Invalid OAuth callback.");
+      throw new AppError(
+        400,
+        "INVALID_OAUTH_CALLBACK",
+        "Invalid OAuth callback.",
+      );
     }
 
-    const state = verifyOAuthState(query.state, provider);
+    const state = verifyOAuthState(query.state, provider, expectedState);
     const tokenResponse = await exchangeCodeForToken(provider, query.code);
-    const profile = await fetchOAuthProfile(provider, tokenResponse.access_token);
+    const profile = await fetchOAuthProfile(
+      provider,
+      tokenResponse.access_token,
+    );
     const user = await findOrCreateOAuthUser(profile);
     const session = createAuthSession(user);
 
     return createFrontendCallbackUrl({
-    accessToken: session.accessToken,
-    ...(state.returnTo ? { returnTo: state.returnTo } : {})
+      accessToken: session.accessToken,
+      ...(state.returnTo ? { returnTo: state.returnTo } : {}),
     });
-  }
+  },
 };
