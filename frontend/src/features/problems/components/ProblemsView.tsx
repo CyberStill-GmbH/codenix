@@ -78,7 +78,9 @@ export function ProblemsView({
           <article
             key={title}
             className={`overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)] ${
-              imageSrc ? 'relative min-h-[12.5rem]' : 'min-h-[12.5rem] p-5'
+              imageSrc
+                ? 'relative hidden min-h-[12.5rem] md:block'
+                : 'min-h-0 p-4 md:min-h-[12.5rem] md:p-5'
             }`}
           >
             {imageSrc ? (
@@ -96,10 +98,10 @@ export function ProblemsView({
               </>
             ) : (
               <>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-accent)]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-accent)] md:h-10 md:w-10">
                   {Icon && <Icon className="h-5 w-5" aria-hidden="true" />}
                 </div>
-                <h2 className="mt-5 font-display text-xl font-bold text-[var(--color-text)]">
+                <h2 className="mt-4 font-display text-lg font-bold text-[var(--color-text)] md:mt-5 md:text-xl">
                   {title}
                 </h2>
                 <p className="mt-2 text-sm text-[var(--color-text-muted)]">{description}</p>

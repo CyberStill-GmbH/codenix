@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Search, ShieldCheck } from 'lucide-react'
+import { ClipboardList, Search, Settings, ShieldCheck, UserRound } from 'lucide-react'
 
 import logo from '@/assets/icons/logo.png'
 import { useAuth } from '@/features/auth/context/useAuth'
@@ -17,6 +17,18 @@ const appNavItems = [
   { label: 'Envios', href: '/submissions', preload: 'submissions' },
   { label: 'Perfil', href: '/profile', preload: 'profile' },
 ] satisfies Array<{ label: string; href: string; preload: PreloadRouteKey }>
+
+const mobileNavItems = [
+  { label: 'Problemas', href: '/problems', preload: 'problems', Icon: ClipboardList },
+  { label: 'Envios', href: '/submissions', preload: 'submissions', Icon: Search },
+  { label: 'Perfil', href: '/profile', preload: 'profile', Icon: UserRound },
+  { label: 'Ajustes', href: '/settings', preload: 'profile', Icon: Settings },
+] satisfies Array<{
+  label: string
+  href: string
+  preload: PreloadRouteKey
+  Icon: typeof Search
+}>
 
 const preloadAdminRoute = () => preloadRoute('adminProblems')
 
@@ -104,7 +116,7 @@ export function AppNavbar() {
               to={adminHref}
               onMouseEnter={preloadAdminRoute}
               onFocus={preloadAdminRoute}
-              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--color-primary)]/30 bg-[var(--color-primary-soft)] px-2.5 text-xs font-semibold text-[var(--color-accent-muted)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+              className="hidden h-8 items-center gap-1.5 rounded-full border border-[var(--color-primary)]/30 bg-[var(--color-primary-soft)] px-2.5 text-xs font-semibold text-[var(--color-accent-muted)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:inline-flex"
             >
               <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
               Administrar
@@ -173,6 +185,50 @@ export function AppNavbar() {
             userMenuButtonRef.current?.focus()
           }}
         />
+      )}
+
+      {isMobile && (
+        <nav className="app-mobile-nav" aria-label="Navegación principal móvil">
+          {mobileNavItems.map((item) => {
+            const isActive = location.pathname.startsWith(item.href)
+            const Icon = item.Icon
+
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                onMouseEnter={() => preloadRoute(item.preload)}
+                onFocus={() => preloadRoute(item.preload)}
+                className={`app-mobile-nav__item ${
+                  isActive ? 'app-mobile-nav__item--active' : ''
+                }`}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <Icon className="app-mobile-nav__icon" aria-hidden="true" />
+                <span>{item.label}</span>
+              </Link>
+            )
+          })}
+
+          {user?.role === 'admin' && (
+            <Link
+              to={adminHref}
+              onMouseEnter={preloadAdminRoute}
+              onFocus={preloadAdminRoute}
+              className={`app-mobile-nav__item ${
+                location.pathname.startsWith('/admin')
+                  ? 'app-mobile-nav__item--active'
+                  : ''
+              }`}
+              aria-current={
+                location.pathname.startsWith('/admin') ? 'page' : undefined
+              }
+            >
+              <ShieldCheck className="app-mobile-nav__icon" aria-hidden="true" />
+              <span>Admin</span>
+            </Link>
+          )}
+        </nav>
       )}
     </header>
   )
