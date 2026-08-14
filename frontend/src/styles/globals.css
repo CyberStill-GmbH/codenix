@@ -99,6 +99,15 @@
     min-height: 100vh;
   }
 
+  /* La landing es deliberadamente dark-only. El resto de la aplicación sí
+     puede seguir la preferencia de tema del usuario, pero nunca debe dejar
+     transparentes las secciones de esta página ni heredar el fondo global. */
+  .codenix-landing {
+    color-scheme: dark;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+
   /* Elementos multimedia */
   img,
   picture,

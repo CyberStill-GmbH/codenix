@@ -9,7 +9,10 @@ import { ProblemsSection } from '@/features/landing/components/ProblemsSection'
 
 export function HomePage() {
   return (
-    <div data-theme="dark">
+    <div
+      data-theme="dark"
+      className="codenix-landing min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]"
+    >
       <NavbarSection />
       <HeroSection />
       <FeatureSection />
