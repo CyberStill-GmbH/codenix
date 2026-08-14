@@ -9,7 +9,8 @@ export function SplashScreen({ isVisible }: SplashScreenProps) {
     <div
       role="status"
       aria-live="polite"
-      className={`fixed inset-0 z-[100] grid place-items-center bg-[var(--color-bg)] transition-opacity duration-300 ${
+      data-theme="dark"
+      className={`codenix-splash-screen fixed inset-0 z-[100] grid place-items-center transition-opacity duration-300 ${
         isVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
       }`}
     >

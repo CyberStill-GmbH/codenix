@@ -47,6 +47,17 @@ export function Navbar() {
     setIsOpen(false)
   }
 
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') closeMenu()
+    }
+
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [isOpen])
+
   const handleAnchorClick = (href: string) => {
     scrollToSection(href)
   }
@@ -123,6 +134,7 @@ export function Navbar() {
           className={landingTokens.nav.mobileMenu}
           role="dialog"
           aria-label="Menú de navegación"
+          aria-modal="true"
         >
           <div className="mx-auto flex max-w-7xl flex-col gap-1">
             {navItems.map((item) => (

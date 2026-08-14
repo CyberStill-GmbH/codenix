@@ -43,6 +43,18 @@
   }
 }
 
+@keyframes codenix-mobile-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes codenix-hero-headline-reveal {
   from {
     opacity: 0;
@@ -106,6 +118,15 @@
     color-scheme: dark;
     background-color: var(--color-bg);
     color: var(--color-text);
+  }
+
+  /* El arranque ocurre antes de saber qué ruta/tema ha elegido el usuario.
+     Mantenerlo como una superficie de marca oscura evita un flash claro en la
+     landing; el tema configurable solo se aplica a la app autenticada. */
+  .codenix-splash-screen {
+    color-scheme: dark;
+    background-color: #050914;
+    color: #f8fafc;
   }
 
   /* Elementos multimedia */

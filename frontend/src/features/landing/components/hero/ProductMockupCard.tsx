@@ -111,15 +111,18 @@ export function ProductMockupCard() {
         </div>
         </motion.div>
       </motion.div>
-      <motion.div
-        className="pointer-events-none absolute right-[-8rem] top-1/2 z-20 hidden w-[36rem] max-w-none -translate-y-1/2 select-none md:block"
-        initial={false}
-        animate={showMascot ? { opacity: 1, x: 0, y: 0, scale: 1 } : { opacity: 0, x: 70, y: 12, scale: 0.82 }}
-        transition={{ duration: reducedMotion ? 0 : showMascot ? 0.42 : 0.25, ease: 'easeOut' }}
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/2 z-20 w-[min(92vw,24rem)] -translate-x-1/2 -translate-y-1/2 select-none md:left-auto md:right-[-8rem] md:w-[36rem] md:translate-x-0"
         aria-hidden="true"
       >
-        <img src="/mascotaWhere.png" alt="" className="h-auto w-full drop-shadow-[0_28px_32px_rgba(0,0,0,0.58)] motion-safe:animate-[codenix-mascot-hover_3.8s_ease-in-out_infinite]" />
-      </motion.div>
+        <motion.div
+          initial={false}
+          animate={showMascot ? { opacity: 1, x: 0, y: 0, scale: 1 } : { opacity: 0, x: 70, y: 12, scale: 0.82 }}
+          transition={{ duration: reducedMotion ? 0 : showMascot ? 0.42 : 0.25, ease: 'easeOut' }}
+        >
+          <img src="/mascotaWhere.png" alt="" className="h-auto w-full drop-shadow-[0_28px_32px_rgba(0,0,0,0.58)] motion-safe:animate-[codenix-mascot-hover_3.8s_ease-in-out_infinite]" />
+        </motion.div>
+      </div>
     </div>
   )
 }

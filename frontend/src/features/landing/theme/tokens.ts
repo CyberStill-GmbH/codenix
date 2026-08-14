@@ -47,17 +47,17 @@ export const landingTokens = {
     menuButton:
       'inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-glass-border)] bg-[var(--color-surface-translucent)] text-[var(--color-text-muted)] transition-colors duration-200 hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)] md:hidden',
     mobileMenu:
-      'border-t border-[var(--color-border-soft)] bg-[var(--color-bg)] px-4 py-3 md:hidden',
+      'fixed inset-x-0 bottom-0 top-14 z-40 overflow-y-auto border-t border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-4 py-6 shadow-[var(--shadow-xl)] backdrop-blur-xl [animation:codenix-mobile-menu-in_180ms_var(--ease-out-expo)_both] motion-reduce:[animation:none] md:hidden',
   },
   hero: {
     section:
       'relative isolate overflow-hidden border-b border-[var(--color-border-soft)]',
-    grid: 'grid items-center gap-14 lg:grid-cols-[minmax(0,0.96fr)_minmax(420px,0.9fr)] lg:gap-16',
+    grid: 'grid items-center gap-10 lg:grid-cols-[minmax(0,0.96fr)_minmax(420px,0.9fr)] lg:gap-16',
     copyColumn: 'flex max-w-2xl flex-col items-start text-left',
     badge:
       'inline-flex items-center gap-2 rounded-[var(--radius-full)] border border-[var(--color-hero-badge-border)] bg-[var(--color-hero-badge-bg)] px-3 py-1.5 text-sm font-medium text-[var(--color-text-muted)]',
     headline:
-      'mt-8 max-w-[11ch] text-balance text-[clamp(4rem,9vw,7.5rem)] font-black leading-[0.88] tracking-[-0.075em] text-[var(--color-text)] motion-safe:animate-[codenix-hero-headline-reveal_700ms_cubic-bezier(0.16,1,0.3,1)_both]',
+      'mt-7 max-w-[11ch] text-balance text-[clamp(3.25rem,15vw,7.5rem)] font-black leading-[0.88] tracking-[-0.075em] text-[var(--color-text)] motion-safe:animate-[codenix-hero-headline-reveal_700ms_cubic-bezier(0.16,1,0.3,1)_both] sm:mt-8',
     description:
       'mt-5 max-w-xl text-base leading-relaxed text-[var(--color-text-soft)] sm:text-[1.0625rem]',
     ctas: 'mt-10 flex flex-col gap-4 sm:flex-row',
