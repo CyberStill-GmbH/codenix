@@ -43,6 +43,20 @@
   }
 }
 
+@keyframes codenix-hero-headline-reveal {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translateY(0);
+  }
+}
+
 @layer base {
   /* Reset */
   *,

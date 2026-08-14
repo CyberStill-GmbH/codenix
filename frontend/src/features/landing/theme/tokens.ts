@@ -56,7 +56,8 @@ export const landingTokens = {
     copyColumn: 'flex max-w-2xl flex-col items-start text-left',
     badge:
       'inline-flex items-center gap-2 rounded-[var(--radius-full)] border border-[var(--color-hero-badge-border)] bg-[var(--color-hero-badge-bg)] px-3 py-1.5 text-sm font-medium text-[var(--color-text-muted)]',
-    headline: 'mt-6 max-w-2xl text-balance text-[var(--color-text)]',
+    headline:
+      'mt-8 max-w-[11ch] text-balance text-[clamp(4rem,9vw,7.5rem)] font-black leading-[0.88] tracking-[-0.075em] text-[var(--color-text)] motion-safe:animate-[codenix-hero-headline-reveal_700ms_cubic-bezier(0.16,1,0.3,1)_both]',
     description:
       'mt-5 max-w-xl text-base leading-relaxed text-[var(--color-text-soft)] sm:text-[1.0625rem]',
     ctas: 'mt-10 flex flex-col gap-4 sm:flex-row',
@@ -65,11 +66,10 @@ export const landingTokens = {
     trustMark:
       'font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[var(--color-primary)]',
     mockupShell:
-      'relative mx-auto w-full max-w-[34rem] motion-safe:animate-[codenix-hero-float_5s_ease-in-out_infinite]',
-    mockupPerspective:
-      'relative [transform:perspective(1200px)_rotateX(7deg)_rotateZ(-5deg)]',
+      'relative mx-auto w-full max-w-[34rem]',
+    mockupPerspective: 'relative',
     mockupPanel:
-      'relative overflow-hidden rounded-[var(--radius-mockup)] border border-[var(--color-glass-border)] bg-[var(--color-mockup-bg)] shadow-[var(--shadow-2xl)] backdrop-blur-xl',
+      'relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] shadow-[var(--shadow-xl)]',
     mockupInner: 'relative p-4 sm:p-5',
     dashboardCard:
       'rounded-[var(--radius-xl)] border border-[var(--color-glass-border)] bg-[var(--color-dashboard-card-bg)] p-3',

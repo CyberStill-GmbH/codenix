@@ -1,6 +1,5 @@
 import { Code2, LineChart, ListChecks, Target, Trophy } from 'lucide-react'
 
-import { FloatingBadge } from '@/features/landing/components/hero/FloatingBadge'
 import { ProblemListItem } from '@/features/landing/components/hero/ProblemListItem'
 import { ProgressBarRow } from '@/features/landing/components/hero/ProgressBarRow'
 import { StatCard } from '@/features/landing/components/hero/StatCard'
@@ -27,16 +26,8 @@ const metricCards = [
 export function ProductMockupCard() {
   return (
     <div className={landingTokens.hero.mockupShell} aria-hidden="true">
-      <div className="absolute -left-8 top-8 h-40 w-40 rounded-[var(--radius-full)] bg-[var(--color-primary-soft)] blur-3xl" />
-      <div className="absolute -right-10 bottom-4 h-44 w-44 rounded-[var(--radius-full)] bg-[var(--color-accent-muted-soft)] blur-3xl" />
-
       <div className={landingTokens.hero.mockupPerspective}>
-        <div className="absolute inset-0 translate-x-5 translate-y-6 rounded-[var(--radius-mockup)] bg-[rgba(2,6,23,0.48)] blur-xl" />
-
         <div className={landingTokens.hero.mockupPanel}>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,rgba(11,127,195,0.22),transparent_34%),radial-gradient(circle_at_90%_18%,rgba(56,189,248,0.12),transparent_32%)]" />
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-
           <div className={landingTokens.hero.mockupInner}>
             <div className="mb-4 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
@@ -113,7 +104,6 @@ export function ProductMockupCard() {
           </div>
         </div>
 
-        <FloatingBadge label="Accepted" value="68.3% AC" />
       </div>
     </div>
   )

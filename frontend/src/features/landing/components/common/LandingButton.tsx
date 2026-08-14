@@ -42,11 +42,11 @@ type LandingButtonProps =
   })
 
 const BASE =
-  'inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]'
+  'inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] px-6 py-3.5 text-sm font-semibold transition-[background-color,border-color,color,transform] duration-150 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]'
 
 const VARIANTS: Record<LandingButtonVariant, string> = {
   primary:
-    'border border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-text-inverse)] shadow-[var(--shadow-glow-primary)] hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
+    'border border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-text-inverse)] shadow-[var(--shadow-md)] hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
 
   ghost:
     'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-soft)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]',
