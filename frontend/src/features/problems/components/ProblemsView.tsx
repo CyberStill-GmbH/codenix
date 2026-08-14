@@ -1,5 +1,3 @@
-import { BookOpen, Brain } from 'lucide-react'
-
 import { DifficultySelector } from '@/features/problems/components/DifficultySelector'
 import { ProblemTable } from '@/features/problems/components/ProblemTable'
 import { SearchBar } from '@/features/problems/components/SearchBar'
@@ -53,62 +51,19 @@ export function ProblemsView({
   const totalCount = allProblems.length
   const mediumAndHard = allProblems.filter((problem) => problem.difficulty !== 'Easy').length
 
-  const cards = [
-    {
-      title: t('hero.practiceTitle'),
-      description: t('hero.practiceDescription', { total: totalCount }),
-      Icon: Brain,
-    },
-    {
-      title: t('hero.progressTitle'),
-      imageSrc: '/contests-upcoming.webp',
-      imageAlt: 'Proximo concurso',
-    },
-    {
-      title: t('hero.preparationTitle'),
-      description: t('hero.preparationDescription', { count: mediumAndHard }),
-      Icon: BookOpen,
-    },
-  ]
-
   return (
     <div className="space-y-5">
-      <section className="grid gap-4 md:grid-cols-3" aria-label="Resumen de problemas">
-        {cards.map(({ title, description, Icon, imageSrc, imageAlt }) => (
-          <article
-            key={title}
-            className={`overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)] ${
-              imageSrc
-                ? 'relative hidden min-h-[12.5rem] md:block'
-                : 'min-h-0 p-4 md:min-h-[12.5rem] md:p-5'
-            }`}
-          >
-            {imageSrc ? (
-              <>
-                <img
-                  src={imageSrc}
-                  alt={imageAlt}
-                  className="absolute inset-0 h-full w-full object-fill"
-                />
-                <div className="invisible p-5" aria-hidden="true">
-                  <div className="h-10 w-10" />
-                  <h2 className="mt-5 font-display text-xl font-bold">{title}</h2>
-                  <p className="mt-2 text-sm">Proximo concurso disponible</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-accent)] md:h-10 md:w-10">
-                  {Icon && <Icon className="h-5 w-5" aria-hidden="true" />}
-                </div>
-                <h2 className="mt-4 font-display text-lg font-bold text-[var(--color-text)] md:mt-5 md:text-xl">
-                  {title}
-                </h2>
-                <p className="mt-2 text-sm text-[var(--color-text-muted)]">{description}</p>
-              </>
-            )}
-          </article>
-        ))}
+      <section className="flex flex-col gap-5 border-b border-[var(--color-border-soft)] pb-5 lg:flex-row lg:items-end lg:justify-between" aria-labelledby="problems-page-title">
+        <div>
+          <p className="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">Biblioteca</p>
+          <h1 id="problems-page-title" className="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--color-text)] md:text-4xl">Problemas</h1>
+          <p className="mt-2 max-w-xl text-sm text-[var(--color-text-muted)]">Elige un reto, resuelve con intención y deja una señal de progreso.</p>
+        </div>
+        <div className="flex flex-wrap gap-4 font-mono text-xs text-[var(--color-text-muted)]">
+          <span><strong className="text-[var(--color-text)]">{totalCount}</strong> disponibles</span>
+          <span><strong className="text-[var(--color-success)]">{solvedCount}</strong> resueltos</span>
+          <span><strong className="text-[var(--color-text)]">{mediumAndHard}</strong> para subir nivel</span>
+        </div>
       </section>
 
       <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-lg)]">

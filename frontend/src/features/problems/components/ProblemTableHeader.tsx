@@ -9,11 +9,11 @@ const columns = [
 
 export function ProblemTableHeader() {
   return (
-    <div className="hidden grid-cols-[48px_minmax(0,1fr)_140px_120px] gap-4 border-b border-slate-800/60 px-4 py-3 md:grid">
+    <div className="hidden grid-cols-[48px_minmax(0,1fr)_140px_120px] gap-4 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-4 py-3 md:grid">
       {columns.map((column) => (
         <span
           key={column.id}
-          className={`text-xs font-medium uppercase tracking-wider text-slate-400 ${column.className}`}
+          className={`font-mono text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)] ${column.className}`}
         >
           {column.label}
         </span>

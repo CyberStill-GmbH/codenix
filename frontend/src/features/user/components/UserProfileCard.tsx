@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { ChevronDown, Pencil } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 
 import type { Submission, User } from '@/features/user/types/user.types'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
@@ -250,7 +251,7 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
       <Divider />
       <div className="px-4 pb-4 pt-4">
         <SectionLabel>Skills</SectionLabel>
-        <div className="flex flex-col gap-4">
+        <motion.div layout className="flex flex-col gap-4">
           {skillGroups.map((group) => {
             const visibleTags = showAllSkills ? group.tags : group.tags.slice(0, 3)
             if (visibleTags.length === 0) return null
@@ -264,20 +265,19 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {visibleTags.map((tag) => (
-                    <span
-                      key={tag.label}
-                      className={profilePillClassName}
-                    >
-                      {tag.label}
-                      <span className="text-[var(--color-text-subtle)]">x{tag.count}</span>
-                    </span>
-                  ))}
+                  <AnimatePresence initial={false} mode="popLayout">
+                    {visibleTags.map((tag) => (
+                      <motion.span key={tag.label} layout initial={{ opacity: 0, y: -4, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -4, scale: 0.96 }} transition={{ duration: 0.16 }} className={profilePillClassName}>
+                        {tag.label}
+                        <span className="text-[var(--color-text-subtle)]">x{tag.count}</span>
+                      </motion.span>
+                    ))}
+                  </AnimatePresence>
                 </div>
               </div>
             )
           })}
-        </div>
+        </motion.div>
         {skillGroups.some((group) => group.tags.length > 3) && (
           <button
             type="button"

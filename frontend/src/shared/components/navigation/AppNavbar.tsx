@@ -54,7 +54,7 @@ export function AppNavbar() {
   const showMobileBottomNav = isMobile && !isEditorRoute
 
   return (
-    <header className="md:sticky md:top-0 md:z-50 md:bg-[var(--color-navbar-bg)] md:shadow-[0_1px_0_rgba(255,255,255,0.06)] md:backdrop-blur-xl">
+    <header className="md:sticky md:top-0 md:z-50 md:bg-[var(--color-bg)] md:shadow-[0_1px_0_rgba(255,255,255,0.06)]">
       <nav
         className={cx(
           'mx-auto hidden h-14 w-full items-center justify-between gap-6 px-6 md:flex',

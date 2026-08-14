@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { SETTINGS_SECTIONS } from '@/features/settings/constants/settingsSections'
 import type { SettingsSectionId } from '@/features/settings/types/settings.types'
@@ -64,7 +65,7 @@ export function SettingsLayout({ activeSection, onSectionChange, children }: Set
             )
           })}
         </div>
-        <main>{children}</main>
+        <main><AnimatePresence mode="wait" initial={false}><motion.div key={activeSection} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }} transition={{ duration: 0.2, ease: 'easeOut' }}>{children}</motion.div></AnimatePresence></main>
       </div>
     )
   }
@@ -74,7 +75,7 @@ export function SettingsLayout({ activeSection, onSectionChange, children }: Set
       <div className="settings-sidebar-shell">
         {sidebar}
       </div>
-      <main className="min-w-0 flex-1">{children}</main>
+      <main className="min-w-0 flex-1"><AnimatePresence mode="wait" initial={false}><motion.div key={activeSection} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }} transition={{ duration: 0.2, ease: 'easeOut' }}>{children}</motion.div></AnimatePresence></main>
     </div>
   )
 }

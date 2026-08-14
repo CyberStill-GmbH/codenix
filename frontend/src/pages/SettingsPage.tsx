@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { AppNavbar } from '@/shared/components/navigation/AppNavbar'
 import { useAuth } from '@/features/auth/context/useAuth'
 import { useAppSettings } from '@/features/settings/hooks/useAppSettings'
@@ -39,7 +40,7 @@ export function SettingsPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <AppNavbar />
-      <main className="codenix-app-shell codenix-user-main">
+      <motion.main className="codenix-app-shell codenix-user-main" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.28, ease: 'easeOut' }}>
         <header className="mb-8">
           <h1 className="text-2xl font-bold text-[var(--color-text)]">Configuración</h1>
           <p className="mt-1 text-sm text-[var(--color-text-muted)]">
@@ -53,7 +54,7 @@ export function SettingsPage() {
         >
           {renderSection()}
         </SettingsLayout>
-      </main>
+      </motion.main>
     </div>
   )
 }

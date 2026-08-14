@@ -28,7 +28,7 @@ function ScrollButton({
       <button
         type="button"
         onClick={onClick}
-        className="pointer-events-auto inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-muted)] backdrop-blur-sm transition hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]"
+        className="pointer-events-auto inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] transition hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]"
         aria-label={direction === 'left' ? 'Desplazar temas a la izquierda' : 'Desplazar temas a la derecha'}
       >
         <Icon className="h-4 w-4" aria-hidden="true" />
