@@ -4,6 +4,7 @@ import { HeroCTAs } from '@/features/landing/components/hero/HeroCTAs'
 import { HeroDescription } from '@/features/landing/components/hero/HeroDescription'
 import { HeroHeadline } from '@/features/landing/components/hero/HeroHeadline'
 import { ProductMockupCard } from '@/features/landing/components/hero/ProductMockupCard'
+import { HeroFogCanvas } from '@/features/landing/components/hero/HeroFogCanvas'
 import { landingTokens } from '@/features/landing/theme/tokens'
 
 export function HeroSection() {
@@ -13,7 +14,8 @@ export function HeroSection() {
       className={landingTokens.hero.section}
       aria-labelledby="hero-title"
     >
-      <SectionContainer className="py-24 lg:py-40">
+      <HeroFogCanvas />
+      <SectionContainer className="relative py-16 lg:py-24">
         <div className={landingTokens.hero.grid}>
           <div className={landingTokens.hero.copyColumn}>
             <HeroBadge>Iniciativa de IEEE Computer Society UNI</HeroBadge>

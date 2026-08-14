@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import { BarChart3, BookOpen, Code2, Trophy } from 'lucide-react'
 
 import { features } from '@/features/landing/constants/landingContent'
@@ -7,86 +8,84 @@ import { LandingBadge } from '@/features/landing/components/common/LandingBadge'
 import { SectionContainer } from '@/features/landing/components/common/SectionContainer'
 
 const iconMap: Record<FeatureIconKey, ReactNode> = {
-  code2: <Code2 className="h-6 w-6" aria-hidden="true" />,
-  'bar-chart3': <BarChart3 className="h-6 w-6" aria-hidden="true" />,
-  trophy: <Trophy className="h-6 w-6" aria-hidden="true" />,
-  'book-open': <BookOpen className="h-6 w-6" aria-hidden="true" />,
+  code2: <Code2 className="h-5 w-5" aria-hidden="true" />,
+  'bar-chart3': <BarChart3 className="h-5 w-5" aria-hidden="true" />,
+  trophy: <Trophy className="h-5 w-5" aria-hidden="true" />,
+  'book-open': <BookOpen className="h-5 w-5" aria-hidden="true" />,
+}
+
+const reveal = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0 },
 }
 
 export function FeatureSection() {
   return (
     <section
-      className="relative border-b border-[var(--color-border-soft)] bg-[var(--color-bg-soft)] py-16 sm:py-24"
+      className="relative z-10 border-b border-[var(--color-border-soft)] bg-transparent py-24 sm:py-32"
       aria-labelledby="features-title"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.06),transparent_60%)]" />
-
-      <SectionContainer className="flex flex-col items-center">
-        {/* Encabezado */}
-        <div className="flex max-w-2xl flex-col items-center text-center">
-          <LandingBadge>¿Qué es Codenix?</LandingBadge>
-
-          <h2
-            id="features-title"
-            className="mt-5 text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl lg:text-4xl"
+      <SectionContainer>
+        <div className="grid items-start gap-16 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1fr)] lg:gap-24">
+          <motion.div
+            className="max-w-xl"
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.18 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
           >
-            Una plataforma para practicar programación competitiva.
-          </h2>
+            <LandingBadge>¿Qué es Codenix?</LandingBadge>
+            <h2
+              id="features-title"
+              className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] text-[var(--color-text)] sm:text-5xl"
+            >
+              Entrena algoritmos con una señal clara de avance.
+            </h2>
+            <p className="mt-6 max-w-md text-base leading-7 text-[var(--color-text-soft)]">
+              Problemas, editor y veredictos en un solo flujo para practicar sin perder el hilo.
+            </p>
+          </motion.div>
 
-          <p className="mt-4 text-sm leading-relaxed text-[var(--color-text-soft)] sm:text-base">
-            Codenix | Plataforma de Práctica Algorítmica reúne ejercicios
-            prácticos, editor de código, envíos de soluciones y seguimiento de
-            progreso para entrenar algoritmos, estructuras de datos y resolución
-            de problemas con enfoque competitivo.
-          </p>
-        </div>
-
-        {/* Lista editorial horizontal */}
-        <div className="mt-20 w-full max-w-4xl divide-y divide-[var(--color-border-soft)]">
-          {features.map((feature, index) => (
-            <FeatureRow key={feature.title} feature={feature} index={index} />
-          ))}
+          <motion.div
+            className="divide-y divide-[var(--color-border-soft)] border-y border-[var(--color-border-soft)]"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.18 }}
+            transition={{ staggerChildren: 0.07 }}
+          >
+            {features.map((feature) => (
+              <FeatureRow key={feature.title} feature={feature} />
+            ))}
+          </motion.div>
         </div>
       </SectionContainer>
     </section>
   )
 }
 
-function FeatureRow({
-  feature,
-  index,
-}: {
-  feature: FeatureItem
-  index: number
-}) {
-  return (
-    <article className="group flex flex-col gap-5 py-8 sm:flex-row sm:items-start sm:gap-8 lg:gap-12">
-      {/* Número + ícono */}
-      <div className="flex shrink-0 items-center gap-4 sm:w-16 sm:flex-col sm:items-center sm:gap-3">
-        <span className="font-mono text-xs font-medium tabular-nums text-[var(--color-text-subtle)]">
-          {String(index + 1).padStart(2, '0')}
-        </span>
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] text-[var(--color-primary)] transition duration-200 group-hover:border-[var(--color-primary)] group-hover:bg-[var(--color-primary-soft)]">
-          {iconMap[feature.icon]}
-        </div>
-      </div>
+function FeatureRow({ feature }: { feature: FeatureItem }) {
+  const isUpcoming = Boolean(feature.status === 'Próximamente' || feature.status === 'PrÃ³ximamente')
 
-      {/* Contenido */}
-      <div className="min-w-0 flex-1 pb-1">
-        <div className="flex flex-wrap items-center gap-3">
-          <h3 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">
-            {feature.title}
-          </h3>
-          {feature.status && (
-            <span className="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-bg)] px-2 py-0.5 text-[0.625rem] font-semibold tracking-wide text-[var(--color-text-subtle)]">
-              {feature.status}
-            </span>
-          )}
-        </div>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--color-text-muted)]">
-          {feature.description}
+  return (
+    <motion.article
+      className={`group flex items-center gap-4 py-5 sm:gap-5 ${isUpcoming ? 'opacity-60' : ''}`}
+      variants={reveal}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+    >
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center text-[var(--color-primary)] transition-colors duration-150 group-hover:text-[var(--color-accent)]">
+        {iconMap[feature.icon]}
+      </span>
+      <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
+        <p className="text-sm font-semibold text-[var(--color-text)] sm:text-base">
+          {feature.title}
         </p>
+        {feature.status && (
+          <span className="shrink-0 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-[var(--color-text-subtle)]">
+            {feature.status}
+          </span>
+        )}
       </div>
-    </article>
+    </motion.article>
   )
 }

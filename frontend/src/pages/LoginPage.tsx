@@ -65,7 +65,7 @@ export function LoginPage() {
         ...current,
         ...getApiFieldErrors(error, ['email', 'password'] as const),
       }))
-      setServerError(getApiErrorMessage(error, 'Correo o contrasena incorrectos.'))
+      setServerError(getApiErrorMessage(error, 'Correo o contraseña incorrectos.'))
     } finally {
       setIsLoading(false)
     }
@@ -78,12 +78,12 @@ export function LoginPage() {
   return (
     <AuthFormShell
       eyebrow="Bienvenido de vuelta"
-      title="Inicia sesion"
-      description="Continua tu progreso dentro de Codenix."
+      title="Inicia sesión"
+      description="Continúa tu progreso dentro de Codenix."
       onSubmit={handleSubmit}
       onOAuth={handleOAuth}
       dividerText="o continua con"
-      footerText="No tienes cuenta?"
+      footerText="¿No tienes cuenta?"
       footerLinkLabel="Crea una gratis"
       footerLinkTo="/register"
     >
@@ -104,8 +104,8 @@ export function LoginPage() {
       <PasswordInput
         id="login-password"
         name="password"
-        label="Contrasena"
-        placeholder="********"
+        label="Contraseña"
+        placeholder="••••••••"
         autoComplete="current-password"
         value={values.password}
         error={errors.password}
@@ -131,9 +131,9 @@ export function LoginPage() {
       <AuthSubmitButton
         icon={<LogIn className="h-4 w-4" />}
         isLoading={isLoading}
-        loadingText="Ingresando..."
+        loadingText="Ingresando…"
       >
-        Iniciar sesion
+        Iniciar sesión
       </AuthSubmitButton>
     </AuthFormShell>
   )

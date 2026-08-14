@@ -1,32 +1,19 @@
 import {
-  BookOpen,
   CheckCircle2,
   Circle,
   Clock,
-  Code2,
-  GitBranch,
-  LineChart,
   Trophy,
 } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { useState } from 'react'
 
 import {
   roadmapItems,
   visionCards,
 } from '@/features/landing/constants/landingContent'
-import type {
-  RoadmapItem,
-  RoadmapStatus,
-  VisionCard,
-  VisionIconKey,
-} from '@/features/landing/types/landing.types'
+import type { RoadmapItem, RoadmapStatus, VisionCard } from '@/features/landing/types/landing.types'
 import { LandingBadge } from '@/features/landing/components/common/LandingBadge'
 import { SectionContainer } from '@/features/landing/components/common/SectionContainer'
-
-const visionIcons: Record<VisionIconKey, typeof Circle> = {
-  'git-branch': GitBranch,
-  code2: Code2,
-  'line-chart': LineChart,
-}
 
 const statusConfig: Record<
   RoadmapStatus,
@@ -53,23 +40,36 @@ const statusConfig: Record<
 }
 
 export function VisionSection() {
-  return (
-    <section
-      id="vision"
-      className="relative overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] py-16 sm:py-24"
-      aria-labelledby="vision-title"
-    >
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,rgba(11,127,195,0.12),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(56,189,248,0.07),transparent_50%)]" />
+  const reducedMotion = useReducedMotion()
 
+  return (
+    <motion.section
+      id="vision"
+      className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-transparent py-24 sm:py-32"
+      aria-labelledby="vision-title"
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.18 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+    >
+      <motion.div
+        className="vision-grid pointer-events-none absolute inset-0 z-0 [mask-image:radial-gradient(ellipse_at_center,black_0%,transparent_82%)]"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 0.72 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        style={{ backgroundImage: 'radial-gradient(ellipse at 50% 28%, rgba(11,127,195,0.11), transparent 58%), linear-gradient(rgba(11,127,195,0.085) 1px, transparent 1px), linear-gradient(90deg, rgba(11,127,195,0.085) 1px, transparent 1px)', backgroundSize: '100% 100%, 48px 48px, 48px 48px' }}
+        aria-hidden="true"
+      />
       <SectionContainer className="flex flex-col items-center">
         <div className="mb-16 flex max-w-3xl flex-col items-center text-center">
-          <LandingBadge icon={<BookOpen className="h-3.5 w-3.5" />}>
+          <LandingBadge>
             Visión del proyecto
           </LandingBadge>
 
           <h2
             id="vision-title"
-            className="mt-6 text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl lg:text-4xl"
+            className="mt-6 text-3xl font-black tracking-[-0.04em] text-[var(--color-text)] sm:text-4xl lg:text-5xl"
           >
             Una plataforma para entrenar con dirección.
           </h2>
@@ -81,11 +81,8 @@ export function VisionSection() {
         </div>
 
         <div className="grid w-full max-w-5xl gap-8 text-left lg:grid-cols-2 lg:items-start lg:gap-10">
-          <div className="rounded-[var(--radius-2xl)] border border-[var(--color-border-soft)] bg-[rgba(15,23,42,0.42)] p-5 shadow-[var(--shadow-md)] backdrop-blur-xl">
+          <div className="rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-md)]">
             <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
-                <GitBranch className="h-4 w-4" aria-hidden="true" />
-              </div>
               <div>
                 <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
                   Principios
@@ -96,16 +93,35 @@ export function VisionSection() {
               </div>
             </div>
 
-            <div className="space-y-3">
-              {visionCards.map((card) => (
-                <VisionCardRow key={card.title} card={card} />
+            <div className="relative grid gap-7 lg:grid-cols-3 lg:gap-6">
+              <motion.svg
+                className="pointer-events-none absolute left-[10%] right-[10%] top-[0.55rem] hidden h-px w-[80%] lg:block"
+                viewBox="0 0 100 1"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <motion.path
+                  d="M0 0.5H100"
+                  fill="none"
+                  stroke="var(--color-border-strong)"
+                  strokeWidth="0.8"
+                  strokeDasharray="100"
+                  initial={{ strokeDashoffset: reducedMotion ? 0 : 100 }}
+                  whileInView={{ strokeDashoffset: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.7, ease: 'easeOut' }}
+                />
+              </motion.svg>
+
+              {visionCards.map((card, index) => (
+                <VisionCardRow key={card.title} card={card} index={index} />
               ))}
             </div>
           </div>
 
           <div
             id="roadmap"
-            className="rounded-[var(--radius-2xl)] border border-[var(--color-border-soft)] bg-[rgba(15,23,42,0.42)] p-5 shadow-[var(--shadow-md)] backdrop-blur-xl"
+            className="rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-md)]"
           >
             <div className="mb-6 flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
@@ -121,19 +137,12 @@ export function VisionSection() {
               </div>
             </div>
 
-            <div className="relative flex flex-col gap-0">
-              <div
-                className="absolute bottom-5 left-[0.6875rem] top-5 w-px bg-[var(--color-border-soft)]"
-                aria-hidden="true"
-              />
-
-              {roadmapItems.map((item, index) => (
-                <RoadmapRow
-                  key={item.title}
-                  item={item}
-                  isLast={index === roadmapItems.length - 1}
-                />
-              ))}
+            <div className="relative pt-3">
+              <div className="pointer-events-none absolute left-[8%] right-[8%] top-[1.15rem] h-px border-t border-dashed border-[var(--color-border-soft)]" aria-hidden="true" />
+              <div className="pointer-events-none absolute left-[8%] top-[1.15rem] h-px w-[28%] bg-[var(--color-success)]" aria-hidden="true" />
+              <div className="relative grid gap-5 sm:grid-cols-4 sm:gap-3">
+                {roadmapItems.map((item) => <RoadmapRow key={item.title} item={item} />)}
+              </div>
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3 border-t border-[var(--color-border-soft)] pt-5">
@@ -156,69 +165,47 @@ export function VisionSection() {
           </div>
         </div>
       </SectionContainer>
-    </section>
+    </motion.section>
   )
 }
 
-function VisionCardRow({ card }: { card: VisionCard }) {
-  const Icon = visionIcons[card.icon]
-
+function VisionCardRow({ card, index }: { card: VisionCard; index: number }) {
   return (
-    <article className="rounded-[var(--radius-xl)] border border-white/[0.07] bg-[rgba(7,18,37,0.58)] p-4">
-      <div className="flex items-start gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-full)] border border-[var(--color-stat-border)] bg-[var(--color-stat-icon-bg)] text-[var(--color-primary)]">
-          <Icon className="h-4 w-4" aria-hidden="true" />
-        </span>
-        <div>
-          <p className="text-sm font-semibold text-[var(--color-text)]">
-            {card.title}
-          </p>
-          <p className="mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
-            {card.description}
-          </p>
-        </div>
-      </div>
+    <article className="relative z-10 min-w-0 bg-[var(--color-surface)] lg:pr-2">
+      <p className="font-mono text-[0.6875rem] font-semibold tracking-[0.12em] text-[var(--color-text-subtle)]">
+        {String(index + 1).padStart(2, '0')} / 03
+      </p>
+      <p className="mt-4 text-sm font-semibold text-[var(--color-text)]">
+        {card.title}
+      </p>
+      <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-muted)]">
+        {card.description}
+      </p>
     </article>
   )
 }
 
-function RoadmapRow({ item, isLast }: { item: RoadmapItem; isLast: boolean }) {
+function RoadmapRow({ item }: { item: RoadmapItem }) {
+  const [expanded, setExpanded] = useState(false)
   const config = statusConfig[item.status]
   const StatusIcon = config.Icon
-  const isActive = item.status === 'Próximamente'
+  const isComplete = item.status === 'Base V1'
 
   return (
-    <article
-      className={`relative flex items-start gap-5 py-4 ${!isLast ? 'pb-6' : ''} ${
-        isActive
-          ? 'rounded-[var(--radius-xl)] border border-[var(--color-primary-soft)] bg-[var(--color-primary-soft)] px-3 shadow-[var(--shadow-glow-primary)]'
-          : ''
-      }`}
-    >
-      <div className="relative z-10 flex h-3.5 w-3.5 shrink-0 items-center justify-center">
+    <article className="relative min-w-0">
+      <button type="button" onClick={() => setExpanded((value) => !value)} onMouseEnter={() => setExpanded(true)} onMouseLeave={() => setExpanded(false)} className="group flex w-full flex-col items-start text-left sm:items-center sm:text-center" aria-expanded={expanded}>
+      <div className={`relative z-10 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 bg-[var(--color-surface)] ${isComplete ? 'border-[var(--color-success)]' : 'border-[var(--color-border-strong)]'}`}>
         <StatusIcon
-          className={`h-3.5 w-3.5 ${
-            item.status === 'Base V1'
-              ? 'text-[var(--color-success)]'
-              : 'text-[var(--color-primary)]'
-          } ${isActive ? 'motion-safe:animate-pulse' : ''}`}
+          className={`h-3 w-3 ${isComplete ? 'text-[var(--color-success)]' : 'text-[var(--color-primary)]'}`}
           aria-hidden="true"
         />
       </div>
-
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <h4 className="text-sm font-semibold text-[var(--color-text)]">
-            {item.title}
-          </h4>
-          <span className={`rounded-full px-2 py-0.5 text-[0.5625rem] font-semibold ${config.badgeClass}`}>
-            {config.label}
-          </span>
-        </div>
-        <p className="mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
-          {item.description}
-        </p>
-      </div>
+      <h4 className="mt-4 text-xs font-semibold leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-primary)] sm:min-h-8">{item.title}</h4>
+      <span className={`mt-2 text-[0.625rem] font-semibold ${config.badgeClass.replace('bg-[var(--color-success-soft)] ', '').replace('bg-[var(--color-primary-soft)] ', '')}`}>{config.label}</span>
+      <span className={`grid transition-[grid-template-rows,opacity,margin] duration-200 ease-out ${expanded ? 'mt-3 grid-rows-[1fr] opacity-100' : 'mt-0 grid-rows-[0fr] opacity-0'}`}>
+        <span className="min-h-0 overflow-hidden text-xs leading-relaxed text-[var(--color-text-muted)]">{item.description}</span>
+      </span>
+      </button>
     </article>
   )
 }

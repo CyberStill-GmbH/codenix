@@ -1,36 +1,33 @@
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 import { LandingBadge } from '@/features/landing/components/common/LandingBadge'
 import { LandingButton } from '@/features/landing/components/common/LandingButton'
 import { SectionContainer } from '@/features/landing/components/common/SectionContainer'
+import logo from '@/assets/icons/logo.png'
 
 export function CtaSection() {
   return (
-    <section
-      className="relative overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] py-20 sm:py-28"
+    <motion.section
+      className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-auth-brand-bg)] py-28 sm:py-40"
       aria-labelledby="cta-title"
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.18 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
     >
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.14),transparent_32rem)]" />
-
-      <SectionContainer className="flex flex-col items-center">
-        <div className="relative w-full max-w-4xl overflow-hidden rounded-[var(--radius-2xl)] border border-[var(--color-border)] bg-[rgba(15,23,42,0.88)] px-6 py-12 shadow-[var(--shadow-xl)] backdrop-blur-xl sm:px-12 sm:py-16">
-          <div
-            className="absolute -right-12 -top-12 h-40 w-40 rounded-[var(--radius-full)] bg-[var(--color-primary-soft)] blur-3xl"
-            aria-hidden="true"
-          />
-          <div
-            className="absolute -bottom-16 -left-16 h-48 w-48 rounded-[var(--radius-full)] bg-[var(--color-accent-muted-soft)] blur-3xl"
-            aria-hidden="true"
-          />
-
+      <CtaGrid />
+      <SectionContainer className="relative z-10 flex flex-col items-center">
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 opacity-[0.09]" style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat`, backgroundColor: 'var(--color-accent)' }} aria-hidden="true" />
+        <div className="relative z-10 w-full max-w-4xl px-6 py-4 sm:px-12 sm:py-8">
           <div className="relative mx-auto flex max-w-2xl flex-col items-center text-center">
-            <LandingBadge icon={<Sparkles className="h-3.5 w-3.5" />}>
+            <LandingBadge>
               IEEE Computer Society UNI
             </LandingBadge>
 
             <h2
               id="cta-title"
-              className="mt-5 max-w-2xl text-balance text-3xl font-bold tracking-tight text-[var(--color-text)] sm:text-4xl"
+              className="mt-5 max-w-2xl text-balance text-3xl font-black tracking-[-0.04em] text-[var(--color-text)] sm:text-5xl"
             >
               Convierte la intención de practicar en una sesión real hoy.
             </h2>
@@ -44,19 +41,38 @@ export function CtaSection() {
               <LandingButton
                 to="/login"
                 variant="primary"
-                className="shadow-[var(--shadow-auth-button)]"
+                className="shadow-[var(--shadow-auth-button)] hover:scale-[1.02] hover:brightness-110"
                 icon={<ArrowRight className="h-4 w-4" />}
               >
                 Empezar a practicar
               </LandingButton>
 
-              <LandingButton href="#vision" variant="ghost">
+              <LandingButton href="/#vision" variant="ghost" className="!bg-transparent hover:bg-[rgba(11,127,195,0.06)]">
                 Conocer la visión
               </LandingButton>
             </div>
           </div>
         </div>
       </SectionContainer>
-    </section>
+    </motion.section>
+  )
+}
+
+function CtaGrid() {
+  const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const lines = Array.from({ length: 17 }, (_, index) => (index - 8) * 52)
+  return (
+    <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-60 [mask-image:radial-gradient(ellipse_at_center,black_0%,transparent_76%)]" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+      {lines.map((offset, index) => {
+        const x = 500 + offset
+        const path = `M ${x} 0 Q ${500 + offset * 0.35} 310 ${x} 620`
+        return <motion.path key={`v-${index}`} d={path} fill="none" stroke="var(--color-primary)" strokeOpacity="0.06" strokeWidth="1" initial={reducedMotion ? { opacity: 0.06 } : { opacity: 0 }} whileInView={{ opacity: 0.06 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: reducedMotion ? 0 : Math.abs(index - 8) * 0.025, ease: 'easeOut' }} />
+      })}
+      {lines.map((offset, index) => {
+        const y = 310 + offset * 0.55
+        const path = `M 0 ${y} Q 500 ${310 + offset * 0.15} 1000 ${y}`
+        return <motion.path key={`h-${index}`} d={path} fill="none" stroke="var(--color-primary)" strokeOpacity="0.06" strokeWidth="1" initial={reducedMotion ? { opacity: 0.06 } : { opacity: 0 }} whileInView={{ opacity: 0.06 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: reducedMotion ? 0 : Math.abs(index - 8) * 0.025, ease: 'easeOut' }} />
+      })}
+    </svg>
   )
 }

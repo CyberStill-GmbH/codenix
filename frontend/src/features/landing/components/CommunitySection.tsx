@@ -1,4 +1,5 @@
 import type { ComponentType, SVGProps } from 'react'
+import { motion } from 'framer-motion'
 
 type SocialLink = {
   label: string
@@ -30,19 +31,21 @@ const socialLinks: SocialLink[] = [
 ]
 
 export function CommunitySection() {
-  const items = [...socialLinks, ...socialLinks, ...socialLinks, ...socialLinks]
-
   return (
-    <section
+    <motion.section
       id="community"
-      className="overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] py-14"
+      className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-transparent py-24 sm:py-32"
       aria-label="Canales de comunidad Codenix"
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.18 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
     >
       <div className="mx-auto mb-8 max-w-3xl px-4 text-center sm:px-6 lg:px-8">
         <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-primary)]">
           Comunidad
         </p>
-        <h2 className="mt-2 text-xl font-bold tracking-tight text-[var(--color-text)] sm:text-2xl">
+        <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] text-[var(--color-text)] sm:text-4xl">
           Únete a la comunidad en tus canales habituales.
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-muted)]">
@@ -51,26 +54,22 @@ export function CommunitySection() {
         </p>
       </div>
 
-      <div className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[var(--color-bg)] to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[var(--color-bg)] to-transparent" />
-
-        <div className="codenix-social-track flex w-max items-center gap-20 px-10">
-          {items.map(({ label, href, Icon }, index) => (
+      <div className="mx-auto grid max-w-4xl grid-cols-2 gap-3 px-4 sm:grid-cols-4 sm:px-6 lg:px-8">
+          {socialLinks.map(({ label, href, Icon }) => (
             <a
-              key={`${label}-${index}`}
+              key={label}
               href={href}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Abrir ${label}`}
-              className="group flex h-16 w-16 shrink-0 items-center justify-center text-[var(--color-text-subtle)] opacity-45 transition duration-200 hover:text-[var(--color-primary)] hover:opacity-100"
+              className="group flex min-h-28 flex-col items-center justify-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-border-soft)] bg-[var(--color-surface)] text-[var(--color-text-muted)] transition duration-150 hover:scale-[1.03] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] hover:text-[var(--color-primary)]"
             >
-              <Icon className="h-10 w-10" aria-hidden="true" />
+              <Icon className="h-8 w-8" aria-hidden="true" />
+              <span className="text-xs font-semibold">{label}</span>
             </a>
           ))}
         </div>
-      </div>
-    </section>
+    </motion.section>
   )
 }
 

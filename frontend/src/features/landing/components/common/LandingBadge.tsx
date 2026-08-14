@@ -15,20 +15,10 @@ export function LandingBadge({
   icon,
   variant = 'default',
 }: LandingBadgeProps) {
-  const textClass =
-    variant === 'primary'
-      ? 'text-[var(--color-primary)]'
-      : 'text-[var(--color-text-muted)]'
+  const textClass = variant === 'primary' ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-subtle)]'
 
   return (
-    <span
-      className={`font-display inline-flex items-center gap-2 rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 py-1.5 text-sm font-medium ${textClass}`}
-    >
-      {icon && (
-        <span className="text-[var(--color-primary)]" aria-hidden="true">
-          {icon}
-        </span>
-      )}
+    <span className={`font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.18em] ${textClass}`}>
       {children}
     </span>
   )

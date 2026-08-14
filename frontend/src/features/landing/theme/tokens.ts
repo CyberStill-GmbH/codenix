@@ -33,7 +33,7 @@ export const landingTokens = {
   transition: 'transition duration-200',
   nav: {
     shell:
-      'sticky top-0 z-50 border-b border-[var(--color-glass-border)] bg-[var(--color-navbar-bg)] shadow-[var(--shadow-navbar)] backdrop-blur-xl',
+      'sticky top-0 z-50 border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] shadow-[var(--shadow-xs)]',
     inner:
       'mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8',
     link: 'flex items-center gap-2 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:text-[var(--color-text)]',
@@ -47,7 +47,7 @@ export const landingTokens = {
     menuButton:
       'inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-glass-border)] bg-[var(--color-surface-translucent)] text-[var(--color-text-muted)] transition-colors duration-200 hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)] md:hidden',
     mobileMenu:
-      'border-t border-[var(--color-glass-border)] bg-[var(--color-mobile-menu-bg)] px-4 py-3 backdrop-blur-xl md:hidden',
+      'border-t border-[var(--color-border-soft)] bg-[var(--color-bg)] px-4 py-3 md:hidden',
   },
   hero: {
     section:
@@ -86,7 +86,7 @@ export const landingTokens = {
     progressFill:
       'h-full rounded-[var(--radius-full)] bg-[var(--color-progress-fill)]',
     floatingBadge:
-      'absolute -bottom-5 right-0 rounded-[var(--radius-xl)] border border-[var(--color-glass-border)] bg-[var(--color-floating-badge-bg)] px-4 py-3 shadow-[var(--shadow-floating)] backdrop-blur-xl motion-safe:animate-[codenix-hero-float-soft_6.5s_ease-in-out_infinite]',
+      'absolute -bottom-5 right-0 rounded-[var(--radius-xl)] border border-[var(--color-border-strong)] bg-[var(--color-surface-elevated)] px-4 py-3 shadow-[var(--shadow-floating)]',
   },
   footer: {
     shell:
@@ -131,7 +131,8 @@ export const landingTokens = {
     brandEyebrow: 'mb-4 text-lg font-semibold text-[rgba(226,232,240,0.76)]',
     brandTitle:
       'text-[2.8rem] font-bold leading-[1.02] tracking-[var(--tracking-tight)] text-white xl:text-[3.25rem]',
-    brandEmphasis: 'mt-2 block w-fit bg-[var(--gradient-brand)] bg-clip-text text-transparent',
+    brandEmphasis:
+      'mt-2 block w-fit text-[var(--color-primary)] [text-shadow:0_0_24px_rgba(11,127,195,0.28)]',
     brandDescription:
       'mt-6 max-w-[25rem] text-sm leading-6 text-[rgba(203,213,225,0.78)]',
     brandLink:

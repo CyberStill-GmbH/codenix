@@ -57,6 +57,12 @@
   }
 }
 
+@keyframes codenix-mascot-hover {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-7px) rotate(2deg); }
+}
+
+
 @layer base {
   /* Reset */
   *,
@@ -431,7 +437,7 @@
     background: var(--color-surface-translucent);
   }
 
-  @media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
     }
@@ -1190,6 +1196,83 @@
     }
   }
 }
+
+@keyframes community-orbit {
+  from { transform: rotate(var(--orbit-start)); }
+  to { transform: rotate(calc(var(--orbit-start) + 360deg)); }
+}
+
+.community-orbit {
+  transform-origin: 0 0;
+  animation: community-orbit var(--orbit-duration) linear var(--orbit-delay) infinite;
+}
+
+.community-orbit:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .community-orbit { animation: none; }
+}
+
+/* Monaco-aligned gutter for the landing editor preview. Shiki supplies the
+   syntax tokens; this keeps the line rhythm and gutter treatment identical
+   to the real Codenix editor without duplicating editor markup. */
+.codenix-shiki pre {
+  margin: 0;
+  min-width: max-content;
+  padding: 0;
+  background: transparent !important;
+  color: #cbd5e1;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.7;
+}
+
+.codenix-shiki .line {
+  display: block;
+  min-height: 1.275rem;
+  padding-inline: 1rem;
+  border-left: 2px solid transparent;
+}
+
+.codenix-shiki .line::before {
+  display: inline-block;
+  width: 2.25rem;
+  margin-right: 0.75rem;
+  color: #52647a;
+  content: counter(codenix-line);
+  counter-increment: codenix-line;
+  text-align: right;
+  user-select: none;
+}
+
+.codenix-shiki pre { counter-reset: codenix-line; }
+
+@keyframes vision-grid-drift {
+  0%, 100% { background-position: 50% 0%, 0 0, 0 0; }
+  50% { background-position: 50% 8%, 0 16px, 16px 0; }
+}
+
+.vision-grid {
+  animation: vision-grid-drift 16s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vision-grid { animation: none; }
+}
+
+/* Syntax highlighting del editor de la landing. */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in { color: var(--color-secondary); }
+.hljs-title,
+.hljs-title.function_ { color: var(--color-accent); }
+.hljs-number,
+.hljs-literal { color: var(--color-primary); }
+.hljs-string { color: var(--color-success); }
+.hljs-type,
+.hljs-params { color: var(--color-text-soft); }
 
 @layer utilities {
   .font-body,

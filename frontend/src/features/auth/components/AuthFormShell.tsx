@@ -18,6 +18,7 @@ export type AuthFormShellProps = {
   footerLinkLabel: string
   footerLinkTo: string
   compact?: boolean
+  showOAuth?: boolean
 }
 
 export function AuthFormShell({
@@ -32,6 +33,7 @@ export function AuthFormShell({
   footerLinkLabel,
   footerLinkTo,
   compact = false,
+  showOAuth = true,
 }: AuthFormShellProps) {
   return (
     <>
@@ -49,26 +51,20 @@ export function AuthFormShell({
         {children}
       </form>
 
-      <div className={compact ? landingTokens.auth.dividerCompact : landingTokens.auth.divider}>
-        <span className={landingTokens.auth.dividerLine} />
-        <span>{dividerText}</span>
-        <span className={landingTokens.auth.dividerLine} />
-      </div>
+      {showOAuth && (
+        <>
+          <div className={compact ? landingTokens.auth.dividerCompact : landingTokens.auth.divider}>
+            <span className={landingTokens.auth.dividerLine} />
+            <span>{dividerText}</span>
+            <span className={landingTokens.auth.dividerLine} />
+          </div>
 
-      <div className={landingTokens.auth.oauthGrid}>
-        <OAuthButton
-          provider="github"
-          icon={<GithubBrandIcon />}
-          label="GitHub"
-          onClick={onOAuth}
-        />
-        <OAuthButton
-          provider="google"
-          icon={<GoogleBrandIcon />}
-          label="Google"
-          onClick={onOAuth}
-        />
-      </div>
+          <div className={landingTokens.auth.oauthGrid}>
+            <OAuthButton provider="github" icon={<GithubBrandIcon />} label="GitHub" onClick={onOAuth} />
+            <OAuthButton provider="google" icon={<GoogleBrandIcon />} label="Google" onClick={onOAuth} />
+          </div>
+        </>
+      )}
 
       <p className={compact ? landingTokens.auth.footerTextCompact : landingTokens.auth.footerText}>
         {footerText}{' '}
