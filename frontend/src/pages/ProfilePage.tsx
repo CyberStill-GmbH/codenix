@@ -87,7 +87,7 @@ export function ProfilePage() {
     return (
       <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
         <AppNavbar />
-        <main className="mx-auto w-full grow p-4 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
+        <main className="mx-auto w-full grow px-3 pb-24 pt-3 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
           <ErrorState message="No pudimos cargar tu perfil autenticado." />
         </main>
       </div>
@@ -98,9 +98,9 @@ export function ProfilePage() {
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <AppNavbar />
 
-      <main className="mx-auto w-full grow p-4 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
+      <main className="mx-auto w-full grow px-3 pb-24 pt-3 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
         {isLoadingProfile && (
-          <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-sm font-semibold text-[var(--color-text-muted)]">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 text-sm font-semibold text-[var(--color-text-muted)]">
             Cargando perfil...
           </div>
         )}
@@ -108,13 +108,13 @@ export function ProfilePage() {
         {profileError && !isLoadingProfile && <ErrorState message={profileError} />}
 
         {profileData && !isLoadingProfile && !profileError && (
-        <div className="grid items-start gap-2.5 md:grid-cols-[17.5rem_minmax(0,1fr)] lg:grid-cols-[20rem_minmax(0,1fr)]">
-          <div className="codenix-user-stack !gap-3 md:w-[17.5rem] lg:w-[20rem]">
+        <div className="grid min-w-0 items-start gap-2.5 md:grid-cols-[17.5rem_minmax(0,1fr)] lg:grid-cols-[20rem_minmax(0,1fr)]">
+          <div className="codenix-user-stack min-w-0 !gap-3 md:w-[17.5rem] lg:w-[20rem]">
             <PageSection>
               <UserProfileCard user={user} submissions={profileData.recentSubmissions} />
             </PageSection>
           </div>
-          <div className="codenix-user-stack !gap-3">
+          <div className="codenix-user-stack min-w-0 !gap-3">
             <PageSection delay={100}>
               <div className="grid items-stretch gap-2.5 xl:grid-cols-2">
                 <UserCard as="section" className="h-full [&>div]:h-full">

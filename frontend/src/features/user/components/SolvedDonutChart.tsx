@@ -10,9 +10,24 @@ type SolvedDonutChartProps = {
 }
 
 const difficultyItems = [
-  { key: 'easy', label: 'Easy', color: 'var(--color-difficulty-easy)' },
-  { key: 'medium', label: 'Medium', color: 'var(--color-difficulty-medium)' },
-  { key: 'hard', label: 'Hard', color: 'var(--color-difficulty-hard)' },
+  {
+    key: 'easy',
+    label: 'Easy',
+    color: 'var(--color-difficulty-easy)',
+    labelClassName: 'text-[var(--color-difficulty-easy)]',
+  },
+  {
+    key: 'medium',
+    label: 'Medium',
+    color: 'var(--color-difficulty-medium)',
+    labelClassName: 'text-[var(--color-difficulty-medium)]',
+  },
+  {
+    key: 'hard',
+    label: 'Hard',
+    color: 'var(--color-difficulty-hard)',
+    labelClassName: 'text-[var(--color-difficulty-hard)]',
+  },
 ] as const
 
 export function SolvedDonutChart({
@@ -91,10 +106,7 @@ export function SolvedDonutChart({
             key={item.key}
             className={`rounded-lg px-2.5 py-2 text-center ${profileInsetSurfaceClassName}`}
           >
-            <span
-              className="block text-xs font-bold"
-              style={{ color: item.color }}
-            >
+            <span className={`block text-xs font-bold ${item.labelClassName}`}>
               {item.label}
             </span>
             <span className="mt-0.5 block font-mono text-sm font-bold tabular-nums text-[var(--color-text)]">

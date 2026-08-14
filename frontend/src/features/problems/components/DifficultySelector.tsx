@@ -7,7 +7,7 @@ type DifficultySelectorProps = {
 }
 
 const selectClassName =
-  'h-10 rounded-lg border border-slate-700/50 bg-slate-800/50 px-3 py-2 text-sm text-slate-200 outline-none transition-shadow duration-150 focus:border-transparent focus:ring-2 focus:ring-[var(--color-primary)]'
+  'h-10 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] outline-none transition-shadow duration-150 focus:border-transparent focus:ring-2 focus:ring-[var(--color-primary)]'
 
 export function DifficultySelector({ value, onChange }: DifficultySelectorProps) {
   return (

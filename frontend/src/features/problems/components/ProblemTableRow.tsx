@@ -18,7 +18,7 @@ function ProblemTableRowComponent({ problem, onOpen, onPreload }: ProblemTableRo
       onClick={() => onOpen(problem.slug)}
       onMouseEnter={onPreload}
       onFocus={onPreload}
-      className="grid min-h-[56px] w-full cursor-pointer gap-3 border-b border-slate-800/60 px-4 py-3 text-left transition-colors duration-150 last:border-b-0 hover:bg-slate-800/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:grid-cols-[48px_minmax(0,1fr)_140px_120px] md:items-center"
+      className="grid min-h-[56px] w-full cursor-pointer gap-3 border-b border-[var(--color-border-soft)] px-4 py-3 text-left transition-colors duration-150 last:border-b-0 hover:bg-[var(--color-surface-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:grid-cols-[48px_minmax(0,1fr)_140px_120px] md:items-center"
     >
       <div className="hidden justify-center md:flex">
         <StatusIcon solved={problem.solved} />
@@ -26,13 +26,13 @@ function ProblemTableRowComponent({ problem, onOpen, onPreload }: ProblemTableRo
 
       <div className="min-w-0">
         <div className="flex min-w-0 items-center">
-          <span className="mr-2 font-mono text-sm text-slate-500">{problem.id}.</span>
-          <span className="truncate text-sm font-medium text-slate-100">
+          <span className="mr-2 font-mono text-sm text-[var(--color-text-subtle)]">{problem.id}.</span>
+          <span className="truncate text-sm font-medium text-[var(--color-text)]">
             {problem.title}
           </span>
         </div>
         {problem.topics.length > 0 && (
-          <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1 text-xs text-slate-500">
+          <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1 text-xs text-[var(--color-text-subtle)]">
             {problem.topics.slice(0, 3).map((topic) => (
               <span key={topic}>{translateTopic(topic)}</span>
             ))}
@@ -40,14 +40,14 @@ function ProblemTableRowComponent({ problem, onOpen, onPreload }: ProblemTableRo
         )}
         <div className="mt-2 flex items-center gap-2 md:hidden">
           <StatusIcon solved={problem.solved} />
-          <span className="font-mono text-sm text-slate-300">
+          <span className="font-mono text-sm text-[var(--color-text-muted)]">
             {problem.acceptance.toFixed(1)}%
           </span>
           <DifficultyBadge difficulty={problem.difficulty} />
         </div>
       </div>
 
-      <span className="hidden text-right font-mono text-sm text-slate-300 md:block">
+      <span className="hidden text-right font-mono text-sm text-[var(--color-text-muted)] md:block">
         {problem.acceptance.toFixed(1)}%
       </span>
 

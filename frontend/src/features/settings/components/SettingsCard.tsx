@@ -8,7 +8,7 @@ type SettingsCardProps = {
 
 export function SettingsCard({ title, description, children }: SettingsCardProps) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-950/55 p-6">
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
       <div className="mb-5">
         <h2 className="text-base font-bold text-[var(--color-text)]">{title}</h2>
         {description && (
@@ -47,7 +47,7 @@ export function SettingsField({ label, description, htmlFor, children }: Setting
 }
 
 const baseInputClass =
-  'w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-[var(--color-text)] outline-none transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]'
+  'w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-3 py-2 text-sm text-[var(--color-text)] outline-none transition focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]'
 
 export function SettingsInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${baseInputClass} ${props.className ?? ''}`} />
@@ -77,7 +77,7 @@ export function SettingsToggle({ id, checked, onChange, label }: SettingsToggleP
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${checked ? 'bg-[var(--color-primary)]' : 'bg-slate-700'}`}
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${checked ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-border-strong)]'}`}
       aria-label={label}
     >
       <span

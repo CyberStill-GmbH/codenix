@@ -30,7 +30,7 @@ export function ProblemTable({ problems }: ProblemTableProps) {
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+    <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)]">
       <ProblemTableHeader />
       <div>
         {problems.map((problem) => (

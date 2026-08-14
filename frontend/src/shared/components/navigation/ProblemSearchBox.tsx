@@ -82,12 +82,12 @@ export function ProblemSearchBox() {
             }
           }}
           onFocus={() => setIsOpen(true)}
-          className="h-8 w-full rounded-full border border-slate-700/60 bg-slate-950/70 pl-8 pr-3 text-xs font-medium text-[var(--color-text)] outline-none placeholder:text-[var(--color-auth-placeholder)] transition duration-200 hover:border-slate-600/80 focus:border-[var(--color-primary)] focus:shadow-[var(--shadow-auth-focus)]"
+          className="h-8 w-full rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] pl-8 pr-3 text-xs font-medium text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-subtle)] transition duration-200 hover:border-[var(--color-border-strong)] focus:border-[var(--color-primary)] focus:shadow-[var(--shadow-auth-focus)]"
         />
       </label>
 
       {isOpen && query.trim().length >= 2 && (
-        <div className="absolute right-0 top-10 z-50 w-[22rem] overflow-hidden rounded-xl border border-slate-700/60 bg-slate-950 shadow-[0_18px_50px_rgba(2,8,23,0.42)]">
+        <div className="absolute right-0 top-10 z-50 w-[22rem] overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-floating)]">
           {isLoading && (
             <div className="px-4 py-3 text-xs font-semibold text-[var(--color-text-muted)]">
               Buscando...
@@ -113,7 +113,7 @@ export function ProblemSearchBox() {
                 key={problem.id}
                 to={`/problems/${problem.slug}`}
                 onClick={() => setIsOpen(false)}
-                className="block border-b border-slate-800/70 px-4 py-3 transition last:border-b-0 hover:bg-slate-900/80"
+                className="block border-b border-[var(--color-border-soft)] px-4 py-3 transition last:border-b-0 hover:bg-[var(--color-surface-soft)]"
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="truncate text-sm font-semibold text-[var(--color-text)]">

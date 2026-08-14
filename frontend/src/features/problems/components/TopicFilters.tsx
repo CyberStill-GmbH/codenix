@@ -20,15 +20,15 @@ function ScrollButton({
   const positionClassName = direction === 'left' ? 'left-0' : 'right-0'
   const gradientClassName =
     direction === 'left'
-      ? 'bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent'
-      : 'bg-gradient-to-l from-slate-950 via-slate-950/80 to-transparent'
+      ? 'bg-gradient-to-r from-[var(--color-surface)] via-[var(--color-surface)] to-transparent'
+      : 'bg-gradient-to-l from-[var(--color-surface)] via-[var(--color-surface)] to-transparent'
 
   return (
     <div className={`pointer-events-none absolute inset-y-0 ${positionClassName} flex w-14 items-center justify-center ${gradientClassName}`}>
       <button
         type="button"
         onClick={onClick}
-        className="pointer-events-auto inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/60 text-slate-300 backdrop-blur-sm transition hover:bg-slate-800 hover:text-white"
+        className="pointer-events-auto inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-muted)] backdrop-blur-sm transition hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]"
         aria-label={direction === 'left' ? 'Desplazar temas a la izquierda' : 'Desplazar temas a la derecha'}
       >
         <Icon className="h-4 w-4" aria-hidden="true" />
@@ -87,8 +87,8 @@ export function TopicFilters({ topics, selected, onSelect }: TopicFiltersProps) 
               onClick={() => onSelect(topic)}
               className={`inline-flex min-h-9 shrink-0 items-center rounded-full border px-4 text-sm transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${
                 isSelected
-                  ? 'border-white bg-white font-medium text-slate-900'
-                  : 'border-slate-700/50 bg-slate-800/50 text-slate-300 hover:bg-slate-700/60 hover:text-white'
+                  ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)] font-medium text-[var(--color-primary)]'
+                  : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]'
               }`}
             >
               {label}

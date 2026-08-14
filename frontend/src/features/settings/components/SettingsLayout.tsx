@@ -15,8 +15,7 @@ export function SettingsLayout({ activeSection, onSectionChange, children }: Set
   const sidebar = (
     <nav
       aria-label="Configuración"
-      className="flex flex-col gap-0.5"
-      style={{ width: isMobile ? '100%' : '280px' }}
+      className="settings-sidebar"
     >
       {SETTINGS_SECTIONS.map(({ id, label, icon: Icon }) => {
         const isActive = activeSection === id
@@ -29,7 +28,7 @@ export function SettingsLayout({ activeSection, onSectionChange, children }: Set
             className={`flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium transition ${
               isActive
                 ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
-                : 'text-[var(--color-text-muted)] hover:bg-slate-800 hover:text-[var(--color-text)]'
+                : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]'
             }`}
             aria-current={isActive ? 'page' : undefined}
           >
@@ -56,7 +55,7 @@ export function SettingsLayout({ activeSection, onSectionChange, children }: Set
                 className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${
                   isActive
                     ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
-                    : 'text-[var(--color-text-muted)] hover:bg-slate-800 hover:text-[var(--color-text)]'
+                    : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]'
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -72,7 +71,7 @@ export function SettingsLayout({ activeSection, onSectionChange, children }: Set
 
   return (
     <div className="flex min-h-0 gap-8">
-      <div className="hidden shrink-0 md:block" style={{ width: '280px' }}>
+      <div className="settings-sidebar-shell">
         {sidebar}
       </div>
       <main className="min-w-0 flex-1">{children}</main>

@@ -21,9 +21,11 @@ type LangEntry = {
   solved: number
 }
 
+type SkillTone = 'advanced' | 'intermediate' | 'fundamental'
+
 type SkillGroup = {
   label: string
-  color: string
+  tone: SkillTone
   tags: Array<{ label: string; count: number }>
 }
 
@@ -36,9 +38,9 @@ const supportedLanguages = [
 ]
 
 const skillLevels = [
-  { label: 'Avanzado', color: 'var(--color-success)' },
-  { label: 'Intermedio', color: 'var(--color-difficulty-medium)' },
-  { label: 'Fundamental', color: 'var(--color-accent)' },
+  { label: 'Avanzado', tone: 'advanced' },
+  { label: 'Intermedio', tone: 'intermediate' },
+  { label: 'Fundamental', tone: 'fundamental' },
 ] as const
 
 type ProfileLink = {
@@ -125,18 +127,9 @@ function solvedLabel(count: number) {
   return `x${count}`
 }
 
-function LanguageIcon({ src, label, color }: { src: string; label: string; color: string }) {
+function LanguageIcon({ src, label }: { src: string; label: string }) {
   return (
-    <span
-      className="h-5 w-5 shrink-0"
-      style={{
-        backgroundColor: color,
-        mask: `url(${src}) center / contain no-repeat`,
-        WebkitMask: `url(${src}) center / contain no-repeat`,
-      }}
-      role="img"
-      aria-label={label}
-    />
+    <img src={src} alt="" className="h-5 w-5 shrink-0" aria-hidden="true" title={label} />
   )
 }
 
@@ -227,7 +220,7 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
         </div>
       </div>
 
-      <div className="grid max-w-[15rem] grid-cols-2 gap-2 px-4 pb-4">
+      <div className="grid w-full grid-cols-1 gap-2 px-4 pb-4 sm:grid-cols-2">
         {profileLinks.map(({ label, href, emptyLabel, Icon }) => {
           const handle = getHandle(href)
           const content = (
@@ -269,7 +262,7 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
               key={language.id}
               className={`${profilePillClassName} flex items-center gap-1.5`}
             >
-              <LanguageIcon src={language.icon} label={language.label} color={language.color} />
+              <LanguageIcon src={language.icon} label={language.label} />
               {language.label}
               <span className="text-[var(--color-text-subtle)]">{solvedLabel(language.solved)}</span>
             </span>
@@ -288,11 +281,8 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
             return (
               <div key={group.label}>
                 <div className="mb-2 flex items-center gap-2">
-                  <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ backgroundColor: group.color }}
-                  />
-                  <span className="text-xs font-semibold" style={{ color: group.color }}>
+                  <span className={`profile-skill-dot profile-skill-dot--${group.tone}`} />
+                  <span className={`text-xs font-semibold profile-skill-label--${group.tone}`}>
                     {group.label}
                   </span>
                 </div>
