@@ -726,6 +726,27 @@
     background: linear-gradient(135deg, rgba(11, 127, 195, 0.92), rgba(56, 189, 248, 0.78));
   }
 
+  /* Skeletons: superficies neutrales en claro para conservar jerarquía y
+     evitar bloques casi negros durante la carga. */
+  [data-theme='light'] [class~='bg-slate-950/60'],
+  [data-theme='light'] [class~='bg-slate-950/70'],
+  [data-theme='light'] [class~='bg-slate-950/90'] {
+    background: var(--color-surface) !important;
+    border-color: var(--color-border-soft) !important;
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  [data-theme='light'] [class~='bg-slate-900/55'],
+  [data-theme='light'] [class~='bg-slate-900/80'],
+  [data-theme='light'] [class~='bg-slate-800'] {
+    background: var(--color-bg-muted) !important;
+  }
+
+  [data-theme='light'] [class~='border-slate-700/50'],
+  [data-theme='light'] [class~='border-slate-700/60'] {
+    border-color: var(--color-border-soft) !important;
+  }
+
   .user-menu-panel {
     overflow: hidden;
     border: 1px solid var(--color-border-soft);

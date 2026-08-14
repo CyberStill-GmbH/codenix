@@ -462,11 +462,11 @@
   --color-difficulty-hard-soft: rgba(153, 27, 27, 0.10);
 
   /* Heatmap — tonos más saturados sobre fondo claro */
-  --heat-0: rgba(0, 0, 0, 0.05);
-  --heat-1: rgba(14, 165, 233, 0.20);
-  --heat-2: rgba(14, 165, 233, 0.45);
-  --heat-3: #0ea5e9;
-  --heat-4: #0369a1;
+  --heat-0: #e2e8f0;
+  --heat-1: #bae6fd;
+  --heat-2: #38bdf8;
+  --heat-3: #0284c7;
+  --heat-4: #075985;
 
   /* Sombras suaves (no glow, sino elevación neutral) */
   --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
@@ -558,6 +558,14 @@ html.codenix-theme-transition * {
   backdrop-filter: blur(var(--blur-md));
   -webkit-backdrop-filter: blur(var(--blur-md));
   box-shadow: var(--shadow-inset-top), var(--shadow-lg);
+}
+
+[data-theme='light'] .glass-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: var(--shadow-md);
 }
 
 /* Tarjeta premium: fondo en degradado + línea de luz superior +

@@ -155,13 +155,6 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
   const [showAllSkills, setShowAllSkills] = useState(false)
   const langEntries = buildLanguageStats(submissions)
   const skillGroups = buildSkillGroups(submissions)
-  const solvedTotal = new Set(
-    submissions
-      .filter((submission) => submission.status === 'accepted')
-      .map((submission) => submission.problemId),
-  ).size
-  const activeDays = new Set(submissions.map((submission) => submission.submittedAt.slice(0, 10))).size
-  const maxStreak = 3
   const profileLinks: ProfileLink[] = [
     { label: 'github.com', href: user.githubUrl, emptyLabel: 'Añadir GitHub', Icon: GithubIcon },
     { label: 'linkedin.com', href: user.linkedinUrl, emptyLabel: 'Añadir LinkedIn', Icon: LinkedinIcon },
@@ -202,22 +195,6 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
           </button>
         </div>
 
-        <div className={`mt-4 grid grid-cols-3 gap-2 rounded-xl p-3 ${profileInsetSurfaceClassName}`}>
-          {[
-            { label: 'Resueltos', value: solvedTotal },
-            { label: 'Dias activos', value: activeDays },
-            { label: 'Racha max.', value: maxStreak },
-          ].map((metric) => (
-            <div key={metric.label} className="text-center">
-              <p className="font-mono text-xl font-bold text-[var(--color-text)]">
-                {metric.value}
-              </p>
-              <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-                {metric.label}
-              </p>
-            </div>
-          ))}
-        </div>
       </div>
 
       <div className="grid w-full grid-cols-1 gap-2 px-4 pb-4 sm:grid-cols-2">

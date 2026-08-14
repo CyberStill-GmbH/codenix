@@ -272,7 +272,7 @@ export function ProblemForm({
 
   return (
     <div className="space-y-4">
-      <div className="sticky top-16 z-30 rounded-xl border border-slate-700/50 bg-slate-950/90 p-3 shadow-[0_18px_50px_rgba(2,8,23,0.34)] backdrop-blur-xl">
+      <div className="sticky top-16 z-30 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3 shadow-[var(--shadow-lg)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-sm font-bold text-[var(--color-text)]">

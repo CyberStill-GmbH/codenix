@@ -3,6 +3,7 @@ import { ActivityCalendar, type Activity } from 'react-activity-calendar'
 import 'react-activity-calendar/tooltips.css'
 
 import { UserCard } from '@/features/user/components/UserCard'
+import { useTheme } from '@/shared/providers/ThemeProvider'
 import {
   profileInteractiveSurfaceClassName,
 } from '@/features/user/components/profileStyles'
@@ -29,6 +30,7 @@ type ActivityHeatmapProps = {
 // y con borde visible en vez de fundirse con el fondo.
 const heatmapTheme = {
   dark: ['rgba(255,255,255,0.045)', ...ACTIVITY_HEAT_COLORS.slice(1)],
+  light: ['#e2e8f0', 'var(--heat-1)', 'var(--heat-2)', 'var(--heat-3)', 'var(--heat-4)'],
 }
 
 const labels = {
@@ -106,6 +108,7 @@ export function ActivityHeatmap({
   activityDays,
   year = new Date().getFullYear(),
 }: ActivityHeatmapProps) {
+  const { resolvedTheme } = useTheme()
   const fallbackData = useActivityHeatmapData()
   const isCurrentYear = year === new Date().getFullYear()
   const sourceData = activityDays
@@ -164,7 +167,7 @@ export function ActivityHeatmap({
               blockSize={12}
               blockMargin={4}
               blockRadius={2}
-              colorScheme="dark"
+              colorScheme={resolvedTheme}
               fontSize={9}
               labels={labels}
               showColorLegend={false}
