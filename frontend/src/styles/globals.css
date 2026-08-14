@@ -751,7 +751,7 @@
     right: 0.75rem;
     bottom: 0.75rem;
     left: 0.75rem;
-    z-index: 45;
+    z-index: 80;
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
@@ -1034,7 +1034,7 @@
     }
 
     .codenix-user-main {
-      padding-block: 1rem 6rem;
+      padding-block: 0.75rem 6rem;
     }
 
     .codenix-user-grid {

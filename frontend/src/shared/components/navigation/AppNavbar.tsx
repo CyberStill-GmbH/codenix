@@ -50,12 +50,14 @@ export function AppNavbar() {
     return appNavItems.find((item) => currentPath.startsWith(item.href))?.href
   }, [location.pathname])
   const isProfileRoute = location.pathname.startsWith('/profile')
+  const isEditorRoute = /^\/problems\/[^/]+/.test(location.pathname)
+  const showMobileBottomNav = isMobile && !isEditorRoute
 
   return (
-    <header className="sticky top-0 z-50 bg-[var(--color-navbar-bg)] shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl">
+    <header className="md:sticky md:top-0 md:z-50 md:bg-[var(--color-navbar-bg)] md:shadow-[0_1px_0_rgba(255,255,255,0.06)] md:backdrop-blur-xl">
       <nav
         className={cx(
-          'mx-auto flex h-14 w-full items-center justify-between gap-6 px-6',
+          'mx-auto hidden h-14 w-full items-center justify-between gap-6 px-6 md:flex',
           isProfileRoute
             ? 'md:max-w-[888px] lg:max-w-screen-xl'
             : 'max-w-[90rem]',
@@ -177,7 +179,7 @@ export function AppNavbar() {
         </div>
       </nav>
 
-      {isUserMenuOpen && user && isMobile && (
+      {isUserMenuOpen && user && isMobile && !isEditorRoute && (
         <UserMenu
           user={user}
           onClose={() => {
@@ -187,7 +189,7 @@ export function AppNavbar() {
         />
       )}
 
-      {isMobile && (
+      {showMobileBottomNav && (
         <nav className="app-mobile-nav" aria-label="Navegación principal móvil">
           {mobileNavItems.map((item) => {
             const isActive = location.pathname.startsWith(item.href)
