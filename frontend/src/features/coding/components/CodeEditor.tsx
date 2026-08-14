@@ -116,10 +116,13 @@ export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
     if (containerRef.current) resizeObserverRef.current.observe(containerRef.current)
   }
 
-  const editorBg = resolvedTheme === 'light' ? '#FFFFFF' : '#071225'
-
   return (
-    <div ref={containerRef} className="h-full min-h-0 w-full overflow-hidden" style={{ background: editorBg }}>
+    <div
+      ref={containerRef}
+      className={`h-full min-h-0 w-full overflow-hidden ${
+        resolvedTheme === 'light' ? 'bg-white' : 'bg-[#071225]'
+      }`}
+    >
       <Editor
         height="100%"
         width="100%"

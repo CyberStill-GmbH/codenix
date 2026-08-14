@@ -139,7 +139,7 @@ export const landingTokens = {
       'mb-4 text-lg font-semibold text-[rgba(226,232,240,0.76)]',
     brandTitle:
       'text-[2.8rem] font-bold leading-[1.02] tracking-[var(--tracking-tight)] text-white xl:text-[3.25rem]',
-    brandEmphasis: 'mt-2 block w-fit',
+    brandEmphasis: 'mt-2 block w-fit bg-[var(--gradient-brand)] bg-clip-text text-transparent',
     brandDescription:
       'mt-6 max-w-[25rem] text-sm leading-6 text-[rgba(203,213,225,0.78)]',
     brandLink:

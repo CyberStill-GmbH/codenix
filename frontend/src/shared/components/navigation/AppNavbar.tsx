@@ -1,8 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Search, ShieldCheck } from 'lucide-react'
+import { ClipboardList, Search, Settings, ShieldCheck, UserRound } from 'lucide-react'
 
-import logo from '@/assets/icons/logo.png'
 import { useAuth } from '@/features/auth/context/useAuth'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
@@ -14,9 +13,21 @@ import { ProblemSearchBox } from '@/shared/components/navigation/ProblemSearchBo
 
 const appNavItems = [
   { label: 'Problemas', href: '/problems', preload: 'problems' },
-  { label: 'Envios', href: '/submissions', preload: 'submissions' },
+  { label: 'Envíos', href: '/submissions', preload: 'submissions' },
   { label: 'Perfil', href: '/profile', preload: 'profile' },
 ] satisfies Array<{ label: string; href: string; preload: PreloadRouteKey }>
+
+const mobileNavItems = [
+  { label: 'Problemas', href: '/problems', preload: 'problems', Icon: ClipboardList },
+  { label: 'Envíos', href: '/submissions', preload: 'submissions', Icon: Search },
+  { label: 'Perfil', href: '/profile', preload: 'profile', Icon: UserRound },
+  { label: 'Ajustes', href: '/settings', preload: 'profile', Icon: Settings },
+] satisfies Array<{
+  label: string
+  href: string
+  preload: PreloadRouteKey
+  Icon: typeof Search
+}>
 
 const preloadAdminRoute = () => preloadRoute('adminProblems')
 
@@ -38,17 +49,19 @@ export function AppNavbar() {
     return appNavItems.find((item) => currentPath.startsWith(item.href))?.href
   }, [location.pathname])
   const isProfileRoute = location.pathname.startsWith('/profile')
+  const isEditorRoute = /^\/problems\/[^/]+/.test(location.pathname)
+  const showMobileBottomNav = isMobile && !isEditorRoute
 
   return (
-    <header className="sticky top-0 z-50 bg-[var(--color-navbar-bg)] shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl">
+    <header className="md:sticky md:top-0 md:z-50 md:bg-[var(--color-navbar-bg)] md:shadow-[0_1px_0_rgba(255,255,255,0.06)] md:backdrop-blur-xl">
       <nav
         className={cx(
-          'mx-auto flex h-14 w-full items-center justify-between gap-6 px-6',
+          'mx-auto hidden h-14 w-full items-center justify-between gap-6 px-6 md:flex',
           isProfileRoute
             ? 'md:max-w-[888px] lg:max-w-screen-xl'
             : 'max-w-[90rem]',
         )}
-        aria-label="Navegacion interna de Codenix"
+        aria-label="Navegación interna de Codenix"
       >
         <div className="flex min-w-0 items-center gap-8">
           <Link
@@ -59,12 +72,10 @@ export function AppNavbar() {
             )}
             aria-label="Codenix app"
           >
-            <span
+            <img
+              src="/favicon.svg"
               className="h-8 w-8 shrink-0 bg-[var(--color-logo-mark)]"
-              style={{
-                mask: `url(${logo}) center / contain no-repeat`,
-                WebkitMask: `url(${logo}) center / contain no-repeat`,
-              }}
+              alt=""
               aria-hidden="true"
             />
             <span className="font-display text-lg font-bold tracking-normal text-[var(--color-text)]">
@@ -104,7 +115,7 @@ export function AppNavbar() {
               to={adminHref}
               onMouseEnter={preloadAdminRoute}
               onFocus={preloadAdminRoute}
-              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--color-primary)]/30 bg-[var(--color-primary-soft)] px-2.5 text-xs font-semibold text-[var(--color-accent-muted)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+              className="hidden h-8 items-center gap-1.5 rounded-full border border-[var(--color-primary)]/30 bg-[var(--color-primary-soft)] px-2.5 text-xs font-semibold text-[var(--color-accent-muted)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:inline-flex"
             >
               <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
               Administrar
@@ -136,9 +147,10 @@ export function AppNavbar() {
                 'rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5 transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]',
                 landingTokens.focus,
               )}
-              aria-label="Abrir menu de usuario"
+              aria-label="Abrir menú de usuario"
               aria-haspopup="menu"
               aria-expanded={isUserMenuOpen}
+              aria-controls={isUserMenuOpen ? 'app-user-menu' : undefined}
               onClick={() => setIsUserMenuOpen((v) => !v)}
             >
               <UserAvatar
@@ -148,7 +160,7 @@ export function AppNavbar() {
               />
             </button>
 
-            {isUserMenuOpen && user && (
+            {isUserMenuOpen && user && !isMobile && (
               <div
                 className="absolute right-0 top-12 z-50"
                 role="menu"
@@ -163,6 +175,60 @@ export function AppNavbar() {
           </div>
         </div>
       </nav>
+
+      {isUserMenuOpen && user && isMobile && !isEditorRoute && (
+        <UserMenu
+          user={user}
+          onClose={() => {
+            setIsUserMenuOpen(false)
+            userMenuButtonRef.current?.focus()
+          }}
+        />
+      )}
+
+      {showMobileBottomNav && (
+        <nav className="app-mobile-nav" aria-label="Navegación principal móvil">
+          {mobileNavItems.map((item) => {
+            const isActive = location.pathname.startsWith(item.href)
+            const Icon = item.Icon
+
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                onMouseEnter={() => preloadRoute(item.preload)}
+                onFocus={() => preloadRoute(item.preload)}
+                className={`app-mobile-nav__item ${
+                  isActive ? 'app-mobile-nav__item--active' : ''
+                }`}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <Icon className="app-mobile-nav__icon" aria-hidden="true" />
+                <span>{item.label}</span>
+              </Link>
+            )
+          })}
+
+          {user?.role === 'admin' && (
+            <Link
+              to={adminHref}
+              onMouseEnter={preloadAdminRoute}
+              onFocus={preloadAdminRoute}
+              className={`app-mobile-nav__item ${
+                location.pathname.startsWith('/admin')
+                  ? 'app-mobile-nav__item--active'
+                  : ''
+              }`}
+              aria-current={
+                location.pathname.startsWith('/admin') ? 'page' : undefined
+              }
+            >
+              <ShieldCheck className="app-mobile-nav__icon" aria-hidden="true" />
+              <span>Administración</span>
+            </Link>
+          )}
+        </nav>
+      )}
     </header>
   )
 }
