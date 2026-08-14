@@ -243,27 +243,26 @@ function ProblemDetailContent() {
                 variant="primary"
                 onClick={() => setIsDescriptionOpen(true)}
                 className="rounded-full shadow-floating pointer-events-auto"
-                aria-label="Ver descripcion"
+                aria-label="Ver descripción"
              >
                 <ChevronUp className="w-4 h-4" />
-                Problem Description
+                Descripción del problema
              </Button>
           </div>
 
           {/* Bottom Sheet Drawer Content */}
           <div
-            className={`absolute inset-x-0 bottom-0 z-30 flex flex-col bg-surface-elevated border-t border-border-soft rounded-t-2xl shadow-2xl transition-transform duration-300 ease-in-out ${
+            className={`absolute inset-x-0 bottom-0 z-30 flex h-[85vh] flex-col bg-surface-elevated border-t border-border-soft rounded-t-2xl shadow-2xl transition-transform duration-300 ease-in-out ${
               isDescriptionOpen ? 'translate-y-0' : 'translate-y-full'
             }`}
-            style={{ height: '85vh' }}
           >
             <div className="flex items-center justify-between p-4 border-b border-border-soft shrink-0">
-               <h3 className="font-bold text-text-base">Description & Testcases</h3>
+               <h3 className="font-bold text-text-base">Descripción y casos de prueba</h3>
                <Button
                  variant="ghost"
                  size="icon"
                  onClick={() => setIsDescriptionOpen(false)}
-                 aria-label="Close"
+                 aria-label="Cerrar descripción"
                  className="rounded-full"
                >
                  <ChevronDown className="w-5 h-5" />
@@ -323,7 +322,7 @@ function ProblemDetailContent() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsCollapsed(false)}
-                    aria-label="Expand problem panel"
+                    aria-label="Expandir panel del problema"
                     className="rounded-full"
                   >
                     <ChevronDown className="w-5 h-5 -rotate-90" />

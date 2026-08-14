@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ClipboardList, FilePenLine, LayoutDashboard, Plus, ShieldCheck } from 'lucide-react'
 
-import logo from '@/assets/icons/logo.png'
 import { landingTokens } from '@/features/landing/theme/tokens'
 import { rememberAdminPath } from '@/shared/utils/adminConsolePath'
 import { preloadRoute, type PreloadRouteKey } from '@/routes/routePreload'
@@ -83,12 +82,10 @@ export function AdminNavbar() {
             )}
             aria-label="Codenix admin"
           >
-            <span
+            <img
+              src="/favicon.svg"
               className="h-8 w-8 shrink-0 bg-[var(--color-logo-mark)]"
-              style={{
-                mask: `url(${logo}) center / contain no-repeat`,
-                WebkitMask: `url(${logo}) center / contain no-repeat`,
-              }}
+              alt=""
               aria-hidden="true"
             />
             <span className="font-display text-lg font-bold tracking-normal text-[var(--color-text)]">

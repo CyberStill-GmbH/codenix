@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 
-import logo from '@/assets/icons/logo.png'
 import {
   AUTH_GLOBE_VIDEO_URL,
   authBrandContent,
@@ -39,12 +38,10 @@ export function AuthBrandPanel() {
           )}
           aria-label={`Volver al inicio de ${authBrandContent.title}`}
         >
-          <span
+          <img
+            src="/favicon.svg"
             className={landingTokens.auth.brandLogo}
-            style={{
-              mask: `url(${logo}) center / contain no-repeat`,
-              WebkitMask: `url(${logo}) center / contain no-repeat`,
-            }}
+            alt=""
             aria-hidden="true"
           />
         </Link>
@@ -59,12 +56,6 @@ export function AuthBrandPanel() {
             <br />
             <span
               className={landingTokens.auth.brandEmphasis}
-              style={{
-                backgroundImage: 'var(--gradient-brand)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                color: 'transparent',
-              }}
             >
               {authBrandContent.highlightedTitle}
             </span>

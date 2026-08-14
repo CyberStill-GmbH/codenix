@@ -2,7 +2,6 @@ import { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ChevronDown, ChevronRight, Menu, X } from 'lucide-react'
 
-import logo from '@/assets/icons/logo.png'
 import { navItems } from '@/features/landing/constants/landingContent'
 import type { NavItem } from '@/features/landing/types/landing.types'
 import { landingTokens } from '@/features/landing/theme/tokens'
@@ -71,12 +70,10 @@ export function Navbar() {
           aria-label="Codenix — Inicio"
           onClick={closeMenu}
         >
-          <span
+          <img
+            src="/favicon.svg"
             className={cx('h-7 w-7 shrink-0', landingTokens.color.logo)}
-            style={{
-              mask: `url(${logo}) center / contain no-repeat`,
-              WebkitMask: `url(${logo}) center / contain no-repeat`,
-            }}
+            alt=""
             aria-hidden="true"
           />
 

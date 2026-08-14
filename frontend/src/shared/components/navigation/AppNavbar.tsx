@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ClipboardList, Search, Settings, ShieldCheck, UserRound } from 'lucide-react'
 
-import logo from '@/assets/icons/logo.png'
 import { useAuth } from '@/features/auth/context/useAuth'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
@@ -14,13 +13,13 @@ import { ProblemSearchBox } from '@/shared/components/navigation/ProblemSearchBo
 
 const appNavItems = [
   { label: 'Problemas', href: '/problems', preload: 'problems' },
-  { label: 'Envios', href: '/submissions', preload: 'submissions' },
+  { label: 'Envíos', href: '/submissions', preload: 'submissions' },
   { label: 'Perfil', href: '/profile', preload: 'profile' },
 ] satisfies Array<{ label: string; href: string; preload: PreloadRouteKey }>
 
 const mobileNavItems = [
   { label: 'Problemas', href: '/problems', preload: 'problems', Icon: ClipboardList },
-  { label: 'Envios', href: '/submissions', preload: 'submissions', Icon: Search },
+  { label: 'Envíos', href: '/submissions', preload: 'submissions', Icon: Search },
   { label: 'Perfil', href: '/profile', preload: 'profile', Icon: UserRound },
   { label: 'Ajustes', href: '/settings', preload: 'profile', Icon: Settings },
 ] satisfies Array<{
@@ -62,7 +61,7 @@ export function AppNavbar() {
             ? 'md:max-w-[888px] lg:max-w-screen-xl'
             : 'max-w-[90rem]',
         )}
-        aria-label="Navegacion interna de Codenix"
+        aria-label="Navegación interna de Codenix"
       >
         <div className="flex min-w-0 items-center gap-8">
           <Link
@@ -73,12 +72,10 @@ export function AppNavbar() {
             )}
             aria-label="Codenix app"
           >
-            <span
+            <img
+              src="/favicon.svg"
               className="h-8 w-8 shrink-0 bg-[var(--color-logo-mark)]"
-              style={{
-                mask: `url(${logo}) center / contain no-repeat`,
-                WebkitMask: `url(${logo}) center / contain no-repeat`,
-              }}
+              alt=""
               aria-hidden="true"
             />
             <span className="font-display text-lg font-bold tracking-normal text-[var(--color-text)]">
@@ -150,7 +147,7 @@ export function AppNavbar() {
                 'rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5 transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]',
                 landingTokens.focus,
               )}
-              aria-label="Abrir menu de usuario"
+              aria-label="Abrir menú de usuario"
               aria-haspopup="menu"
               aria-expanded={isUserMenuOpen}
               aria-controls={isUserMenuOpen ? 'app-user-menu' : undefined}
@@ -227,7 +224,7 @@ export function AppNavbar() {
               }
             >
               <ShieldCheck className="app-mobile-nav__icon" aria-hidden="true" />
-              <span>Admin</span>
+              <span>Administración</span>
             </Link>
           )}
         </nav>
