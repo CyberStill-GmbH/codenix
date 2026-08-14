@@ -272,7 +272,7 @@ function LegalNavDropdown({ currentPath }: { currentPath: string }) {
         aria-haspopup="menu"
         onClick={() => setIsOpen((current) => !current)}
       >
-        <span>Legal</span>
+        <span>Información legal</span>
         <ChevronDown className="legal-nav__chevron" aria-hidden="true" />
       </button>
 
@@ -335,7 +335,7 @@ function MobileLegalNavDropdown({
         aria-controls="landing-mobile-legal-menu"
         onClick={() => setIsOpen((current) => !current)}
       >
-        <span>Legal</span>
+        <span>Información legal</span>
         <ChevronDown className="mobile-legal-nav__chevron" aria-hidden="true" />
       </button>
 

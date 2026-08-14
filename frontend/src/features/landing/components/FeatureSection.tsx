@@ -24,19 +24,20 @@ export function FeatureSection() {
       <SectionContainer className="flex flex-col items-center">
         {/* Encabezado */}
         <div className="flex max-w-2xl flex-col items-center text-center">
-          <LandingBadge>Plataforma de práctica</LandingBadge>
+          <LandingBadge>¿Qué es Codenix?</LandingBadge>
 
           <h2
             id="features-title"
             className="mt-5 text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl lg:text-4xl"
           >
-            Todo empieza con entrenar mejor.
+            Una plataforma para practicar programación competitiva.
           </h2>
 
           <p className="mt-4 text-sm leading-relaxed text-[var(--color-text-soft)] sm:text-base">
-            Codenix nace como iniciativa de IEEE Computer Society UNI para
-            centralizar la práctica algorítmica y la preparación para
-            competencias.
+            Codenix | Plataforma de Práctica Algorítmica reúne ejercicios
+            prácticos, editor de código, envíos de soluciones y seguimiento de
+            progreso para entrenar algoritmos, estructuras de datos y resolución
+            de problemas con enfoque competitivo.
           </p>
         </div>
 

@@ -24,19 +24,19 @@ export function HeroSection() {
         <div className={landingTokens.hero.grid}>
           <div className={landingTokens.hero.copyColumn}>
             <HeroBadge icon={<Sparkles className="h-3.5 w-3.5" />}>
-              Iniciativa de IEEE Computer Society UNI
+              Codenix | Plataforma de Práctica Algorítmica
             </HeroBadge>
 
             <HeroHeadline id="hero-title">
-              Entrena algoritmos, mide tu progreso y compite con enfoque.
+              Codenix | Plataforma de Práctica Algorítmica
             </HeroHeadline>
 
             <HeroDescription>
-              Codenix centraliza la práctica de programación competitiva mediante
-              problemas, envíos de soluciones y seguimiento de avance para
-              estudiantes que quieren mejorar con disciplina. Si eliges iniciar
-              sesión con Google, usamos solo los datos básicos de perfil y correo
-              necesarios para autenticar tu cuenta.
+              Practica algoritmos, resuelve problemas y prepárate para competir.
+              Codenix es una plataforma de práctica de programación competitiva
+              para estudiantes y desarrolladores que quieren mejorar su
+              razonamiento algorítmico. Puedes explorar problemas, escribir
+              código, enviar soluciones y seguir tu avance por temas y dificultad.
             </HeroDescription>
 
             <HeroCTAs
