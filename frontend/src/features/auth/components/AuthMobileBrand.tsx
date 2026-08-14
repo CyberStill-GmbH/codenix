@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import logo from '@/assets/icons/logo.png'
 import { authBrandContent } from '@/features/auth/constants/authContent'
 import { landingTokens } from '@/features/landing/theme/tokens'
 
@@ -11,10 +12,9 @@ export function AuthMobileBrand() {
         className={`${landingTokens.auth.mobileLogoLink} items-center gap-3 ${landingTokens.focus}`}
         aria-label={`Volver al inicio de ${authBrandContent.title}`}
       >
-        <img
-          src="/favicon.svg"
+        <span
           className={landingTokens.auth.mobileLogo}
-          alt=""
+          style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat` }}
           aria-hidden="true"
         />
         <span className={landingTokens.auth.brandLockupText}>

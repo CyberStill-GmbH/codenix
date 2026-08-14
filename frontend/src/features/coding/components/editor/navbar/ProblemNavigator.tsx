@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, List, Shuffle } from 'lucide-react'
 
+import logo from '@/assets/icons/logo.png'
 import type { Problem } from '@/features/problems/types/problem.types'
 
 type ProblemNavigatorProps = {
@@ -78,10 +79,9 @@ export function ProblemNavigator({
         title="Volver a problemas"
         className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition hover:bg-[var(--color-surface-elevated)]"
       >
-        <img
-          src="/favicon.svg"
+        <span
           className="h-6 w-6 bg-[var(--color-logo-mark)]"
-          alt=""
+          style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat` }}
           aria-hidden="true"
         />
       </Link>

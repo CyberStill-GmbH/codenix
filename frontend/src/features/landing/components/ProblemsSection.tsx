@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logo from '@/assets/icons/logo.png'
 import {
   CheckCircle2,
   ChevronDown,
@@ -210,10 +211,9 @@ export function ProblemsSection() {
             <div className="overflow-hidden rounded-[var(--radius-2xl)] border border-white/[0.09] bg-[rgba(15,23,42,0.86)] text-left shadow-[var(--shadow-xl)] backdrop-blur-xl">
               <div className="flex h-12 items-center justify-between border-b border-white/[0.07] bg-[rgba(7,11,20,0.78)] px-4">
                 <div className="flex min-w-0 items-center gap-2.5">
-                    <img
-                      src="/favicon.svg"
+                    <span
                       className="h-6 w-6 shrink-0 bg-[var(--color-logo-mark)]"
-                      alt=""
+                      style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat` }}
                       aria-hidden="true"
                     />
                   <span className="truncate font-mono text-[0.6875rem] font-medium text-[var(--color-text-muted)]">

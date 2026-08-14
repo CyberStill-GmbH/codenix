@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ClipboardList, Search, Settings, ShieldCheck, UserRound } from 'lucide-react'
 
+import logo from '@/assets/icons/logo.png'
 import { useAuth } from '@/features/auth/context/useAuth'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
@@ -72,10 +73,9 @@ export function AppNavbar() {
             )}
             aria-label="Codenix app"
           >
-            <img
-              src="/favicon.svg"
+            <span
               className="h-8 w-8 shrink-0 bg-[var(--color-logo-mark)]"
-              alt=""
+              style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat` }}
               aria-hidden="true"
             />
             <span className="font-display text-lg font-bold tracking-normal text-[var(--color-text)]">

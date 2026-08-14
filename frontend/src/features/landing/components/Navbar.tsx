@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, Menu, X } from 'lucide-react'
 import { navItems } from '@/features/landing/constants/landingContent'
 import type { NavItem } from '@/features/landing/types/landing.types'
 import { landingTokens } from '@/features/landing/theme/tokens'
+import logo from '@/assets/icons/logo.png'
 
 const cx = (...classes: Array<string | false | undefined>) =>
   classes.filter(Boolean).join(' ')
@@ -70,10 +71,9 @@ export function Navbar() {
           aria-label="Codenix — Inicio"
           onClick={closeMenu}
         >
-          <img
-            src="/favicon.svg"
+          <span
             className={cx('h-7 w-7 shrink-0', landingTokens.color.logo)}
-            alt=""
+            style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat` }}
             aria-hidden="true"
           />
 

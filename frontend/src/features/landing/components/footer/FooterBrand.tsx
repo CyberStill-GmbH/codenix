@@ -1,6 +1,7 @@
 import { Code2, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import logo from '@/assets/icons/logo.png'
 import { FooterBadge } from '@/features/landing/components/footer/FooterBadge'
 import { landingTokens } from '@/features/landing/theme/tokens'
 
@@ -14,10 +15,9 @@ export function FooterBrand() {
         className={cx(landingTokens.footer.brandLink, landingTokens.focus)}
         aria-label="Codenix — Inicio"
       >
-        <img
-          src="/favicon.svg"
+        <span
           className={`h-7 w-7 shrink-0 ${landingTokens.color.logo}`}
-          alt=""
+          style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat` }}
           aria-hidden="true"
         />
         <span className={landingTokens.footer.brandText}>Codenix</span>

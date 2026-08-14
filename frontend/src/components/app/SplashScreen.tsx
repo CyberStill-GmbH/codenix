@@ -1,3 +1,4 @@
+import logo from '@/assets/icons/logo.png'
 
 type SplashScreenProps = {
   isVisible: boolean
@@ -13,10 +14,9 @@ export function SplashScreen({ isVisible }: SplashScreenProps) {
       }`}
     >
       <span className="sr-only">Cargando Codenix...</span>
-      <img
-        src="/favicon.svg"
+      <span
         className="h-16 w-16 bg-[var(--color-logo-mark)] [animation:codenix-splash-pulse_1.8s_ease-in-out_infinite] motion-reduce:animate-none"
-        alt=""
+        style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat` }}
         aria-hidden="true"
       />
     </div>
