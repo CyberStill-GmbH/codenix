@@ -30,6 +30,8 @@ export function UserMenu({ user, onClose }: UserMenuProps) {
 
   // Close on outside click (pointerdown for fast response)
   useEffect(() => {
+    if (isMobile) return
+
     const handlePointerDown = (e: PointerEvent) => {
       if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
         onClose?.()
@@ -37,7 +39,7 @@ export function UserMenu({ user, onClose }: UserMenuProps) {
     }
     window.addEventListener('pointerdown', handlePointerDown)
     return () => window.removeEventListener('pointerdown', handlePointerDown)
-  }, [onClose])
+  }, [isMobile, onClose])
 
   const handleAction = (route?: string) => {
     onClose?.()
@@ -52,11 +54,13 @@ export function UserMenu({ user, onClose }: UserMenuProps) {
 
   const panelContent = (
     <div
+      id="app-user-menu"
       ref={panelRef}
       role="menu"
       aria-label="Menú de usuario"
-      style={{ width: isMobile ? '100%' : '320px', borderRadius: isMobile ? '14px 14px 0 0' : '14px' }}
-      className="overflow-hidden border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-[var(--shadow-xl)]"
+      className={`user-menu-panel ${
+        isMobile ? 'user-menu-panel--mobile' : 'user-menu-panel--desktop'
+      }`}
     >
       {/* Header */}
       <div className="flex items-center gap-4 rounded-[var(--radius-lg)] bg-[rgba(7,18,37,0.58)] px-3 py-3">
@@ -110,15 +114,12 @@ export function UserMenu({ user, onClose }: UserMenuProps) {
       <>
         {/* Backdrop */}
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          className="user-menu-backdrop"
           onClick={onClose}
           aria-hidden="true"
         />
         {/* Sheet */}
-        <div
-          className="fixed bottom-0 left-0 right-0 z-50 animate-[user-menu-slide-up_120ms_ease-out_both]"
-          style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
-        >
+        <div className="user-menu-sheet">
           {panelContent}
         </div>
       </>

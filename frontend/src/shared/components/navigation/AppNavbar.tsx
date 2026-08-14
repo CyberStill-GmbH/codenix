@@ -139,6 +139,7 @@ export function AppNavbar() {
               aria-label="Abrir menu de usuario"
               aria-haspopup="menu"
               aria-expanded={isUserMenuOpen}
+              aria-controls={isUserMenuOpen ? 'app-user-menu' : undefined}
               onClick={() => setIsUserMenuOpen((v) => !v)}
             >
               <UserAvatar
@@ -148,7 +149,7 @@ export function AppNavbar() {
               />
             </button>
 
-            {isUserMenuOpen && user && (
+            {isUserMenuOpen && user && !isMobile && (
               <div
                 className="absolute right-0 top-12 z-50"
                 role="menu"
@@ -163,6 +164,16 @@ export function AppNavbar() {
           </div>
         </div>
       </nav>
+
+      {isUserMenuOpen && user && isMobile && (
+        <UserMenu
+          user={user}
+          onClose={() => {
+            setIsUserMenuOpen(false)
+            userMenuButtonRef.current?.focus()
+          }}
+        />
+      )}
     </header>
   )
 }

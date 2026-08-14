@@ -28,7 +28,14 @@ function resolveTheme(theme: Theme): 'light' | 'dark' {
   return theme
 }
 
-function applyTheme(resolved: 'light' | 'dark') {
+function applyTheme(resolved: 'light' | 'dark', animate = false) {
+  if (animate) {
+    document.documentElement.classList.add('codenix-theme-transition')
+    window.setTimeout(() => {
+      document.documentElement.classList.remove('codenix-theme-transition')
+    }, 220)
+  }
+
   document.documentElement.setAttribute('data-theme', resolved)
 }
 
@@ -71,6 +78,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   function setTheme(next: Theme) {
     setThemeState(next)
+    applyTheme(resolveTheme(next), true)
     // Also persist into the shared settings key so useAppSettings stays in sync
     try {
       const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY)

@@ -706,6 +706,46 @@
     gap: clamp(1.5rem, 2vw, 2rem);
   }
 
+  .user-menu-panel {
+    overflow: hidden;
+    border: 1px solid var(--color-border-soft);
+    background: var(--color-surface);
+    padding: 0.5rem;
+    color: var(--color-text);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .user-menu-panel--desktop {
+    width: 20rem;
+    border-radius: 0.875rem;
+  }
+
+  .user-menu-panel--mobile {
+    width: 100%;
+    max-height: min(34rem, calc(100dvh - 5rem));
+    overflow-y: auto;
+    border-radius: 0.875rem 0.875rem 0 0;
+    overscroll-behavior: contain;
+  }
+
+  .user-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+  }
+
+  .user-menu-sheet {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    padding-bottom: env(safe-area-inset-bottom);
+    animation: user-menu-slide-up 120ms ease-out both;
+  }
+
   @keyframes user-menu-fade-in {
     from {
       opacity: 0;

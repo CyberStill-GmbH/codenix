@@ -503,10 +503,16 @@
 /* Transición suave entre temas — aplicada al html/body para que
    toda la app herede sin necesidad de poner transitions en cada
    componente individualmente. */
-html {
+html.codenix-theme-transition,
+html.codenix-theme-transition body,
+html.codenix-theme-transition * {
   transition:
     background-color 180ms ease,
-    color 180ms ease;
+    border-color 180ms ease,
+    color 180ms ease,
+    fill 180ms ease,
+    stroke 180ms ease,
+    box-shadow 180ms ease;
 }
 
 /* Respeta prefers-reduced-motion sin tocar cada componente:
@@ -522,7 +528,9 @@ html {
     --transition-spring: 0ms ease;
   }
 
-  html {
+  html.codenix-theme-transition,
+  html.codenix-theme-transition body,
+  html.codenix-theme-transition * {
     transition: none;
   }
 }
