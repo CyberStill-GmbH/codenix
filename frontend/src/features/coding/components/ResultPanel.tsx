@@ -49,7 +49,7 @@ function CodeBlock({ label, value }: { label: string; value?: string | null }) {
       <p className="mb-1 text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
         {label}
       </p>
-      <pre className="min-h-10 overflow-auto rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 font-mono text-xs text-[var(--color-text-soft)]">
+      <pre className="min-h-10 overflow-auto rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-bg-muted)] p-3 font-mono text-xs text-[var(--color-text-soft)]">
         {value || '-'}
       </pre>
     </div>
@@ -72,7 +72,7 @@ function TestcaseResultRow({ result }: { result: TestcaseRunResult }) {
             <X className="h-4 w-4 text-[var(--color-error)]" aria-hidden="true" />
           )}
           <span className="text-sm font-bold text-[var(--color-text)]">
-            Case {result.index}
+            Caso {result.index}
           </span>
         </div>
         <span className="text-xs font-semibold text-[var(--color-text-muted)]">
@@ -81,15 +81,15 @@ function TestcaseResultRow({ result }: { result: TestcaseRunResult }) {
       </div>
       {isHidden ? (
         <p className="rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 text-sm font-semibold text-[var(--color-text-muted)]">
-          Caso oculto. El backend no expone input ni output esperado para este testcase.
+          Caso oculto. El backend no expone entrada ni salida esperada para este caso.
         </p>
       ) : (
         <div className="grid gap-3 lg:grid-cols-3">
-          <CodeBlock label="Input" value={result.input} />
-          <CodeBlock label="Expected" value={result.expectedOutput} />
+          <CodeBlock label="Entrada" value={result.input} />
+          <CodeBlock label="Esperada" value={result.expectedOutput} />
           <CodeBlock
             label="Got"
-            value={isPending ? 'Ejecutando...' : result.actualOutput ?? result.stdout}
+            value={isPending ? 'Ejecutando…' : result.actualOutput ?? result.stdout}
           />
         </div>
       )}
@@ -121,15 +121,15 @@ function SubmitBanner({ submitResult }: { submitResult: SubmitCodeResponse }) {
           <p className="text-lg font-black">{getJudgeStatusLabel(status)}</p>
           <p className="mt-1 text-sm font-semibold">
             {isAccepted
-              ? `${passedCases}/${totalCases || passedCases} cases passed`
+              ? `${passedCases}/${totalCases || passedCases} casos superados`
               : submitResult.failedCase
                 ? `Falla en caso ${submitResult.failedCase.index}/${totalCases || '?'}`
                 : 'Revisa el detalle del resultado abajo.'}
           </p>
         </div>
         <div className="text-right text-xs font-bold">
-          <p>Runtime: {formatRuntime(submitResult.executionTimeMs)}</p>
-          <p>Memory: {formatMemory(submitResult.memoryKb)}</p>
+          <p>Tiempo: {formatRuntime(submitResult.executionTimeMs)}</p>
+          <p>Memoria: {formatMemory(submitResult.memoryKb)}</p>
         </div>
       </div>
     </div>
@@ -218,7 +218,7 @@ export function ResultPanel({
                   : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]'
               }`}
             >
-              {tab === 'testcases' ? 'Testcases' : tab === 'test-result' ? 'Test Result' : 'Output'}
+              {tab === 'testcases' ? 'Casos de prueba' : tab === 'test-result' ? 'Resultado' : 'Salida'}
             </button>
           ))}
         </div>
@@ -226,7 +226,7 @@ export function ResultPanel({
         {isBusy && (
           <span className="inline-flex items-center gap-2 text-xs font-bold text-[var(--color-text-muted)]">
             <CircleDotDashed className="h-4 w-4 animate-spin" aria-hidden="true" />
-            {isSubmitting ? 'Submitting...' : 'Running...'}
+            {isSubmitting ? 'Enviando…' : 'Ejecutando…'}
           </span>
         )}
       </div>
@@ -260,12 +260,12 @@ export function ResultPanel({
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <h3 className="text-sm font-bold text-[var(--color-text)]">
-                      Runtime distribution
+                      Distribución de tiempo
                     </h3>
                   </div>
                   {submitResult.runtimePercentile && (
                     <p className="text-xs font-bold text-[var(--color-success)]">
-                      Faster than {submitResult.runtimePercentile}% of submissions
+                      Más rápido que el {submitResult.runtimePercentile}% de los envíos
                     </p>
                   )}
                 </div>
@@ -294,8 +294,7 @@ export function ResultPanel({
         {activeTab === 'testcases' ? (
           <section className="space-y-3">
             <p className="text-xs text-[var(--color-text-subtle)]">
-              Run evalua los casos de muestra almacenados en el servidor. Enviar
-              `testcases: []` u omitir el campo tiene el mismo significado.
+              Ejecutar evalúa los casos de muestra almacenados en el servidor.
             </p>
             {testcases.map((testcase, index) => {
               const result = resultByCaseId.get(testcase.id)
@@ -321,7 +320,7 @@ export function ResultPanel({
                   </div>
                   <label className="grid gap-1">
                     <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
-                      Input
+                      Entrada
                     </span>
                     <textarea
                       value={testcase.input}
@@ -333,7 +332,7 @@ export function ResultPanel({
                   </label>
                   <label className="mt-3 grid gap-1">
                     <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
-                      Expected output
+                      Salida esperada
                     </span>
                     <textarea
                       value={testcase.expectedOutput}
@@ -350,7 +349,7 @@ export function ResultPanel({
                   {result && (
                     <div className="mt-3 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3">
                       <p className="text-xs font-bold text-[var(--color-text-muted)]">
-                        Obtained
+                        Obtenida
                       </p>
                       <pre className="mt-2 whitespace-pre-wrap font-mono text-xs text-[var(--color-text-soft)]">
                         {result.actualOutput ?? result.stdout ?? '-'}
@@ -367,7 +366,7 @@ export function ResultPanel({
               className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 text-sm font-bold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
-              Add custom case
+              Agregar caso
             </button>
           </section>
         ) : activeTab === 'test-result' ? (

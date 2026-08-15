@@ -25,7 +25,7 @@ export function EditorActions({
         size="sm"
         disabled={isDisabled || isBusy}
         onClick={onRun}
-        title="Run (Ctrl+Enter)"
+        title="Ejecutar (Ctrl+Enter)"
         className="rounded-full"
       >
         {isRunning ? (
@@ -33,7 +33,7 @@ export function EditorActions({
         ) : (
           <Play className="h-3.5 w-3.5" aria-hidden="true" />
         )}
-        <span>{isRunning ? 'Running...' : 'Run'}</span>
+          <span>{isRunning ? 'Ejecutando…' : 'Ejecutar'}</span>
       </Button>
 
       <Button
@@ -42,7 +42,7 @@ export function EditorActions({
         size="sm"
         disabled={isDisabled || isBusy}
         onClick={onSubmit}
-        title="Submit (Ctrl+Shift+Enter)"
+        title="Enviar (Ctrl+Shift+Enter)"
         className="rounded-full"
       >
         {isSubmitting ? (
@@ -50,7 +50,7 @@ export function EditorActions({
         ) : (
           <Upload className="h-3.5 w-3.5" aria-hidden="true" />
         )}
-        <span>{isSubmitting ? 'Submitting...' : 'Submit'}</span>
+          <span>{isSubmitting ? 'Enviando…' : 'Enviar'}</span>
       </Button>
     </div>
   )

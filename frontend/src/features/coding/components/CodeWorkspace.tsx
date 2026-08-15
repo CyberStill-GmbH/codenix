@@ -406,7 +406,7 @@ function CodeWorkspace(
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border-soft)] bg-[var(--color-bg-soft)] px-4 py-2">
         <label className="flex items-center gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-            Language
+            Lenguaje
           </span>
           <select
             value={language}
@@ -425,14 +425,14 @@ function CodeWorkspace(
         </label>
 
         <span className="text-xs font-semibold text-[var(--color-text-subtle)]">
-          Ctrl+Enter Run / Ctrl+Shift+Enter Submit
+          Ctrl+Enter Ejecutar / Ctrl+Shift+Enter Enviar
         </span>
       </div>
 
       {pendingLanguage && (
         <div className="border-b border-[var(--color-warning)]/25 bg-[var(--color-warning-soft)] px-4 py-3 text-sm font-semibold text-[var(--color-warning)]">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <span>Cambiar lenguaje? El codigo actual se perdera si no fue guardado como draft.</span>
+            <span>¿Cambiar lenguaje? El código actual se perderá si no fue guardado como borrador.</span>
             <span className="flex gap-2">
               <button
                 type="button"

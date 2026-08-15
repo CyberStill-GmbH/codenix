@@ -10,42 +10,43 @@ export const judgeStatusMeta: Record<
       'border-[var(--color-success)]/35 bg-[var(--color-success-soft)] text-[var(--color-success)]',
   },
   wrong_answer: {
-    label: 'Wrong Answer',
+    label: 'Respuesta incorrecta',
     className:
       'border-[var(--color-error)]/35 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
   runtime_error: {
-    label: 'Runtime Error',
+    label: 'Error de ejecución',
     className:
       'border-[var(--color-error)]/35 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
   time_limit_exceeded: {
-    label: 'Time Limit Exceeded',
+    label: 'Tiempo excedido',
     className:
       'border-[var(--color-warning)]/35 bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
   },
   compilation_error: {
-    label: 'Compilation Error',
+    label: 'Error de compilación',
     className:
       'border-[var(--color-error)]/35 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
   memory_limit_exceeded: {
-    label: 'Memory Limit Exceeded',
+    label: 'Memoria excedida',
     className:
       'border-[var(--color-warning)]/35 bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
   },
   internal_error: {
-    label: 'Internal Error',
+    label: 'Error interno',
     className:
       'border-[var(--color-error)]/35 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
   running: {
-    label: 'Running',
+    label: 'Ejecutando',
     className: 'border-sky-400/35 bg-sky-400/10 text-sky-300',
   },
   pending: {
-    label: 'Pending',
-    className: 'border-slate-600/50 bg-slate-900/70 text-[var(--color-text-muted)]',
+    label: 'Intentado',
+    className:
+      'border-[var(--color-warning)]/40 bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
   },
 }
 

@@ -34,8 +34,8 @@ type ProblemContentTabsProps = {
 type ContentTab = "description" | "submissions";
 
 const tabItems = [
-  { id: "description", label: "Descripcion" },
-  { id: "submissions", label: "Mis Submissions" },
+  { id: "description", label: "Descripción" },
+  { id: "submissions", label: "Mis envíos" },
 ] satisfies Array<{ id: ContentTab; label: string }>;
 
 const difficultyClassName = {
@@ -125,7 +125,7 @@ export function ProblemContentTabs({
           setSubmissionsError(
             error instanceof Error
               ? error.message
-              : "No pudimos cargar tus submissions.",
+              : "No pudimos cargar tus envíos.",
           );
         }
       } finally {
@@ -152,7 +152,7 @@ export function ProblemContentTabs({
 
       if (!detail.sourceCode) {
         setSubmissionsError(
-          "Esta submission no tiene codigo fuente disponible.",
+          "Este envío no tiene código fuente disponible.",
         );
         return;
       }
@@ -160,7 +160,7 @@ export function ProblemContentTabs({
       const language = normalizeLanguage(detail.language);
       if (!language) {
         setSubmissionsError(
-          "El lenguaje de esta submission no esta soportado por el editor.",
+          "El lenguaje de este envío no está soportado por el editor.",
         );
         return;
       }
@@ -174,7 +174,7 @@ export function ProblemContentTabs({
       setSubmissionsError(
         error instanceof Error
           ? error.message
-          : "No pudimos cargar el detalle de la submission.",
+          : "No pudimos cargar el detalle del envío.",
       );
     } finally {
       setLoadingSubmissionId(null);
@@ -183,14 +183,36 @@ export function ProblemContentTabs({
 
   return (
     <aside className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)]">
-      <div className="shrink-0 border-b border-[var(--color-border-soft)] px-5 py-5">
-        <Link
-          to="/problems"
-          className="inline-flex items-center gap-2 rounded-full text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Back to problems
-        </Link>
+      <div className="shrink-0 border-b border-[var(--color-border-soft)] px-5 py-4">
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            to="/problems"
+            title="Volver a problemas"
+            aria-label="Volver a problemas"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          </Link>
+          <div className="flex min-w-0 items-center gap-1 rounded-lg bg-[var(--color-bg-soft)] p-1">
+            {tabItems.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setLoadedTabs((current) => new Set(current).add(tab.id));
+                }}
+                className={`min-h-8 rounded-md px-3 text-xs font-bold transition ${
+                  activeTab === tab.id
+                    ? "bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <h1 className="font-display text-3xl font-bold text-[var(--color-text)]">
@@ -237,26 +259,6 @@ export function ProblemContentTabs({
         </div>
       </div>
 
-      <div className="flex shrink-0 gap-1 border-b border-[var(--color-border-soft)] bg-[var(--color-bg-soft)] px-2 py-2">
-        {tabItems.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => {
-              setActiveTab(tab.id);
-              setLoadedTabs((current) => new Set(current).add(tab.id));
-            }}
-            className={`min-h-9 rounded-lg px-3 text-sm font-bold transition ${
-              activeTab === tab.id
-                ? "bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
-                : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
       <div className="min-h-0 flex-1 overflow-auto p-4">
         {activeTab === "description" && (
           <section className="space-y-4 text-sm text-[var(--color-text-soft)]">
@@ -264,9 +266,8 @@ export function ProblemContentTabs({
               <ProblemMarkdownRenderer markdown={problem.statement} />
             ) : (
               <p>
-                Solve this challenge using the editor. The MVP uses local
-                problem content here, ready to be replaced by the problem
-                statement API.
+                Resuelve este reto usando el editor. Aquí se muestra el
+                contenido disponible del problema.
               </p>
             )}
             {problem.examples.map((example, index) => (
@@ -275,11 +276,11 @@ export function ProblemContentTabs({
                 className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4"
               >
                 <h2 className="text-base font-bold text-[var(--color-text)]">
-                  Example {index + 1}
+                  Ejemplo {index + 1}
                 </h2>
                 <pre className="mt-3 whitespace-pre-wrap font-mono text-xs text-[var(--color-text-muted)]">
-                  input: {example.input}
-                  {"\n"}output: {example.output}
+                  entrada: {example.input}
+                  {"\n"}salida: {example.output}
                 </pre>
                 {example.explanation && (
                   <p className="mt-3 text-xs text-[var(--color-text-subtle)]">
@@ -291,7 +292,7 @@ export function ProblemContentTabs({
             {problem.constraints && (
               <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4">
                 <h2 className="text-base font-bold text-[var(--color-text)]">
-                  Constraints
+                  Restricciones
                 </h2>
                 <p className="mt-2 whitespace-pre-wrap text-xs text-[var(--color-text-muted)]">
                   {problem.constraints}
@@ -299,20 +300,20 @@ export function ProblemContentTabs({
               </div>
             )}
             {(problem.inputFormat || problem.outputFormat) && (
-              <details className="group rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-3 py-2">
+              <details className="group rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-bg-muted)] px-3 py-2">
                 <summary className="cursor-pointer list-none text-xs font-semibold text-[var(--color-text-muted)] marker:hidden">
                   Formatos de entrada y salida
                 </summary>
                 <div className="mt-3 space-y-3 border-t border-[var(--color-border-soft)] pt-3">
                   {problem.inputFormat && (
                     <div>
-                      <h2 className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">Input</h2>
+                      <h2 className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">Entrada</h2>
                       <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-[var(--color-text-muted)]">{problem.inputFormat}</p>
                     </div>
                   )}
                   {problem.outputFormat && (
                     <div>
-                      <h2 className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">Output</h2>
+                      <h2 className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">Salida</h2>
                       <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-[var(--color-text-muted)]">{problem.outputFormat}</p>
                     </div>
                   )}
@@ -332,7 +333,7 @@ export function ProblemContentTabs({
               !submissionsError &&
               submissions.length === 0 && (
                 <EmptyPanel>
-                  Aun no tienes submissions para este problema.
+                  Aún no tienes envíos para este problema.
                 </EmptyPanel>
               )}
             {!isLoadingSubmissions &&
@@ -362,7 +363,7 @@ export function ProblemContentTabs({
                   </div>
                   {loadingSubmissionId === submission.id && (
                     <p className="text-xs text-[var(--color-text-subtle)]">
-                      Cargando codigo de la submission...
+                      Cargando código del envío...
                     </p>
                   )}
                 </button>
