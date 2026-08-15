@@ -1,4 +1,6 @@
+import bcrypt from "bcryptjs";
 import { prisma } from "../../db/prisma";
+import { AppError } from "../../shared/errors/app-error";
 import { solvedProblemsService } from "../../shared/services/solved-problems.service";
 import type { ActivityQueryInput } from "./users.schema";
 
@@ -253,6 +255,105 @@ export const usersService = {
     return {
       year: query.year,
       data: [...activityByDate.values()]
+    };
+  },
+
+  async changeUserPassword(
+    userId: string,
+    currentPassword: string,
+    confirmPassword: string,
+    newPassword: string
+  ) {
+    if (!currentPassword || !confirmPassword || !newPassword) {
+      throw new AppError(400, "MISSING_FIELDS", "Todos los campos son obligatorios.");
+    }
+
+    if (confirmPassword !== newPassword) {
+      throw new AppError(400, "PASSWORD_MISMATCH", "Las contraseñas no coinciden.");
+    }
+
+    if (newPassword.length < 8) {
+      throw new AppError(
+        400,
+        "PASSWORD_TOO_SHORT",
+        "La nueva contraseña debe tener al menos 8 caracteres."
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId
+      }
+    });
+
+    if (!user) {
+      throw new AppError(404, "USER_NOT_FOUND", "Usuario no encontrado.");
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.passwordHash
+    );
+
+    if (!isCurrentPasswordValid) {
+      throw new AppError(400, "INVALID_CURRENT_PASSWORD", "La contraseña actual es incorrecta.");
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 12);
+
+    await prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        passwordHash: newPasswordHash
+      }
+    });
+
+    return {
+      message: "Contraseña actualizada de forma exitosa."
+    };
+  },
+
+  async changeUsername(userId: string, newUsername: string) {
+    if (!newUsername) {
+      throw new AppError(400, "MISSING_USERNAME", "El nuevo nombre de usuario no fue ingresado.");
+    }
+
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(newUsername)) {
+      throw new AppError(
+        400,
+        "INVALID_USERNAME_FORMAT",
+        "Nombre de usuario inválido. Usa 3-20 caracteres alfanuméricos o _."
+      );
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        username: newUsername
+      }
+    });
+
+    if (existingUser && existingUser.id !== userId) {
+      throw new AppError(409, "USERNAME_TAKEN", "El nombre de usuario ya está en uso.");
+    }
+
+    const user = await prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        username: newUsername
+      },
+      select: {
+        id: true,
+        username: true
+      }
+    });
+
+    return {
+      message: "Nombre de usuario actualizado exitosamente.",
+      user
     };
   }
 };

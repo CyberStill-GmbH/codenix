@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { usersController } from "./users.controller";
-import { activityQuerySchema } from "./users.schema";
+import {
+  activityQuerySchema,
+  changePasswordSchema,
+  changeUsernameSchema
+} from "./users.schema";
 import { asyncHandler } from "../../shared/middleware/async-handler";
 import { authMiddleware } from "../../shared/middleware/auth.middleware";
 import { validate } from "../../shared/middleware/validate.middleware";
@@ -17,4 +21,16 @@ usersRoutes.get(
   "/me/activity",
   validate({ query: activityQuerySchema }),
   asyncHandler(usersController.activity)
+);
+
+usersRoutes.patch(
+  "/me/password",
+  validate({ body: changePasswordSchema }),
+  asyncHandler(usersController.changePassword)
+);
+
+usersRoutes.patch(
+  "/me/username",
+  validate({ body: changeUsernameSchema }),
+  asyncHandler(usersController.changeUsername)
 );

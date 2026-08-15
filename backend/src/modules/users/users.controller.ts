@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
 import { AppError } from "../../shared/errors/app-error";
 import { usersService } from "./users.service";
-import type { ActivityQueryInput } from "./users.schema";
+import type {
+  ActivityQueryInput,
+  ChangePasswordInput,
+  ChangeUsernameInput
+} from "./users.schema";
 
 type AuthenticatedRequest = Request & {
   user?: {
@@ -53,6 +57,32 @@ export const usersController = {
     const userId = getAuthenticatedUserId(req);
     const query = getValidatedActivityQuery(res);
     const response = await usersService.getActivity(userId, query);
+
+    return res.status(200).json(response);
+  },
+
+  async changePassword(req: Request, res: Response) {
+    const userId = getAuthenticatedUserId(req);
+    const body = (res.locals.validatedBody ?? req.body) as ChangePasswordInput;
+
+    const response = await usersService.changeUserPassword(
+      userId,
+      body.currentPassword,
+      body.confirmPassword,
+      body.newPassword
+    );
+
+    return res.status(200).json(response);
+  },
+
+  async changeUsername(req: Request, res: Response) {
+    const userId = getAuthenticatedUserId(req);
+    const body = (res.locals.validatedBody ?? req.body) as ChangeUsernameInput;
+
+    const response = await usersService.changeUsername(
+      userId,
+      body.newUsername
+    );
 
     return res.status(200).json(response);
   }
