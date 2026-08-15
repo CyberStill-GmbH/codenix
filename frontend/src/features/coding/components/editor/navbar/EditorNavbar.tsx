@@ -34,9 +34,9 @@ export function EditorNavbar({
   onNavigateToRandomProblem,
 }: EditorNavbarProps) {
   return (
-    <header className="sticky top-0 z-50 bg-[var(--color-navbar-bg)] backdrop-blur-xl">
+    <header className="relative z-10 shrink-0 border-b border-[var(--color-border-soft)] bg-[var(--color-navbar-bg)]">
       <nav
-        className="grid h-10 grid-cols-[auto_1fr_auto] items-center gap-2 px-2 md:px-3"
+        className="grid min-h-14 grid-cols-[auto_1fr_auto] items-center gap-3 px-3 py-2 md:px-4"
         aria-label="Navegacion del editor de problemas"
       >
         <ProblemNavigator

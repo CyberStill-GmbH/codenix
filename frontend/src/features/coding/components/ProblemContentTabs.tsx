@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BadgeCheck, ChevronDown, Tags } from "lucide-react";
 
 import { JudgeStatusBadge } from "@/features/coding/components/JudgeStatusBadge";
 import {
@@ -103,6 +103,7 @@ export function ProblemContentTabs({
     null,
   );
   const [submissionsError, setSubmissionsError] = useState("");
+  const [topicsOpen, setTopicsOpen] = useState(false);
 
   useEffect(() => {
     if (!loadedTabs.has("submissions")) return;
@@ -182,7 +183,7 @@ export function ProblemContentTabs({
 
   return (
     <aside className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)]">
-      <div className="shrink-0 border-b border-[var(--color-border-soft)] p-4">
+      <div className="shrink-0 border-b border-[var(--color-border-soft)] px-5 py-5">
         <Link
           to="/problems"
           className="inline-flex items-center gap-2 rounded-full text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
@@ -200,15 +201,39 @@ export function ProblemContentTabs({
           </span>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {problem.topics.map((topic) => (
-            <span
-              key={topic}
-              className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-2 py-1 text-xs font-medium text-[var(--color-text-muted)]"
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setTopicsOpen((current) => !current)}
+              className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-3 text-xs font-semibold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+              aria-expanded={topicsOpen}
+              aria-haspopup="menu"
             >
-              {topic}
-            </span>
-          ))}
+              <Tags className="h-3.5 w-3.5 text-[var(--color-primary)]" aria-hidden="true" />
+              Temas
+              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${topicsOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+            </button>
+            {topicsOpen && (
+              <div className="absolute left-0 top-11 z-20 min-w-48 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-2 shadow-[var(--shadow-xl)]" role="menu">
+                {problem.topics.map((topic) => (
+                  <span key={topic} className="block rounded-lg px-3 py-2 text-xs font-medium text-[var(--color-text-soft)]" role="menuitem">
+                    {topic}
+                  </span>
+                ))}
+                <span className="mt-1 block border-t border-[var(--color-border-soft)] px-3 pt-2 text-[0.6875rem] font-semibold text-[var(--color-text-subtle)]">
+                  Discusión próximamente
+                </span>
+              </div>
+            )}
+          </div>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-subtle)]">
+            <BadgeCheck className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
+            {problem.solved ? 'Accepted' : 'Sin resolver'}
+          </span>
+          <span className="text-xs font-semibold text-[var(--color-text-muted)]">
+            Acceptance Rate <strong className="text-[var(--color-text-soft)]">{problem.acceptance.toFixed(1)}%</strong>
+          </span>
         </div>
       </div>
 
@@ -244,26 +269,6 @@ export function ProblemContentTabs({
                 statement API.
               </p>
             )}
-            {problem.inputFormat && (
-              <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4">
-                <h2 className="text-base font-bold text-[var(--color-text)]">
-                  Input format
-                </h2>
-                <p className="mt-2 whitespace-pre-wrap text-xs text-[var(--color-text-muted)]">
-                  {problem.inputFormat}
-                </p>
-              </div>
-            )}
-            {problem.outputFormat && (
-              <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4">
-                <h2 className="text-base font-bold text-[var(--color-text)]">
-                  Output format
-                </h2>
-                <p className="mt-2 whitespace-pre-wrap text-xs text-[var(--color-text-muted)]">
-                  {problem.outputFormat}
-                </p>
-              </div>
-            )}
             {problem.examples.map((example, index) => (
               <div
                 key={example.id}
@@ -292,6 +297,27 @@ export function ProblemContentTabs({
                   {problem.constraints}
                 </p>
               </div>
+            )}
+            {(problem.inputFormat || problem.outputFormat) && (
+              <details className="group rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-3 py-2">
+                <summary className="cursor-pointer list-none text-xs font-semibold text-[var(--color-text-muted)] marker:hidden">
+                  Formatos de entrada y salida
+                </summary>
+                <div className="mt-3 space-y-3 border-t border-[var(--color-border-soft)] pt-3">
+                  {problem.inputFormat && (
+                    <div>
+                      <h2 className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">Input</h2>
+                      <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-[var(--color-text-muted)]">{problem.inputFormat}</p>
+                    </div>
+                  )}
+                  {problem.outputFormat && (
+                    <div>
+                      <h2 className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">Output</h2>
+                      <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-[var(--color-text-muted)]">{problem.outputFormat}</p>
+                    </div>
+                  )}
+                </div>
+              </details>
             )}
           </section>
         )}

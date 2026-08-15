@@ -656,6 +656,28 @@ html.codenix-theme-transition * {
   background: var(--color-difficulty-hard-soft);
 }
 
+/* Markdown de problemas: el tema oscuro de highlight.js no debe dejar
+   tokens fosforescentes ni fondos oscuros cuando la app usa tema claro. */
+[data-theme='light'] .prose-problem .hljs-keyword,
+[data-theme='light'] .prose-problem .hljs-selector-tag,
+[data-theme='light'] .prose-problem .hljs-built_in {
+  color: #075985;
+}
+
+[data-theme='light'] .prose-problem .hljs-title,
+[data-theme='light'] .prose-problem .hljs-title.function_ {
+  color: #0369a1;
+}
+
+[data-theme='light'] .prose-problem .hljs-string,
+[data-theme='light'] .prose-problem .hljs-attr {
+  color: #166534;
+}
+
+[data-theme='light'] .prose-problem .hljs-comment {
+  color: #64748b;
+}
+
 /* Pill de veredicto — tabla de envíos */
 .verdict {
   display: inline-flex;

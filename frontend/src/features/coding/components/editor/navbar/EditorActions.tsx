@@ -1,4 +1,4 @@
-import { CircleDotDashed, Play, SendHorizontal } from 'lucide-react'
+import { CircleDotDashed, Play, Upload } from 'lucide-react'
 import { Button } from '@/shared/components/ui/Button'
 type EditorActionsProps = {
   isRunning: boolean
@@ -38,7 +38,7 @@ export function EditorActions({
 
       <Button
         type="button"
-        variant="success"
+        variant="secondary"
         size="sm"
         disabled={isDisabled || isBusy}
         onClick={onSubmit}
@@ -48,7 +48,7 @@ export function EditorActions({
         {isSubmitting ? (
           <CircleDotDashed className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
         ) : (
-          <SendHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
+          <Upload className="h-3.5 w-3.5" aria-hidden="true" />
         )}
         <span>{isSubmitting ? 'Submitting...' : 'Submit'}</span>
       </Button>
