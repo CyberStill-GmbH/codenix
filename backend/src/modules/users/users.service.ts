@@ -315,44 +315,73 @@ export const usersService = {
     };
   },
 
-  async changeUsername(userId: string, newUsername: string) {
-    if (!newUsername) {
-      throw new AppError(400, "MISSING_USERNAME", "El nuevo nombre de usuario no fue ingresado.");
+  async changeUsername(
+    userId: string,
+    input: { name?: string | undefined; newUsername?: string | undefined } | string
+  ) {
+    const payload = typeof input === "string" ? { newUsername: input } : input;
+    const { name, newUsername } = payload;
+
+    if (!name && !newUsername) {
+      throw new AppError(400, "MISSING_FIELDS", "No se ingresó información para actualizar.");
     }
 
-    if (!/^[a-zA-Z0-9_]{3,20}$/.test(newUsername)) {
-      throw new AppError(
-        400,
-        "INVALID_USERNAME_FORMAT",
-        "Nombre de usuario inválido. Usa 3-20 caracteres alfanuméricos o _."
-      );
-    }
+    const updateData: { name?: string; username?: string } = {};
 
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        username: newUsername
+    if (name !== undefined && name.trim().length > 0) {
+      const trimmedName = name.trim();
+      if (trimmedName.length < 2 || trimmedName.length > 50) {
+        throw new AppError(
+          400,
+          "INVALID_NAME_FORMAT",
+          "El nombre completo debe tener entre 2 y 50 caracteres."
+        );
       }
-    });
+      updateData.name = trimmedName;
+    }
 
-    if (existingUser && existingUser.id !== userId) {
-      throw new AppError(409, "USERNAME_TAKEN", "El nombre de usuario ya está en uso.");
+    if (newUsername !== undefined && newUsername.trim().length > 0) {
+      const trimmedUsername = newUsername.trim();
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(trimmedUsername)) {
+        throw new AppError(
+          400,
+          "INVALID_USERNAME_FORMAT",
+          "Nombre de usuario inválido. Usa 3-20 caracteres alfanuméricos o _."
+        );
+      }
+
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          username: trimmedUsername
+        }
+      });
+
+      if (existingUser && existingUser.id !== userId) {
+        throw new AppError(409, "USERNAME_TAKEN", "El nombre de usuario ya está en uso.");
+      }
+
+      updateData.username = trimmedUsername;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      throw new AppError(400, "NO_CHANGES", "No se realizaron cambios.");
     }
 
     const user = await prisma.user.update({
       where: {
         id: userId
       },
-      data: {
-        username: newUsername
-      },
+      data: updateData,
       select: {
         id: true,
-        username: true
+        name: true,
+        username: true,
+        email: true
       }
     });
 
     return {
-      message: "Nombre de usuario actualizado exitosamente.",
+      message: "Información de perfil actualizada exitosamente.",
       user
     };
   }

@@ -34,3 +34,9 @@ usersRoutes.patch(
   validate({ body: changeUsernameSchema }),
   asyncHandler(usersController.changeUsername)
 );
+
+usersRoutes.patch(
+  "/me/profile",
+  validate({ body: changeUsernameSchema }),
+  asyncHandler(usersController.changeUsername)
+);

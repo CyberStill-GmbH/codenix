@@ -81,7 +81,7 @@ export const usersController = {
 
     const response = await usersService.changeUsername(
       userId,
-      body.newUsername
+      body
     );
 
     return res.status(200).json(response);

@@ -124,6 +124,7 @@ export type ChangeUsernameResponse = {
   message: string
   user: {
     id: string
+    name?: string
     username: string
   }
 }
@@ -132,13 +133,16 @@ export type ChangePasswordResponse = {
   message: string
 }
 
-export async function changeUsername(newUsername: string): Promise<ChangeUsernameResponse> {
+export async function changeUsername(data: {
+  name?: string
+  newUsername?: string
+}): Promise<ChangeUsernameResponse> {
   return apiRequest<ChangeUsernameResponse>('/users/me/username', {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ newUsername }),
+    body: JSON.stringify(data),
   })
 }
 

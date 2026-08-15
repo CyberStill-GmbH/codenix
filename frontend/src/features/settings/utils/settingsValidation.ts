@@ -1,6 +1,12 @@
 import { z } from 'zod'
 
 export const changeUsernameSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'El nombre completo debe tener al menos 2 caracteres.')
+    .max(50, 'El nombre completo no puede exceder 50 caracteres.')
+    .optional()
+    .or(z.literal('')),
   newUsername: z
     .string()
     .min(3, 'El nombre de usuario debe tener al menos 3 caracteres.')
@@ -8,7 +14,9 @@ export const changeUsernameSchema = z.object({
     .regex(
       /^[a-zA-Z0-9_]+$/,
       'Usa entre 3 y 20 caracteres alfanuméricos o guion bajo (_).',
-    ),
+    )
+    .optional()
+    .or(z.literal('')),
 })
 
 export type ChangeUsernameFormValues = z.infer<typeof changeUsernameSchema>
