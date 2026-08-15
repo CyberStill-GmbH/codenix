@@ -13,37 +13,62 @@ type Props = {
 
 export function AccountSettings({ user }: Props) {
   const { updateUser } = useAuth()
-  const [usernameInput, setUsernameInput] = useState(user.username)
+  const [nameInput, setNameInput] = useState(user.name ?? '')
+  const [usernameInput, setUsernameInput] = useState(user.username ?? '')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [fieldError, setFieldError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
-  const isChanged = usernameInput.trim() !== user.username
+  const isNameChanged = nameInput.trim() !== (user.name ?? '')
+  const isUsernameChanged = usernameInput.trim() !== (user.username ?? '')
+  const isChanged = isNameChanged || isUsernameChanged
 
-  const handleUsernameSubmit = async (e: FormEvent) => {
+  const handleProfileSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setFieldError(null)
+    setFieldErrors({})
     setFeedback(null)
 
+    const payload: { name?: string; newUsername?: string } = {}
+    if (isNameChanged) payload.name = nameInput.trim()
+    if (isUsernameChanged) payload.newUsername = usernameInput.trim()
+
+    if (!payload.name && !payload.newUsername) {
+      return
+    }
+
     // Zod client-side validation
-    const result = changeUsernameSchema.safeParse({ newUsername: usernameInput.trim() })
+    const result = changeUsernameSchema.safeParse({
+      name: nameInput.trim(),
+      newUsername: usernameInput.trim(),
+    })
+
     if (!result.success) {
-      const issue = result.error.issues[0]
-      setFieldError(issue?.message ?? 'Nombre de usuario inválido.')
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        const path = issue.path[0]?.toString() ?? 'form'
+        errors[path] = issue.message
+      }
+      setFieldErrors(errors)
       return
     }
 
     try {
       setIsSubmitting(true)
-      const res = await changeUsername(result.data.newUsername)
-      updateUser({ username: res.user.username })
+      const res = await changeUsername(payload)
+      
+      const updatedFields: { name?: string; username?: string } = {}
+      if (res.user.name) updatedFields.name = res.user.name
+      if (res.user.username) updatedFields.username = res.user.username
+      
+      updateUser(updatedFields)
+
       setFeedback({
         type: 'success',
-        message: res.message || 'Nombre de usuario actualizado con éxito.',
+        message: res.message || 'Información de perfil actualizada con éxito.',
       })
     } catch (err: unknown) {
       const errorMessage =
-        err instanceof Error ? err.message : 'Error al actualizar el nombre de usuario.'
+        err instanceof Error ? err.message : 'Error al actualizar el perfil.'
       setFeedback({
         type: 'error',
         message: errorMessage,
@@ -57,13 +82,13 @@ export function AccountSettings({ user }: Props) {
     <div className="space-y-6">
       <SettingsCard
         title="Información de la cuenta"
-        description="Gestiona los datos de tu perfil y tu nombre de usuario visible en Codenix."
+        description="Gestiona los datos de tu perfil, tu nombre completo y tu nombre de usuario visible en Codenix."
       >
         <div className="flex items-center gap-4">
-          <UserAvatar src={user.avatarUrl} name={user.name} size="menu" />
+          <UserAvatar src={user.avatarUrl} name={nameInput || user.name} size="menu" />
           <div>
-            <p className="text-sm font-semibold text-[var(--color-text)]">{user.name}</p>
-            <p className="text-xs text-[var(--color-text-muted)]">@{user.username}</p>
+            <p className="text-sm font-semibold text-[var(--color-text)]">{nameInput || user.name}</p>
+            <p className="text-xs text-[var(--color-text-muted)]">@{usernameInput || user.username}</p>
           </div>
         </div>
 
@@ -84,21 +109,32 @@ export function AccountSettings({ user }: Props) {
           </div>
         )}
 
-        <SettingsField
-          label="Nombre"
-          htmlFor="settings-account-name"
-          description="Tu nombre completo en la plataforma."
-        >
-          <SettingsInput
-            id="settings-account-name"
-            type="text"
-            defaultValue={user.name}
-            disabled
-            className="cursor-not-allowed opacity-60"
-          />
-        </SettingsField>
+        <form onSubmit={handleProfileSubmit} className="space-y-5">
+          <SettingsField
+            label="Nombre completo"
+            htmlFor="settings-account-name"
+            description="Tu nombre y apellido visibles en la plataforma."
+          >
+            <div className="space-y-1.5">
+              <SettingsInput
+                id="settings-account-name"
+                type="text"
+                value={nameInput}
+                onChange={(e) => {
+                  setNameInput(e.target.value)
+                  if (fieldErrors.name) setFieldErrors((prev) => ({ ...prev, name: '' }))
+                  if (feedback) setFeedback(null)
+                }}
+                disabled={isSubmitting}
+                placeholder="ej. Alex Ramírez"
+                aria-invalid={Boolean(fieldErrors.name)}
+              />
+              {fieldErrors.name && (
+                <p className="text-xs text-[var(--color-error)]">{fieldErrors.name}</p>
+              )}
+            </div>
+          </SettingsField>
 
-        <form onSubmit={handleUsernameSubmit} className="space-y-3">
           <SettingsField
             label="Nombre de usuario"
             htmlFor="settings-account-username"
@@ -111,20 +147,20 @@ export function AccountSettings({ user }: Props) {
                 value={usernameInput}
                 onChange={(e) => {
                   setUsernameInput(e.target.value)
-                  if (fieldError) setFieldError(null)
+                  if (fieldErrors.newUsername) setFieldErrors((prev) => ({ ...prev, newUsername: '' }))
                   if (feedback) setFeedback(null)
                 }}
                 disabled={isSubmitting}
                 placeholder="ej. alex_coder"
-                aria-invalid={Boolean(fieldError)}
+                aria-invalid={Boolean(fieldErrors.newUsername)}
               />
-              {fieldError && (
-                <p className="text-xs text-[var(--color-error)]">{fieldError}</p>
+              {fieldErrors.newUsername && (
+                <p className="text-xs text-[var(--color-error)]">{fieldErrors.newUsername}</p>
               )}
             </div>
           </SettingsField>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end pt-2">
             <button
               type="submit"
               disabled={!isChanged || isSubmitting}
@@ -133,10 +169,10 @@ export function AccountSettings({ user }: Props) {
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-                  <span>Guardando...</span>
+                  <span>Guardando cambios...</span>
                 </>
               ) : (
-                <span>Guardar nombre de usuario</span>
+                <span>Guardar cambios de perfil</span>
               )}
             </button>
           </div>
