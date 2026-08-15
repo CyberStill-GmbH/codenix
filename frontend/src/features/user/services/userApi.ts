@@ -119,3 +119,39 @@ export async function getUserRecentSubmissions(limit = 10): Promise<Submission[]
     topics: submission.topics,
   }))
 }
+
+export type ChangeUsernameResponse = {
+  message: string
+  user: {
+    id: string
+    username: string
+  }
+}
+
+export type ChangePasswordResponse = {
+  message: string
+}
+
+export async function changeUsername(newUsername: string): Promise<ChangeUsernameResponse> {
+  return apiRequest<ChangeUsernameResponse>('/users/me/username', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ newUsername }),
+  })
+}
+
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+  confirmPassword: string,
+): Promise<ChangePasswordResponse> {
+  return apiRequest<ChangePasswordResponse>('/users/me/password', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+  })
+}
