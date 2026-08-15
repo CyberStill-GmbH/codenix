@@ -17,6 +17,7 @@ export type AuthContextValue = {
   logout: () => Promise<void>
   completeSession: (session: AuthSession, remember?: boolean) => void
   initializeSession: () => Promise<void>
+  updateUser: (fields: Partial<AuthUser>) => void
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
