@@ -64,11 +64,7 @@ async function getRankingSummary(userId: string, solvedProblems: number) {
   const percentile =
     totalUsers === 0
       ? 0
-      : roundPercentage(
-          (rankingCounts.filter((count) => count <= solvedProblems).length /
-            totalUsers) *
-            100
-        );
+      : roundPercentage((rank / totalUsers) * 100);
 
   const distributionByBucket = new Map<string, number>();
 

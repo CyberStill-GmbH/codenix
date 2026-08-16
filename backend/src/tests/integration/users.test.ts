@@ -88,7 +88,7 @@ describe("Users API", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.rank).toBe(2);
-    expect(res.body.percentile).toBe(75);
+    expect(res.body.percentile).toBe(50);
     expect(res.body.totalUsers).toBe(4);
     expect(res.body.distribution).toEqual([
       {
