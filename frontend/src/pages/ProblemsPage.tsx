@@ -24,7 +24,7 @@ export function ProblemsPage() {
   const [sort, setSort] = useState<ProblemSort>('id-asc')
   const [problems, setProblems] = useState<Problem[]>([])
   const [topics, setTopics] = useState<string[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import { UserRecentSubmissions } from '@/features/user/components/UserRecentSubm
 import { UserCard } from '@/features/user/components/UserCard'
 import { PageSection } from '@/components/motion/PageSection'
 import { ErrorState } from '@/components/feedback/ErrorState'
+import { SkeletonProfilePage } from '@/components/skeletons/SkeletonProfilePage'
 import { useAuth } from '@/features/auth/context/useAuth'
 import {
   getUserActivity,
@@ -99,11 +100,7 @@ export function ProfilePage() {
       <AppNavbar />
 
       <main className="mx-auto w-full grow px-3 pb-24 pt-3 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
-        {isLoadingProfile && (
-          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 text-sm font-semibold text-[var(--color-text-muted)]">
-            Cargando perfil...
-          </div>
-        )}
+        {isLoadingProfile && <SkeletonProfilePage />}
 
         {profileError && !isLoadingProfile && <ErrorState message={profileError} />}
 

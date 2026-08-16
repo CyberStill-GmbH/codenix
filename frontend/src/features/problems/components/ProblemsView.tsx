@@ -3,6 +3,7 @@ import { ProblemTable } from '@/features/problems/components/ProblemTable'
 import { SearchBar } from '@/features/problems/components/SearchBar'
 import { SortSelector } from '@/features/problems/components/SortSelector'
 import { StatusSelector } from '@/features/problems/components/StatusSelector'
+import { SkeletonProblemList } from '@/components/skeletons/SkeletonProblemList'
 import { TopicFilters } from '@/features/problems/components/TopicFilters'
 import type {
   Difficulty,
@@ -51,6 +52,10 @@ export function ProblemsView({
   const totalCount = allProblems.length
   const mediumAndHard = allProblems.filter((problem) => problem.difficulty !== 'Easy').length
 
+  if (isLoading && allProblems.length === 0 && !error) {
+    return <SkeletonProblemList />
+  }
+
   return (
     <div className="space-y-5">
       <section className="flex flex-col gap-5 border-b border-[var(--color-border-soft)] pb-5 lg:flex-row lg:items-end lg:justify-between" aria-labelledby="problems-page-title">
@@ -86,9 +91,10 @@ export function ProblemsView({
         )}
       </section>
 
-      {isLoading && (
-        <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)]">
-          {t('feedback.loading')}
+      {isLoading && allProblems.length > 0 && (
+        <div className="flex items-center gap-2 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)]" role="status" aria-live="polite">
+          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-[var(--color-primary)]" aria-hidden="true" />
+          Actualizando resultados…
         </div>
       )}
       {error && (
@@ -96,7 +102,11 @@ export function ProblemsView({
           {error}
         </div>
       )}
-      <ProblemTable problems={problems} />
+      {!error && (
+        <div className={`transition-opacity duration-200 ${isLoading ? 'opacity-70' : 'opacity-100'}`}>
+          <ProblemTable problems={problems} />
+        </div>
+      )}
     </div>
   )
 }
