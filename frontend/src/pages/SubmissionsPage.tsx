@@ -144,8 +144,15 @@ export function SubmissionsPage() {
 
             <PageSection delay={200} className="relative z-10">
               {isLoading && (
-                <div className="mb-3 rounded-xl border border-slate-800 bg-slate-950/55 px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)]">
-                  Cargando envíos...
+                <div
+                  className="mb-3 flex items-center gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)] shadow-[var(--shadow-sm)]"
+                  aria-live="polite"
+                >
+                  <span
+                    className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--color-border-strong)] border-t-[var(--color-primary)]"
+                    aria-hidden="true"
+                  />
+                  <span>Cargando envíos...</span>
                 </div>
               )}
               {loadError && (
