@@ -678,6 +678,29 @@ html.codenix-theme-transition * {
   color: #64748b;
 }
 
+/* Los ejemplos del enunciado necesitan una superficie propia: así no se
+   confunden con el canvas del editor y mantienen contraste en ambos temas. */
+.prose-problem pre {
+  border-left-color: var(--color-border-strong) !important;
+  background: var(--color-bg-muted) !important;
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) !important;
+  color: var(--color-text-soft) !important;
+}
+
+.prose-problem pre code,
+.prose-problem pre .hljs {
+  background: transparent !important;
+  color: var(--color-text-soft) !important;
+}
+
+[data-theme='light'] .prose-problem pre .hljs-variable,
+[data-theme='light'] .prose-problem pre .hljs-params,
+[data-theme='light'] .prose-problem pre .hljs-operator,
+[data-theme='light'] .prose-problem pre .hljs-punctuation {
+  color: #334155 !important;
+}
+
 /* Pill de veredicto — tabla de envíos */
 .verdict {
   display: inline-flex;
