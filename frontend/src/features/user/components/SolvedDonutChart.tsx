@@ -100,8 +100,6 @@ export function SolvedDonutChart({
             </div>
           </div>
         </div>
-      </div>
-
       <div className="space-y-2">
         {items.map((item) => (
           <div
