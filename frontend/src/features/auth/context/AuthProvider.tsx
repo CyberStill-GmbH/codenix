@@ -24,6 +24,8 @@ type AuthProviderProps = {
   children: ReactNode
 }
 
+const LOGOUT_SPLASH_MS = 320
+
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [status, setStatus] = useState<AuthStatus>('loading')
@@ -80,11 +82,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   )
 
   const logout = useCallback(async () => {
+    setStatus('loading')
+
     try {
       if (getAccessToken()) {
         await authApi.logout()
       }
     } finally {
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, LOGOUT_SPLASH_MS)
+      })
       clearSession()
     }
   }, [clearSession])

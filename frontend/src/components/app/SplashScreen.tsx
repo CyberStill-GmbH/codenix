@@ -2,14 +2,15 @@ import logo from '@/assets/icons/logo.png'
 
 type SplashScreenProps = {
   isVisible: boolean
+  theme?: 'light' | 'dark'
 }
 
-export function SplashScreen({ isVisible }: SplashScreenProps) {
+export function SplashScreen({ isVisible, theme = 'dark' }: SplashScreenProps) {
   return (
     <div
       role="status"
       aria-live="polite"
-      data-theme="dark"
+      data-theme={theme}
       className={`codenix-splash-screen fixed inset-0 z-[100] grid place-items-center transition-opacity duration-300 ${
         isVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
       }`}
