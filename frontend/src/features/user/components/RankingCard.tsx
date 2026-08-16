@@ -11,6 +11,10 @@ type RankingDistributionPoint = {
 type RankingCardProps = {
   rank: number
   percentile: number
+  bucket: string
+  bucketRank: number
+  bucketTotalUsers: number
+  bucketPercentile: number
   totalUsers: number
   solvedProblems: number
   distribution: RankingDistributionPoint[]
@@ -41,13 +45,17 @@ function RankingTooltip({ active, payload, totalUsers }: RankingTooltipProps) {
 export function RankingCard({
   rank,
   percentile: _percentile,
+  bucket,
+  bucketRank,
+  bucketTotalUsers,
+  bucketPercentile,
   totalUsers,
   solvedProblems,
   distribution,
 }: RankingCardProps) {
   const userBucket = getBucketForSolvedCount(distribution, solvedProblems)
   const [hoveredBucket, setHoveredBucket] = useState<string | null>(null)
-  const topPercentage = totalUsers > 0 ? (rank / totalUsers) * 100 : 0
+  const topPercentage = bucketPercentile
   const focusedBucket = hoveredBucket ?? userBucket
   const focusedPoint = distribution.find((point) => point.bucket === focusedBucket)
   const focusedPercentage = focusedPoint && totalUsers > 0
@@ -60,7 +68,7 @@ export function RankingCard({
         Ranking global
       </p>
       <p className="mt-1.5 font-mono text-2xl font-bold leading-none text-[var(--color-accent)]">
-        Top {topPercentage.toFixed(1)}%
+        Top {topPercentage.toFixed(1)}% en tu nivel
       </p>
       <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
         <span className="font-mono font-bold text-[var(--color-text)]">
@@ -99,12 +107,13 @@ export function RankingCard({
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <span className={`${profilePillClassName} transition-colors duration-300`}>
           <span className={`h-2 w-2 rounded-sm transition-colors duration-300 ${hoveredBucket ? 'bg-[var(--color-border)]' : 'bg-[var(--color-accent)]'}`} />
-          {hoveredBucket ? `Nivel ${hoveredBucket}` : 'Tu posición'}
+          {hoveredBucket ? `Nivel ${hoveredBucket}` : `Tu nivel ${bucket}`}
         </span>
         <span className={`${profilePillClassName} transition-all duration-300`}>
-          {focusedPoint
-            ? `${focusedPoint.count.toLocaleString()} usuarios · ${focusedPercentage.toFixed(1)}%`
-            : 'Sin datos de distribución'}
+          {hoveredBucket && focusedPoint
+            ? `${focusedPoint.count.toLocaleString()} usuarios · ${focusedPercentage.toFixed(1)}% del total`
+            : `${bucketRank} de ${bucketTotalUsers} en tu nivel`
+          }
         </span>
       </div>
     </div>

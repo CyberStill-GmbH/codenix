@@ -1,3 +1,4 @@
+import { useReducedMotion } from 'framer-motion'
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
 
 import { profileInsetSurfaceClassName } from '@/features/user/components/profileStyles'
@@ -12,19 +13,19 @@ type SolvedDonutChartProps = {
 const difficultyItems = [
   {
     key: 'easy',
-    label: 'Easy',
+    label: 'Fácil',
     color: 'var(--color-difficulty-easy)',
     labelClassName: 'text-[var(--color-difficulty-easy)]',
   },
   {
     key: 'medium',
-    label: 'Medium',
+    label: 'Medio',
     color: 'var(--color-difficulty-medium)',
     labelClassName: 'text-[var(--color-difficulty-medium)]',
   },
   {
     key: 'hard',
-    label: 'Hard',
+    label: 'Difícil',
     color: 'var(--color-difficulty-hard)',
     labelClassName: 'text-[var(--color-difficulty-hard)]',
   },
@@ -35,6 +36,7 @@ export function SolvedDonutChart({
   acceptanceRate,
   attempts,
 }: SolvedDonutChartProps) {
+  const reducedMotion = useReducedMotion()
   const items = difficultyItems.map((item) => ({
     ...item,
     solved: progress[item.key].solved,
@@ -42,10 +44,21 @@ export function SolvedDonutChart({
   }))
   const solved = items.reduce((total, item) => total + item.solved, 0)
   const total = items.reduce((sum, item) => sum + item.total, 0)
-  const chartData = items.map((item) => ({
-    name: item.label,
-    value: Math.max(item.solved, 0.001),
-  }))
+  const chartData = items.flatMap((item) => [
+    {
+      name: `${item.label} resueltos`,
+      value: item.solved,
+      color: item.color,
+    },
+    {
+      name: `${item.label} restantes`,
+      value: Math.max(item.total - item.solved, 0),
+      color: 'var(--color-bg-muted)',
+    },
+  ])
+  const safeChartData = total > 0
+    ? chartData
+    : [{ name: 'Sin problemas', value: 1, color: 'var(--color-bg-muted)' }]
 
   return (
     <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_6.5rem] sm:items-center">
@@ -53,7 +66,7 @@ export function SolvedDonutChart({
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={chartData}
+              data={safeChartData}
               dataKey="value"
               nameKey="name"
               cx="50%"
@@ -61,41 +74,30 @@ export function SolvedDonutChart({
               innerRadius={72}
               outerRadius={86}
               paddingAngle={2}
-              stroke="rgba(15,23,42,0.86)"
-              strokeWidth={4}
-              isAnimationActive={false}
+              stroke="var(--color-surface)"
+              strokeWidth={3}
+              isAnimationActive={!reducedMotion}
+              animationDuration={reducedMotion ? 0 : 800}
+              animationBegin={reducedMotion ? 0 : 80}
             >
-              {items.map((item) => (
-                <Cell key={item.key} fill={item.color} />
+              {safeChartData.map((slice, index) => (
+                <Cell key={`${slice.name}-${index}`} fill={slice.color} />
               ))}
             </Pie>
           </PieChart>
         </ResponsiveContainer>
 
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-          <div className="transition duration-150 ease-out group-hover:scale-[0.98] group-hover:opacity-0">
-            <span className="font-mono text-3xl font-bold leading-none text-[var(--color-text)]">
-              {solved}
-              <span className="text-base font-semibold text-[var(--color-text-muted)]">
-                /{total}
+          <div className="pointer-events-none absolute inset-0 grid place-items-center text-center">
+            <div className="flex flex-col items-center justify-center">
+              <span className="font-mono text-3xl font-bold leading-none text-[var(--color-text)]">
+                {solved}
+                <span className="text-base font-semibold text-[var(--color-text-muted)]">/{total}</span>
               </span>
-            </span>
-            <span className="mt-1.5 flex items-center justify-center gap-1 text-xs font-semibold text-[var(--color-text-soft)]">
-              <span className="text-[var(--color-success)]">✓</span>
-              Resueltos
-            </span>
-            <span className="mt-7 block text-xs font-semibold text-[var(--color-text-subtle)]">
-              {attempts} Intentos
-            </span>
-          </div>
-
-          <div className="absolute inset-0 flex scale-[1.02] flex-col items-center justify-center opacity-0 transition duration-150 ease-out group-hover:scale-100 group-hover:opacity-100">
-            <span className="font-mono text-3xl font-bold leading-none text-[var(--color-accent)]">
-              {acceptanceRate.toFixed(1)}%
-            </span>
-            <span className="mt-1.5 text-xs font-semibold text-[var(--color-text-muted)]">
-              Aceptacion
-            </span>
+              <span className="mt-1.5 flex items-center justify-center gap-1 text-xs font-semibold text-[var(--color-text-soft)]">
+                <span className="text-[var(--color-success)]">✓</span>
+                Resueltos
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -115,6 +117,11 @@ export function SolvedDonutChart({
             </span>
           </div>
         ))}
+      </div>
+      <div className="mt-3 flex items-center justify-center gap-3 border-t border-[var(--color-border-soft)] pt-3 text-[0.6875rem] font-semibold text-[var(--color-text-muted)] sm:col-span-2">
+        <span>Tasa de aceptación <strong className="text-[var(--color-text)]">{acceptanceRate.toFixed(1)}%</strong></span>
+        <span className="text-[var(--color-text-subtle)]">·</span>
+        <span>{attempts.toLocaleString()} intentos</span>
       </div>
     </div>
   )

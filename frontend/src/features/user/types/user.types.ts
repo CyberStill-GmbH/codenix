@@ -20,6 +20,10 @@ export type UserStats = {
   currentStreak: number
   rank: number
   percentile: number
+  bucket: string
+  bucketRank: number
+  bucketTotalUsers: number
+  bucketPercentile: number
   totalUsers: number
   distribution: Array<{
     bucket: string

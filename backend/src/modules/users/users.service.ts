@@ -65,6 +65,17 @@ async function getRankingSummary(userId: string, solvedProblems: number) {
     totalUsers === 0
       ? 0
       : roundPercentage((rank / totalUsers) * 100);
+  const userBucket = toDistributionBucket(solvedProblems);
+  const usersInBucket = rankingCounts.filter(
+    (count) => toDistributionBucket(count) === userBucket,
+  );
+  const bucketRank =
+    usersInBucket.filter((count) => count > solvedProblems).length + 1;
+  const bucketTotalUsers = usersInBucket.length;
+  const bucketPercentile =
+    bucketTotalUsers === 0
+      ? 0
+      : roundPercentage((bucketRank / bucketTotalUsers) * 100);
 
   const distributionByBucket = new Map<string, number>();
 
@@ -83,6 +94,10 @@ async function getRankingSummary(userId: string, solvedProblems: number) {
   return {
     rank,
     percentile,
+    bucket: userBucket,
+    bucketRank,
+    bucketTotalUsers,
+    bucketPercentile,
     totalUsers,
     distribution
   };
@@ -134,6 +149,10 @@ export const usersService = {
       currentStreak: 0,
       rank: ranking.rank,
       percentile: ranking.percentile,
+      bucket: ranking.bucket,
+      bucketRank: ranking.bucketRank,
+      bucketTotalUsers: ranking.bucketTotalUsers,
+      bucketPercentile: ranking.bucketPercentile,
       totalUsers: ranking.totalUsers,
       distribution: ranking.distribution
     };

@@ -10,6 +10,10 @@ export function UserTopRanking({ stats }: UserTopRankingProps) {
     <RankingCard
       rank={stats.rank}
       percentile={stats.percentile}
+      bucket={stats.bucket}
+      bucketRank={stats.bucketRank}
+      bucketTotalUsers={stats.bucketTotalUsers}
+      bucketPercentile={stats.bucketPercentile}
       totalUsers={stats.totalUsers}
       solvedProblems={stats.solvedProblems}
       distribution={stats.distribution}

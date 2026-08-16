@@ -21,10 +21,10 @@ export function TopicDistribution({ submissions }: TopicDistributionProps) {
     <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-lg)]">
       <div className="mb-5">
         <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
-          Topic Distribution
+          Distribución por tema
         </h2>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Temas mas frecuentes en tu historial
+          Temas más frecuentes en tu historial
         </p>
       </div>
 

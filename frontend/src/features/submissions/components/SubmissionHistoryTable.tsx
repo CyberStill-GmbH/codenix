@@ -27,6 +27,20 @@ const resultClassName: Record<SubmissionResult, string> = {
   'Compilation Error': 'text-[var(--color-text-muted)]',
 }
 
+const difficultyLabel: Record<Difficulty, string> = {
+  Easy: 'Fácil',
+  Medium: 'Medio',
+  Hard: 'Difícil',
+}
+
+const resultLabel: Record<SubmissionResult, string> = {
+  Accepted: 'Aceptado',
+  'Wrong Answer': 'Respuesta incorrecta',
+  'Runtime Error': 'Error de ejecución',
+  'Time Limit Exceeded': 'Tiempo excedido',
+  'Compilation Error': 'Error de compilación',
+}
+
 function formatSubmittedAt(value: string) {
   return formatDistanceToNowStrict(new Date(value), { addSuffix: true, locale: es })
 }
@@ -36,7 +50,7 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
     return (
       <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 text-center shadow-[var(--shadow-lg)]">
         <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
-          Aun no hay envios.
+          Aún no hay envíos.
         </h2>
         <p className="mt-2 text-sm text-[var(--color-text-muted)]">
           Resuelve tu primer problema para empezar tu historial.
@@ -48,7 +62,7 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
   return (
     <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)]">
       <div className="hidden grid-cols-[10rem_minmax(0,1fr)_10rem_8rem] border-b border-[var(--color-border-soft)] px-5 py-4 md:grid">
-        {['Last Submitted', 'Problem', 'Last Result', 'Submissions'].map((heading) => (
+        {['Último envío', 'Problema', 'Último resultado', 'Envíos'].map((heading) => (
           <span
             key={heading}
             className="text-xs font-semibold text-[var(--color-text-muted)]"
@@ -80,9 +94,12 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
               <div className="grid min-w-0 grid-cols-[1.5rem_minmax(0,1fr)] gap-3">
                 <span className="pt-0.5">
                   {isAccepted ? (
-                    <Check className="h-4 w-4 text-[var(--color-success)]" aria-label="Accepted" />
+                    <Check className="h-4 w-4 text-[var(--color-success)]" aria-label="Aceptado" />
                   ) : (
-                    <XCircle className="h-4 w-4 text-[var(--color-text-subtle)]" aria-label={submission.result} />
+                    <XCircle
+                      className="h-4 w-4 text-[var(--color-text-subtle)]"
+                      aria-label={resultLabel[submission.result]}
+                    />
                   )}
                 </span>
                 <span className="min-w-0">
@@ -90,13 +107,13 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
                     {submission.problemTitle}
                   </span>
                   <span className={`mt-1 block text-sm font-semibold ${difficultyClassName[submission.difficulty]}`}>
-                    {submission.difficulty}
+                    {difficultyLabel[submission.difficulty]}
                   </span>
                 </span>
               </div>
 
               <span className={`text-sm font-medium ${resultClassName[submission.result]}`}>
-                {submission.result}
+                {resultLabel[submission.result]}
               </span>
 
               <span className="inline-flex items-center gap-2 font-mono text-sm text-[var(--color-text-muted)]">

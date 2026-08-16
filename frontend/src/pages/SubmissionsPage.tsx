@@ -46,7 +46,7 @@ export function SubmissionsPage() {
           setLoadError(
             error instanceof Error
               ? error.message
-              : 'No pudimos cargar tus submissions.',
+              : 'No pudimos cargar tus envíos.',
           )
         }
       } finally {
@@ -118,10 +118,10 @@ export function SubmissionsPage() {
           <div className="flex min-w-0 flex-col gap-5">
             <PageSection>
               <h1 className="font-display text-3xl font-bold text-[var(--color-text)]">
-                Practice History
+                Historial de práctica
               </h1>
               <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-                Revisa tus envios, resultados y patrones de practica.
+                Revisa tus envíos, resultados y patrones de práctica.
               </p>
             </PageSection>
 
@@ -145,7 +145,7 @@ export function SubmissionsPage() {
             <PageSection delay={200} className="relative z-10">
               {isLoading && (
                 <div className="mb-3 rounded-xl border border-slate-800 bg-slate-950/55 px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)]">
-                  Cargando submissions...
+                  Cargando envíos...
                 </div>
               )}
               {loadError && (
@@ -160,7 +160,7 @@ export function SubmissionsPage() {
           <aside className="flex min-w-0 flex-col gap-5">
             <PageSection delay={150}>
               <h2 className="font-display text-3xl font-bold text-[var(--color-text)]">
-                Summary
+                Resumen
               </h2>
               <p className="mt-2 text-sm text-[var(--color-text-muted)]">
                 Vista general de tu rendimiento.

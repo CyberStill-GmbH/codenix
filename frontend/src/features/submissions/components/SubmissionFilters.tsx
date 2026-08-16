@@ -9,18 +9,18 @@ import type {
 
 const RESULT_OPTIONS = [
   { value: 'All', label: 'Todos' },
-  { value: 'Accepted', label: 'Accepted' },
-  { value: 'Wrong Answer', label: 'Wrong Answer' },
-  { value: 'Runtime Error', label: 'Runtime Error' },
-  { value: 'Time Limit Exceeded', label: 'Time Limit Exceeded' },
-  { value: 'Compilation Error', label: 'Compilation Error' },
+  { value: 'Accepted', label: 'Aceptado' },
+  { value: 'Wrong Answer', label: 'Respuesta incorrecta' },
+  { value: 'Runtime Error', label: 'Error de ejecución' },
+  { value: 'Time Limit Exceeded', label: 'Tiempo excedido' },
+  { value: 'Compilation Error', label: 'Error de compilación' },
 ] as const
 
 const DIFFICULTY_OPTIONS = [
   { value: 'All', label: 'Todas' },
-  { value: 'Easy', label: 'Easy' },
-  { value: 'Medium', label: 'Medium' },
-  { value: 'Hard', label: 'Hard' },
+  { value: 'Easy', label: 'Fácil' },
+  { value: 'Medium', label: 'Medio' },
+  { value: 'Hard', label: 'Difícil' },
 ] as const
 
 const SORT_OPTIONS = [
@@ -161,13 +161,13 @@ export function SubmissionFilters({
     <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-lg)]">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <label className="relative block w-full lg:max-w-sm">
-          <span className="sr-only">Buscar envio</span>
+          <span className="sr-only">Buscar envío</span>
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-subtle)]" />
           <input
             type="search"
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
-            placeholder="Search submissions"
+            placeholder="Buscar envío"
             className="h-11 w-full rounded-full border border-[var(--color-border)] bg-[var(--color-surface-soft)] pl-10 pr-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
           />
         </label>
@@ -184,7 +184,7 @@ export function SubmissionFilters({
             }`}
           >
             <Filter className="h-4 w-4" aria-hidden="true" />
-            Filter
+            Filtrar
           </button>
 
           {isExpanded && (

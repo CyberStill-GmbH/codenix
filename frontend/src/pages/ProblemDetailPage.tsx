@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { EmptyState } from '@/components/feedback/EmptyState'
 import { PageSection } from '@/components/motion/PageSection'
@@ -16,6 +16,7 @@ import type {
 } from '@/features/coding/types/coding.types'
 import { useAuth } from '@/features/auth/context/useAuth'
 import { getProblemBySlug, getProblems } from '@/features/problems/services/problemsApi'
+import { getSubmissionDetail } from '@/features/coding/services/codingApi'
 import type { Problem, ProblemCodeLanguage } from '@/features/problems/types/problem.types'
 import { AppNavbar } from '@/shared/components/navigation/AppNavbar'
 import { Button } from '@/shared/components/ui/Button'
@@ -36,6 +37,13 @@ function createInitialTestcases(problem: Problem) {
     input: example.input,
     expectedOutput: example.output,
   }))
+}
+
+function normalizeSubmissionLanguage(language: string): ProblemCodeLanguage | null {
+  const normalized = language.toLowerCase()
+  return ['typescript', 'javascript', 'python', 'c', 'rust'].includes(normalized)
+    ? normalized as ProblemCodeLanguage
+    : null
 }
 
 function useIsMobileViewport() {
@@ -65,6 +73,7 @@ const initialActionState: CodeWorkspaceActionState = {
 
 function ProblemDetailContent() {
   const { problemSlug } = useParams<{ problemSlug: string }>()
+  const location = useLocation()
   const navigate = useNavigate()
   const { user } = useAuth()
   const workspaceRef = useRef<CodeWorkspaceHandle>(null)
@@ -102,6 +111,7 @@ function ProblemDetailContent() {
 
     let isMounted = true
     const slug = problemSlug
+    const submissionId = new URLSearchParams(location.search).get('submission')
 
     async function loadProblem() {
       try {
@@ -117,13 +127,30 @@ function ProblemDetailContent() {
           }),
         ])
 
+        let submissionRequest: CodeLoadState['request'] = null
+        if (submissionId) {
+          try {
+            const submission = await getSubmissionDetail(submissionId)
+            const language = normalizeSubmissionLanguage(submission.language)
+            if (submission.sourceCode && language) {
+              submissionRequest = {
+                code: submission.sourceCode,
+                language,
+                submissionId: submission.id,
+              }
+            }
+          } catch {
+            // The problem remains usable even if an old submission is no longer available.
+          }
+        }
+
         if (isMounted) {
           setProblem(nextProblem)
           setProblemCatalog(nextCatalog)
           if (nextProblem) {
             setTestcases(createInitialTestcases(nextProblem))
             setRunResults([])
-            setCodeLoadState({ request: null, version: 0 })
+            setCodeLoadState({ request: submissionRequest, version: submissionRequest ? 1 : 0 })
           }
         }
       } catch (error) {
@@ -146,7 +173,7 @@ function ProblemDetailContent() {
     return () => {
       isMounted = false
     }
-  }, [problemSlug])
+  }, [location.search, problemSlug])
 
   const handleNavigateToProblem = useCallback(
     (slug: string) => {

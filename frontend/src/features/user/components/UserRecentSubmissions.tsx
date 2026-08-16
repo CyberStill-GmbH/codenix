@@ -19,27 +19,27 @@ type SubmissionTab = 'accepted' | 'all'
 
 const statusMeta: Record<SubmissionStatus, { label: string; className: string }> = {
   accepted: {
-    label: 'Accepted',
+    label: 'Aceptado',
     className: 'border-[var(--color-success)]/30 bg-[var(--color-success-soft)] text-[var(--color-success)]',
   },
   wrong_answer: {
-    label: 'Wrong Answer',
+    label: 'Respuesta incorrecta',
     className: 'border-[var(--color-error)]/30 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
   time_limit_exceeded: {
-    label: 'Time Limit Exceeded',
+    label: 'Tiempo excedido',
     className: 'border-[var(--color-warning)]/30 bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
   },
   runtime_error: {
-    label: 'Runtime Error',
+    label: 'Error de ejecución',
     className: 'border-[var(--color-error)]/30 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
   compilation_error: {
-    label: 'Compilation Error',
+    label: 'Error de compilación',
     className: 'border-[var(--color-error)]/30 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
   pending: {
-    label: 'Pending',
+    label: 'Intentado',
     className: 'border-[var(--color-primary)]/30 bg-[var(--color-primary-soft)] text-[var(--color-primary)]',
   },
 }
@@ -70,7 +70,7 @@ export function UserRecentSubmissions({ submissions }: UserRecentSubmissionsProp
       <UserCard>
         <div className="p-4 text-center">
           <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
-            Aun no hay envios.
+            Aún no hay envíos.
           </h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-[var(--color-text-muted)]">
             Resuelve tu primer problema para empezar tu historial.
@@ -79,7 +79,7 @@ export function UserRecentSubmissions({ submissions }: UserRecentSubmissionsProp
             to="/problems"
             className="mt-5 inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--color-primary)] px-4 text-sm font-semibold text-[var(--color-text-inverse)] transition hover:bg-[var(--color-primary-hover)]"
           >
-            Ir a Problems
+            Ir a problemas
           </Link>
         </div>
       </UserCard>
@@ -92,10 +92,10 @@ export function UserRecentSubmissions({ submissions }: UserRecentSubmissionsProp
         <header className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
-              Ultimos envios
+              Últimos envíos
             </h2>
             <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-              Tus soluciones mas recientes
+              Tus soluciones más recientes
             </p>
           </div>
 
@@ -126,7 +126,7 @@ export function UserRecentSubmissions({ submissions }: UserRecentSubmissionsProp
             return (
               <Link
                 key={submission.id}
-                to={`/problems/${problemSlug}`}
+                to={`/problems/${problemSlug}?submission=${submission.id}`}
                 className={`grid gap-2 rounded-xl px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center ${profileInteractiveSurfaceClassName}`}
               >
                 <div className="min-w-0">
@@ -160,7 +160,7 @@ export function UserRecentSubmissions({ submissions }: UserRecentSubmissionsProp
           to="/submissions"
           className={`${profilePillClassName} mt-4 font-bold text-[var(--color-accent)] hover:text-[var(--color-accent-muted)]`}
         >
-          Ver todos los envios
+          Ver todos los envíos
         </Link>
       </div>
     </UserCard>
