@@ -54,17 +54,17 @@ export function AppNavbar() {
   const showMobileBottomNav = isMobile && !isEditorRoute
 
   return (
-    <header className="md:sticky md:top-0 md:z-50 md:bg-[var(--color-bg)] md:shadow-[0_1px_0_rgba(255,255,255,0.06)]">
+    <header className="border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] md:sticky md:top-0 md:z-50 md:bg-[rgba(5,9,20,0.92)] md:backdrop-blur-xl">
       <nav
         className={cx(
-          'mx-auto hidden h-14 w-full items-center justify-between gap-6 px-6 md:flex',
+          'mx-auto hidden h-16 w-full items-center justify-between gap-6 px-6 md:flex',
           isProfileRoute
             ? 'md:max-w-[888px] lg:max-w-screen-xl'
             : 'max-w-[90rem]',
         )}
         aria-label="Navegación interna de Codenix"
       >
-        <div className="flex min-w-0 items-center gap-8">
+        <div className="flex min-w-0 items-center gap-10">
           <Link
             to="/problems"
             className={cx(
@@ -83,7 +83,7 @@ export function AppNavbar() {
             </span>
           </Link>
 
-          <div className="hidden items-center gap-6 md:flex">
+          <div className="hidden items-center gap-2 md:flex">
             {appNavItems.map((item) => {
               const isActive = activePath === item.href
 
