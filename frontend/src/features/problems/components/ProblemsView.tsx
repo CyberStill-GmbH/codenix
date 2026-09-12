@@ -1,3 +1,6 @@
+import { BookOpen, CheckCircle2, ChevronRight, ListChecks, Target } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
 import { DifficultySelector } from '@/features/problems/components/DifficultySelector'
 import { ProblemTable } from '@/features/problems/components/ProblemTable'
 import { SearchBar } from '@/features/problems/components/SearchBar'
@@ -57,7 +60,65 @@ export function ProblemsView({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="grid gap-8 lg:grid-cols-[13rem_minmax(0,1fr)]">
+      <aside className="hidden lg:block" aria-label="Navegación de problemas">
+        <div className="sticky top-20 space-y-7">
+          <div>
+            <p className="mb-3 px-3 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-subtle)]">
+              Biblioteca
+            </p>
+            <nav className="space-y-1">
+              <Link
+                to="/problems"
+                className="flex items-center gap-3 rounded-lg bg-[var(--color-surface)] px-3 py-2.5 text-sm font-semibold text-[var(--color-text)] shadow-[var(--shadow-xs)]"
+                aria-current="page"
+              >
+                <BookOpen className="h-4 w-4 text-[var(--color-primary)]" aria-hidden="true" />
+                Todos los problemas
+              </Link>
+              <Link
+                to="/submissions"
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]"
+              >
+                <ListChecks className="h-4 w-4" aria-hidden="true" />
+                Mis envíos
+              </Link>
+              <Link
+                to="/profile"
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]"
+              >
+                <Target className="h-4 w-4" aria-hidden="true" />
+                Mi progreso
+              </Link>
+            </nav>
+          </div>
+
+          <div className="border-t border-[var(--color-border-soft)] pt-5">
+            <p className="mb-3 px-3 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-subtle)]">
+              Atajos
+            </p>
+            <div className="space-y-1 px-3 text-xs leading-5 text-[var(--color-text-muted)]">
+              <p className="flex items-center justify-between gap-2"><span>Resueltos</span><strong className="text-[var(--color-success)]">{solvedCount}</strong></p>
+              <p className="flex items-center justify-between gap-2"><span>Por practicar</span><strong className="text-[var(--color-text)]">{Math.max(totalCount - solvedCount, 0)}</strong></p>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--color-text)]">
+              <CheckCircle2 className="h-4 w-4 text-[var(--color-success)]" aria-hidden="true" />
+              Sigue practicando
+            </div>
+            <p className="mt-2 text-xs leading-5 text-[var(--color-text-muted)]">
+              Un reto corto hoy mantiene el hábito activo.
+            </p>
+            <Link to="/problems" className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[var(--color-primary)] hover:text-[var(--color-accent)]">
+              Ver retos <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </aside>
+
+      <div className="min-w-0 space-y-5">
       <section className="flex flex-col gap-5 border-b border-[var(--color-border-soft)] pb-5 lg:flex-row lg:items-end lg:justify-between" aria-labelledby="problems-page-title">
         <div>
           <p className="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">Biblioteca</p>
@@ -107,6 +168,7 @@ export function ProblemsView({
           <ProblemTable problems={problems} />
         </div>
       )}
+      </div>
     </div>
   )
 }
