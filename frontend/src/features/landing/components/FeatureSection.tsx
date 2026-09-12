@@ -22,7 +22,7 @@ const reveal = {
 export function FeatureSection() {
   return (
     <section
-      className="relative z-10 border-b border-[var(--color-border-soft)] bg-transparent py-24 sm:py-32"
+      className="relative z-10 border-b border-[var(--color-border-soft)] bg-transparent py-20 sm:py-28"
       aria-labelledby="features-title"
     >
       <SectionContainer>
@@ -38,7 +38,7 @@ export function FeatureSection() {
             <LandingBadge>¿Qué es Codenix?</LandingBadge>
             <h2
               id="features-title"
-              className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] text-[var(--color-text)] sm:text-5xl"
+              className="mt-6 max-w-[12ch] text-3xl font-black leading-[0.98] tracking-[-0.05em] text-[var(--color-text)] sm:text-4xl"
             >
               Entrena algoritmos con una señal clara de avance.
             </h2>

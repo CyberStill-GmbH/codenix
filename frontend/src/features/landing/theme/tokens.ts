@@ -33,21 +33,21 @@ export const landingTokens = {
   transition: 'transition duration-200',
   nav: {
     shell:
-      'sticky top-0 z-50 border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] shadow-[var(--shadow-xs)]',
+      'sticky top-0 z-50 border-b border-[var(--color-border-soft)] bg-[rgba(5,9,20,0.84)] shadow-[var(--shadow-xs)] backdrop-blur-xl',
     inner:
-      'mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8',
-    link: 'flex items-center gap-2 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:text-[var(--color-text)]',
+      'mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8',
+    link: 'inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-lg)] px-3 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
     mobileLink:
       'flex w-full items-center justify-between rounded-[var(--radius-lg)] px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
     badge:
       'rounded-[var(--radius-full)] border border-[var(--color-nav-badge-border)] bg-[var(--color-nav-badge-bg)] px-2 py-0.5 text-[0.625rem] font-semibold text-[var(--color-nav-badge-text)]',
-    cta: 'inline-flex items-center gap-1.5 rounded-[var(--radius-full)] border border-[var(--color-primary-soft)] bg-[var(--color-primary-soft)] px-5 py-2 text-sm font-semibold text-[var(--color-primary)] transition duration-300 hover:border-[var(--color-primary)] hover:bg-[var(--color-accent-soft)] hover:shadow-[var(--shadow-glow-primary)]',
+    cta: 'inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--color-primary)] bg-[var(--color-primary)] px-5 py-2 text-sm font-bold text-white shadow-[var(--shadow-sm)] transition-colors duration-200 hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
     mobileCta:
-      'inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-full)] border border-[var(--color-primary-soft)] bg-[var(--color-primary-soft)] px-4 py-2 text-sm font-semibold text-[var(--color-primary)] transition duration-300 hover:border-[var(--color-primary)] hover:bg-[var(--color-accent-soft)]',
+      'inline-flex min-h-11 items-center justify-center gap-1.5 rounded-[var(--radius-lg)] border border-[var(--color-primary)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white transition-colors duration-200 hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
     menuButton:
       'inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-glass-border)] bg-[var(--color-surface-translucent)] text-[var(--color-text-muted)] transition-colors duration-200 hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)] md:hidden',
     mobileMenu:
-      'fixed inset-x-0 bottom-0 top-14 z-40 overflow-y-auto border-t border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-4 py-6 shadow-[var(--shadow-xl)] backdrop-blur-xl [animation:codenix-mobile-menu-in_180ms_var(--ease-out-expo)_both] motion-reduce:[animation:none] md:hidden',
+      'fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-4 py-6 shadow-[var(--shadow-xl)] backdrop-blur-xl [animation:codenix-mobile-menu-in_180ms_var(--ease-out-expo)_both] motion-reduce:[animation:none] md:hidden',
   },
   hero: {
     section:
@@ -60,9 +60,9 @@ export const landingTokens = {
       'mt-7 max-w-[11ch] text-balance text-[clamp(3.25rem,15vw,7.5rem)] font-black leading-[0.88] tracking-[-0.075em] text-[var(--color-text)] motion-safe:animate-[codenix-hero-headline-reveal_700ms_cubic-bezier(0.16,1,0.3,1)_both] sm:mt-8',
     description:
       'mt-5 max-w-xl text-base leading-relaxed text-[var(--color-text-soft)] sm:text-[1.0625rem]',
-    ctas: 'mt-10 flex flex-col gap-4 sm:flex-row',
+    ctas: 'mt-8 flex flex-col gap-3 sm:flex-row',
     trust:
-      'mt-12 inline-flex max-w-xl flex-wrap items-center gap-x-3 gap-y-2 rounded-[var(--radius-full)] border border-[var(--color-border-soft)] bg-[var(--color-trust-bg)] px-4 py-2.5 text-sm text-[var(--color-text-muted)] backdrop-blur',
+      'mt-10 inline-flex max-w-xl flex-wrap items-center gap-x-3 gap-y-2 rounded-[var(--radius-full)] border border-[var(--color-border-soft)] bg-[var(--color-trust-bg)] px-4 py-2.5 text-sm text-[var(--color-text-muted)] backdrop-blur',
     trustMark:
       'font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[var(--color-primary)]',
     mockupShell:

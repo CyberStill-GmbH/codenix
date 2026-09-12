@@ -134,7 +134,7 @@ export function ProblemsSection() {
       viewport={{ once: true, amount: 0.18 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
-      <SectionContainer className="py-24 lg:py-32">
+      <SectionContainer className="py-20 lg:py-28">
         <motion.div className="mx-auto mb-12 flex max-w-3xl flex-col items-center text-center" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}>
           <LandingBadge>
             Problems engine

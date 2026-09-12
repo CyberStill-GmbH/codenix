@@ -27,7 +27,7 @@ export function CtaSection() {
 
             <h2
               id="cta-title"
-              className="mt-5 max-w-2xl text-balance text-3xl font-black tracking-[-0.04em] text-[var(--color-text)] sm:text-5xl"
+              className="mt-5 max-w-xl text-balance text-3xl font-black tracking-[-0.04em] text-[var(--color-text)] sm:text-4xl"
             >
               Convierte la intención de practicar en una sesión real hoy.
             </h2>

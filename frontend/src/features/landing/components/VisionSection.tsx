@@ -45,7 +45,7 @@ export function VisionSection() {
   return (
     <motion.section
       id="vision"
-      className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-transparent py-24 sm:py-32"
+      className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-transparent py-20 sm:py-28"
       aria-labelledby="vision-title"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -62,7 +62,7 @@ export function VisionSection() {
         aria-hidden="true"
       />
       <SectionContainer className="flex flex-col items-center">
-        <div className="mb-16 flex max-w-3xl flex-col items-center text-center">
+        <div className="mb-12 flex max-w-3xl flex-col items-center text-center sm:mb-14">
           <LandingBadge>
             Visión del proyecto
           </LandingBadge>

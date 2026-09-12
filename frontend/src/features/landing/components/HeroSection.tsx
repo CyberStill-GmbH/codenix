@@ -15,7 +15,7 @@ export function HeroSection() {
       aria-labelledby="hero-title"
     >
       <HeroFogCanvas />
-      <SectionContainer className="relative py-12 sm:py-16 lg:py-24">
+      <SectionContainer className="relative py-16 sm:py-20 lg:py-28">
         <div className={landingTokens.hero.grid}>
           <div className={landingTokens.hero.copyColumn}>
             <HeroBadge>Iniciativa de IEEE Computer Society UNI</HeroBadge>
