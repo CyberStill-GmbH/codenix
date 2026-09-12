@@ -93,7 +93,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-3 md:flex">
           {navItems.map((item) => (
             <NavLink
               key={item.label}
@@ -105,7 +105,7 @@ export function Navbar() {
           <LegalNavDropdown currentPath={location.pathname} />
         </div>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-4 md:flex">
           <Link to="/login" className={cx(landingTokens.nav.cta, landingTokens.focus)}>
             Empezar
             <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
