@@ -117,9 +117,11 @@ export function ProfilePage() {
                 <UserCard as="section" className="h-full [&>div]:h-full">
                   <UserProgressPanel progress={profileData.progress} stats={profileData.stats} />
                 </UserCard>
-                <UserCard as="section" className="h-full [&>div]:h-full">
-                  <UserTopRanking stats={profileData.stats} />
-                </UserCard>
+                {profileData.stats.totalSubmissions > 0 && (
+                  <UserCard as="section" className="h-full [&>div]:h-full">
+                    <UserTopRanking stats={profileData.stats} />
+                  </UserCard>
+                )}
               </div>
             </PageSection>
             <PageSection delay={200}>
