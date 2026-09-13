@@ -16,7 +16,7 @@ export function SubmissionSummary({ submissions }: SubmissionSummaryProps) {
   const acceptance = submissions.length > 0 ? (accepted.length / submissions.length) * 100 : 0
 
   return (
-    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-lg)]">
+    <section className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
       <p className="text-sm font-semibold text-[var(--color-text-muted)]">Total resuelto</p>
       <div className="mt-4 flex items-end gap-2">
         <span className="font-mono text-4xl font-bold leading-none text-[var(--color-primary-hover)]">
@@ -43,7 +43,7 @@ export function SubmissionSummary({ submissions }: SubmissionSummaryProps) {
       <div className="mt-5 grid grid-cols-2 gap-3">
         <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4">
           <p className="text-sm text-[var(--color-text-muted)]">Envíos</p>
-          <p className="mt-3 font-mono text-3xl font-bold text-violet-400">{totalAttempts}</p>
+          <p className="mt-3 font-mono text-3xl font-bold text-[var(--color-primary)]">{totalAttempts}</p>
         </div>
         <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4">
           <p className="text-sm text-[var(--color-text-muted)]">Aceptación</p>

@@ -88,7 +88,7 @@ export function ProfilePage() {
     return (
       <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
         <AppNavbar />
-        <main className="mx-auto w-full grow px-3 pb-24 pt-3 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
+        <main id="main-content" className="mx-auto w-full grow px-3 pb-24 pt-3 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
           <ErrorState message="No pudimos cargar tu perfil autenticado." />
         </main>
       </div>
@@ -99,7 +99,7 @@ export function ProfilePage() {
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <AppNavbar />
 
-      <main className="mx-auto w-full grow px-3 pb-24 pt-3 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
+      <main id="main-content" className="mx-auto w-full grow px-3 pb-24 pt-3 md:max-w-[888px] md:p-6 lg:max-w-screen-xl">
         {isLoadingProfile && <SkeletonProfilePage />}
 
         {profileError && !isLoadingProfile && <ErrorState message={profileError} />}

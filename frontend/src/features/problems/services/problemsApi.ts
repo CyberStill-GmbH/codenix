@@ -108,7 +108,7 @@ const supportedLanguages: ProblemCodeLanguage[] = [
   'rust',
 ]
 
-export async function getProblems(query: ProblemsQuery): Promise<Problem[]> {
+export async function getProblems(query: ProblemsQuery, signal?: AbortSignal): Promise<Problem[]> {
   const params = new URLSearchParams({
     pageSize: '50',
     sort: mapProblemSort(query.sort),
@@ -119,7 +119,7 @@ export async function getProblems(query: ProblemsQuery): Promise<Problem[]> {
   if (difficulty) params.set('difficulty', difficulty)
   if (query.topic !== 'All Topics') params.set('topic', query.topic)
 
-  const response = await apiRequest<ProblemsResponse>(`/problems?${params.toString()}`)
+  const response = await apiRequest<ProblemsResponse>(`/problems?${params.toString()}`, { signal })
 
   return response.data.map(mapProblemListItem)
 }

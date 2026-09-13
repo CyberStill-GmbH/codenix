@@ -60,7 +60,7 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)]">
+    <section className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]">
       <div className="hidden grid-cols-[10rem_minmax(0,1fr)_10rem_8rem] border-b border-[var(--color-border-soft)] px-5 py-4 md:grid">
         {['Último envío', 'Problema', 'Último resultado', 'Envíos'].map((heading) => (
           <span
@@ -82,7 +82,7 @@ export function SubmissionHistoryTable({ submissions }: SubmissionHistoryTablePr
             <Link
               key={submission.id}
               to={`/problems/${problemSlug}?submission=${submission.id}`}
-              className={`grid w-full gap-3 rounded-xl px-4 py-4 text-left transition hover:bg-[var(--color-surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:grid-cols-[10rem_minmax(0,1fr)_10rem_8rem] md:items-center ${rowSurface}`}
+              className={`grid w-full gap-3 border-b border-[var(--color-border-soft)] px-4 py-4 text-left transition hover:bg-[var(--color-surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:grid-cols-[10rem_minmax(0,1fr)_10rem_8rem] md:items-center ${rowSurface}`}
             >
               <time
                 dateTime={submission.submittedAt}

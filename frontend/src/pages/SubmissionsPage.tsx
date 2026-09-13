@@ -113,7 +113,7 @@ export function SubmissionsPage() {
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <AppNavbar />
 
-      <main className="codenix-app-shell codenix-user-main">
+      <main id="main-content" className="codenix-app-shell codenix-user-main">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_30rem]">
           <div className="flex min-w-0 flex-col gap-5">
             <PageSection>

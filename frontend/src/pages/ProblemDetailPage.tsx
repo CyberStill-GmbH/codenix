@@ -77,6 +77,8 @@ function ProblemDetailContent() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const workspaceRef = useRef<CodeWorkspaceHandle>(null)
+  const descriptionTriggerRef = useRef<HTMLButtonElement>(null)
+  const descriptionCloseRef = useRef<HTMLButtonElement>(null)
   const [problem, setProblem] = useState<Problem | undefined>()
   const [problemCatalog, setProblemCatalog] = useState<Problem[]>([])
   const [isLoadingProblem, setIsLoadingProblem] = useState(true)
@@ -105,6 +107,29 @@ function ProblemDetailContent() {
   const { problemWidthPercent, isCollapsed, isFullscreen, setIsCollapsed } = useWorkspace()
   const [actionState, setActionState] =
     useState<CodeWorkspaceActionState>(initialActionState)
+
+  useEffect(() => {
+    if (!isMobile || !isDescriptionOpen) return
+
+    const previousActiveElement = document.activeElement as HTMLElement | null
+    const focusTimer = window.setTimeout(() => descriptionCloseRef.current?.focus(), 0)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setIsDescriptionOpen(false)
+        window.setTimeout(() => descriptionTriggerRef.current?.focus(), 0)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.clearTimeout(focusTimer)
+      document.removeEventListener('keydown', handleKeyDown)
+      if (previousActiveElement && document.contains(previousActiveElement)) {
+        previousActiveElement.focus()
+      }
+    }
+  }, [isDescriptionOpen, isMobile])
 
   useEffect(() => {
     if (!problemSlug) return
@@ -216,7 +241,7 @@ function ProblemDetailContent() {
     return (
       <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
         <AppNavbar />
-        <main className="codenix-app-shell codenix-user-main">
+        <main id="main-content" className="codenix-app-shell codenix-user-main">
           <EmptyState
             title={isLoadingProblem ? 'Loading problem' : 'Problem not found'}
             description={
@@ -247,7 +272,7 @@ function ProblemDetailContent() {
         onNavigateToRandomProblem={handleNavigateToRandomProblem}
       />
 
-      <main className="min-h-0 flex-1 px-3 pb-3 pt-0 md:px-4">
+      <main id="main-content" className="min-h-0 flex-1 px-3 pb-3 pt-0 md:px-4">
         {isMobile ? (
         <div className="flex h-full min-h-0 flex-col relative">
           <PageSection delay={100} className="min-h-0 flex-1 relative z-0 pb-16">
@@ -268,9 +293,12 @@ function ProblemDetailContent() {
           <div className="absolute bottom-4 left-0 right-0 flex justify-center z-20 pointer-events-none">
              <Button
                 variant="primary"
+                ref={descriptionTriggerRef}
                 onClick={() => setIsDescriptionOpen(true)}
                 className="rounded-full shadow-floating pointer-events-auto"
                 aria-label="Ver descripción"
+                aria-controls="problem-description-drawer"
+                aria-expanded={isDescriptionOpen}
              >
                 <ChevronUp className="w-4 h-4" />
                 Descripción del problema
@@ -279,15 +307,20 @@ function ProblemDetailContent() {
 
           {/* Bottom Sheet Drawer Content */}
           <div
+            id="problem-description-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="problem-description-title"
             className={`absolute inset-x-0 bottom-0 z-30 flex h-[85vh] flex-col bg-surface-elevated border-t border-border-soft rounded-t-2xl shadow-2xl transition-transform duration-300 ease-in-out ${
               isDescriptionOpen ? 'translate-y-0' : 'translate-y-full'
             }`}
           >
             <div className="flex items-center justify-between p-4 border-b border-border-soft shrink-0">
-               <h3 className="font-bold text-text-base">Descripción y casos de prueba</h3>
+               <h3 id="problem-description-title" className="font-bold text-text-base">Descripción y casos de prueba</h3>
                <Button
                  variant="ghost"
                  size="icon"
+                 ref={descriptionCloseRef}
                  onClick={() => setIsDescriptionOpen(false)}
                  aria-label="Cerrar descripción"
                  className="rounded-full"
@@ -344,7 +377,7 @@ function ProblemDetailContent() {
           >
             <PageSection className="h-full min-h-0 min-w-0 overflow-hidden">
               {isCollapsed ? (
-                <div className="flex h-full flex-col items-center border border-slate-700/50 bg-slate-950/60 py-4 shadow-[0_18px_50px_rgba(2,8,23,0.22)] rounded-xl">
+                <div className="flex h-full flex-col items-center rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] py-4 shadow-[var(--shadow-md)]">
                   <Button
                     variant="ghost"
                     size="icon"
