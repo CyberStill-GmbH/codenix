@@ -13,13 +13,13 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  const slugs = PROBLEM_CATALOG.map((problem) => problem.slug);
+  const numericIds = PROBLEM_CATALOG.map((problem) => problem.numericId);
   const problems = await prisma.problem.findMany({
-    where: { slug: { in: slugs } },
-    select: { id: true, slug: true }
+    where: { numericId: { in: numericIds } },
+    select: { id: true, numericId: true }
   });
   const problemIds = problems.map((problem) => problem.id);
-  const seeds = new Map(PROBLEM_CATALOG.map((problem) => [problem.slug, problem]));
+  const seeds = new Map(PROBLEM_CATALOG.map((problem) => [problem.numericId, problem]));
 
   await prisma.$transaction(async (tx) => {
     await tx.problemCodeTemplate.deleteMany({
@@ -27,7 +27,7 @@ async function main() {
     });
     await tx.problemCodeTemplate.createMany({
       data: problems.flatMap((problem) => {
-        const seed = seeds.get(problem.slug);
+        const seed = seeds.get(problem.numericId);
         if (!seed) return [];
         return SUPPORTED_JUDGE_LANGUAGES.map((language) => ({
           problemId: problem.id,
@@ -38,16 +38,17 @@ async function main() {
     });
 
     const rows = problems.flatMap((problem) => {
-      const seed = seeds.get(problem.slug);
+      const seed = seeds.get(problem.numericId);
       return seed ? [{ problem, seed }] : [];
     });
     const values = rows
       .map((_, index) => {
-        const offset = index * 9;
-        return `($${offset + 1}, $${offset + 2}, $${offset + 3}::\"ProblemDifficulty\", $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}::jsonb, $${offset + 9})`;
+        const offset = index * 10;
+        return `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}::\"ProblemDifficulty\", $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9}::jsonb, $${offset + 10})`;
       })
       .join(",");
     const parameters = rows.flatMap(({ seed }) => [
+      seed.numericId,
       seed.slug,
       seed.title,
       seed.difficulty,
@@ -60,7 +61,8 @@ async function main() {
     ]);
     await tx.$executeRawUnsafe(
       `UPDATE \"problems\" AS p
-       SET \"title\" = v.title,
+       SET \"slug\" = v.slug,
+           \"title\" = v.title,
            \"difficulty\" = v.difficulty,
            \"statement\" = v.statement,
            \"inputFormat\" = v.input_format,
@@ -68,8 +70,8 @@ async function main() {
            \"constraints\" = v.constraints,
            \"parameters\" = v.parameters,
            \"outputType\" = v.output_type
-       FROM (VALUES ${values}) AS v(slug, title, difficulty, statement, input_format, outputFormat, constraints, parameters, output_type)
-       WHERE p.\"slug\" = v.slug`,
+       FROM (VALUES ${values}) AS v(numeric_id, slug, title, difficulty, statement, input_format, output_format, constraints, parameters, output_type)
+       WHERE p.\"numericId\" = v.numeric_id`,
       ...parameters
     );
   });
