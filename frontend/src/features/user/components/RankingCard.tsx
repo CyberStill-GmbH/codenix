@@ -44,17 +44,12 @@ function RankingTooltip({ active, payload, totalUsers }: RankingTooltipProps) {
 
 export function RankingCard({
   rank,
-  bucket,
-  bucketRank,
-  bucketTotalUsers,
-  bucketPercentile,
   totalUsers,
   solvedProblems,
   distribution,
 }: RankingCardProps) {
   const userBucket = getBucketForSolvedCount(distribution, solvedProblems)
   const [hoveredBucket, setHoveredBucket] = useState<string | null>(null)
-  const topPercentage = bucketPercentile
   const focusedBucket = hoveredBucket ?? userBucket
   const focusedPoint = distribution.find((point) => point.bucket === focusedBucket)
   const focusedPercentage = focusedPoint && totalUsers > 0
@@ -64,10 +59,10 @@ export function RankingCard({
   return (
     <div className="flex h-full flex-col p-3.5">
       <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-        Ranking por problemas resueltos
+        Rating de práctica
       </p>
       <p className="mt-1.5 font-mono text-2xl font-bold leading-none text-[var(--color-accent)]">
-        Top {topPercentage.toFixed(1)}% en tu nivel
+        {solvedProblems.toLocaleString()} problemas resueltos
       </p>
       <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
         <span className="font-mono font-bold text-[var(--color-text)]">
@@ -76,7 +71,7 @@ export function RankingCard({
         de {totalUsers.toLocaleString()} usuarios
       </p>
       <p className="mt-1 text-xs text-[var(--color-text-subtle)]">
-        LeetCode separa este progreso del rating de concursos.
+        Tu rating aumenta al resolver problemas.
       </p>
 
       <div className="mt-3 min-h-[96px] flex-1" role="img" aria-label="Distribución de usuarios por problemas resueltos">
@@ -106,12 +101,12 @@ export function RankingCard({
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <span className={`${profilePillClassName} transition-colors duration-300`}>
           <span className={`h-2 w-2 rounded-sm transition-colors duration-300 ${hoveredBucket ? 'bg-[var(--color-border)]' : 'bg-[var(--color-accent)]'}`} />
-          {hoveredBucket ? `Nivel ${hoveredBucket}` : `Tu nivel ${bucket}`}
+          {hoveredBucket ? `Rango ${hoveredBucket} resueltos` : 'Distribución global'}
         </span>
         <span className={`${profilePillClassName} transition-all duration-300`}>
           {hoveredBucket && focusedPoint
-            ? `${focusedPoint.count.toLocaleString()} usuarios · ${focusedPercentage.toFixed(1)}% del total`
-            : `${bucketRank} de ${bucketTotalUsers} en tu nivel`
+            ? `${focusedPoint.count.toLocaleString()} usuarios · ${focusedPercentage.toFixed(1)}%`
+            : `#${rank.toLocaleString()} de ${totalUsers.toLocaleString()}`
           }
         </span>
       </div>
