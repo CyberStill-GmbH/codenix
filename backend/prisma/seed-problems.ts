@@ -181,14 +181,25 @@ async function unpublishInvalidLegacyProblems() {
   return invalidIds.length;
 }
 
+async function unpublishProblemsOutsideCatalog() {
+  const catalogSlugs = PROBLEM_CATALOG.map((problem) => problem.slug);
+  const result = await prisma.problem.updateMany({
+    where: { slug: { notIn: catalogSlugs } },
+    data: { status: "draft" }
+  });
+
+  return result.count;
+}
+
 async function main() {
   for (const problem of PROBLEM_CATALOG) {
     await seedProblem(problem);
   }
 
+  const legacyCount = await unpublishProblemsOutsideCatalog();
   const unpublishedCount = await unpublishInvalidLegacyProblems();
   console.log(
-    `Seeded ${PROBLEM_CATALOG.length} complete problems; unpublished ${unpublishedCount} invalid legacy problems.`
+    `Seeded ${PROBLEM_CATALOG.length} complete problems; unpublished ${legacyCount} outside-catalog and ${unpublishedCount} invalid legacy problems.`
   );
 }
 
