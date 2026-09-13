@@ -71,7 +71,7 @@ async function main() {
            \"parameters\" = v.parameters,
            \"outputType\" = v.output_type
        FROM (VALUES ${values}) AS v(numeric_id, slug, title, difficulty, statement, input_format, output_format, constraints, parameters, output_type)
-       WHERE p.\"numericId\" = v.numeric_id`,
+       WHERE p.\"numericId\" = v.numeric_id::int`,
       ...parameters
     );
   });
