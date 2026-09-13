@@ -15,6 +15,10 @@ import type {
   CreateSubmissionRequestInput,
 } from "./problems.schema";
 import { judgeProducer } from "../judge/queue/producer";
+import {
+  validateSolutionSource,
+  wrapSolutionSource,
+} from "../judge/solution-wrapper";
 import { redisCache } from "../../shared/cache/redis-cache";
 
 type ProblemListResponse = {
@@ -271,6 +275,11 @@ export const problemService = {
   },
 
   async runCode(identifier: string, data: RunCodeRequestInput, userId: string) {
+    const sourceError = validateSolutionSource(data.language, data.sourceCode);
+    if (sourceError) {
+      throw new AppError(422, "INVALID_SOLUTION_SHAPE", sourceError);
+    }
+
     const problem = await prisma.problem.findFirst({
       where: {
         OR: [{ id: identifier }, { slug: identifier }],
@@ -339,7 +348,7 @@ export const problemService = {
       runId: run.id,
       problemId: problem.id,
       language: data.language,
-      sourceCode: data.sourceCode,
+      sourceCode: wrapSolutionSource(data.language, data.sourceCode),
       testcases: selectedTestcases,
       timeLimitMs: problem.timeLimitMs,
       memoryLimitMb: problem.memoryLimitMb,
@@ -370,6 +379,11 @@ export const problemService = {
     data: CreateSubmissionRequestInput,
     userId: string,
   ) {
+    const sourceError = validateSolutionSource(data.language, data.sourceCode);
+    if (sourceError) {
+      throw new AppError(422, "INVALID_SOLUTION_SHAPE", sourceError);
+    }
+
     const problem = await prisma.problem.findFirst({
       where: {
         OR: [{ id: identifier }, { slug: identifier }],
@@ -417,7 +431,7 @@ export const problemService = {
       submissionId: submission.id,
       problemId: problem.id,
       language: data.language,
-      sourceCode: data.sourceCode,
+      sourceCode: wrapSolutionSource(data.language, data.sourceCode),
       testcases: problem.testcases.map((tc) => ({
         id: tc.id,
         input: tc.input,

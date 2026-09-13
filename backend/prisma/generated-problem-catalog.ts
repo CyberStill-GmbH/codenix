@@ -4,11 +4,11 @@ import type { ProblemSeed } from "./problem-catalog";
 type JsonValue = Record<string, unknown>;
 
 const STARTER_CODE: Record<SupportedJudgeLanguage, string> = {
-  python: `import json\nimport sys\n\ndef solve(data):\n    # Implementa la funcion para este problema.\n    return None\n\ndata = json.loads(sys.stdin.read())\nprint(json.dumps(solve(data), separators=(",", ":")))\n`,
-  javascript: `const fs = require("fs");\n\nfunction solve(data) {\n  // Implementa la funcion para este problema.\n  return null;\n}\n\nconst data = JSON.parse(fs.readFileSync(0, "utf8"));\nconsole.log(JSON.stringify(solve(data)));\n`,
-  typescript: `declare const require: (name: string) => any;\nconst fs = require("fs");\n\nfunction solve(data: Record<string, unknown>): unknown {\n  // Implementa la funcion para este problema.\n  return null;\n}\n\nconst data = JSON.parse(fs.readFileSync(0, "utf8"));\nconsole.log(JSON.stringify(solve(data)));\n`,
-  c: `#include <stdio.h>\n\nint main(void) {\n  /* Lee el JSON de stdin e implementa la solucion. */\n  return 0;\n}\n`,
-  rust: `use std::io::{self, Read};\n\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_to_string(&mut input).unwrap();\n    // Implementa la solucion usando el JSON recibido.\n}\n`
+  python: `def solve(data):\n    # Implementa la funcion para este problema.\n    return None\n`,
+  javascript: `function solve(data) {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
+  typescript: `function solve(data: Record<string, unknown>): unknown {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
+  c: `#include <stddef.h>\n\nvoid solve(const char *input) {\n  (void)input;\n  /* Implementa la funcion para este problema. */\n}\n`,
+  rust: `fn solve(input: &str) {\n    let _ = input;\n    // Implementa la funcion para este problema.\n}\n`
 };
 
 type Case = { data: JsonValue; expected: unknown };
