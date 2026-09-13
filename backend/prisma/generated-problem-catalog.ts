@@ -9,7 +9,22 @@ const typeFor = (value: unknown) => {
   return "number";
 };
 
-function createStarterCode(data: JsonValue): Record<SupportedJudgeLanguage, string> {
+const rustTypeFor = (value: unknown) => {
+  const type = typeFor(value);
+  if (type === "number[]") return "Vec<i32>";
+  if (type === "number[][]") return "Vec<Vec<i32>>";
+  if (type === "string") return "String";
+  return "i32";
+};
+
+const rustReturnValueFor = (outputType: string) => {
+  if (outputType === "number[]" || outputType === "number[][]") return "Vec::new()";
+  if (outputType === "string") return "String::new()";
+  if (outputType === "boolean") return "false";
+  return "0";
+};
+
+function createStarterCode(data: JsonValue, outputType: string): Record<SupportedJudgeLanguage, string> {
   const names = Object.keys(data);
   const pythonArgs = names.map((name) => `${name}`).join(", ");
   const jsArgs = names.join(", ");
@@ -19,7 +34,7 @@ function createStarterCode(data: JsonValue): Record<SupportedJudgeLanguage, stri
   javascript: `function solve(${jsArgs}) {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
   typescript: `function solve(${tsArgs}): unknown {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
   c: `#include <stddef.h>\n\nvoid solve(const char *input) {\n  (void)input;\n  /* Implementa la funcion para este problema. */\n}\n`,
-  rust: `fn solve(input: &str) {\n    let _ = input;\n    // Implementa la funcion para este problema.\n}\n`
+  rust: `fn solve(${names.map((name) => `${name}: ${rustTypeFor(data[name])}`).join(", ")}) -> ${outputType === "number[]" ? "Vec<i32>" : outputType === "number[][]" ? "Vec<Vec<i32>>" : outputType === "string" ? "String" : outputType === "boolean" ? "bool" : "i32"} {\n    // Implementa la funcion para este problema.\n    ${names.length ? `let _ = (${names.join(", ")});` : ""}\n    ${rustReturnValueFor(outputType)}\n}\n`
   };
 }
 
@@ -372,7 +387,7 @@ function buildProblem(operation: Operation, index: number): ProblemSeed {
       expectedOutput: JSON.stringify(testcase.expected),
       visibility: caseIndex < 2 ? "sample" : "hidden"
     })),
-    starterCode: createStarterCode(cases[0]?.data ?? {})
+    starterCode: createStarterCode(cases[0]?.data ?? {}, operation.output)
   };
 }
 

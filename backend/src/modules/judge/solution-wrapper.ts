@@ -40,31 +40,95 @@ int main(void) {
 }
 `;
 
-const RUST_WRAPPER = `
+function rustType(type: string) {
+  if (type === "number[]") return "Vec<i32>";
+  if (type === "number[][]") return "Vec<Vec<i32>>";
+  if (type === "string") return "String";
+  return "i32";
+}
 
-// Codenix runtime adapter. solve receives the serialized test input.
+function rustParser(type: string, name: string) {
+  const field = `__codenix_field(&input, ${JSON.stringify(name)})`;
+  if (type === "number[]") return `__codenix_vec_i32(&${field})`;
+  if (type === "number[][]") return `__codenix_vec_vec_i32(&${field})`;
+  if (type === "string") return `__codenix_string(&${field})`;
+  return `__codenix_i32(&${field})`;
+}
+
+function rustPrinter(outputType: string) {
+  if (outputType === "string") return `println!("{:?}", result);`;
+  return `println!("{:?}", result);`;
+}
+
+function buildRustWrapper(
+  parameters: Array<{ name: string; type: string }>,
+  outputType: string,
+) {
+  const args = parameters.map((parameter) => rustParser(parameter.type, parameter.name)).join(", ");
+  const helpers = `
+fn __codenix_field(input: &str, key: &str) -> String {
+    let needle = format!("\\\"{}\\\"", key);
+    let start = input.find(&needle).unwrap_or(0) + needle.len();
+    let rest = input[start..].trim_start_matches(|c: char| c == ':' || c.is_whitespace());
+    if rest.starts_with('[') {
+        let mut depth = 0;
+        for (index, character) in rest.char_indices() {
+            if character == '[' { depth += 1; }
+            if character == ']' { depth -= 1; if depth == 0 { return rest[..=index].to_string(); } }
+        }
+    }
+    if rest.starts_with('\\\"') {
+        if let Some(end) = rest[1..].find('\\\"') { return rest[..end + 2].to_string(); }
+    }
+    rest.split(',').next().unwrap_or(rest).trim().trim_end_matches('}').to_string()
+}
+
+fn __codenix_i32(value: &str) -> i32 { value.trim().parse().unwrap_or_default() }
+fn __codenix_string(value: &str) -> String { value.trim().trim_matches('\\\"').replace("\\\\\\\"", "\\\"") }
+fn __codenix_vec_i32(value: &str) -> Vec<i32> {
+    value.trim().trim_start_matches('[').trim_end_matches(']').split(',')
+        .filter_map(|item| item.trim().parse::<i32>().ok()).collect()
+}
+fn __codenix_vec_vec_i32(value: &str) -> Vec<Vec<i32>> {
+    let mut rows = Vec::new();
+    let mut depth = 0;
+    let mut start = 0;
+    let trimmed = value.trim();
+    for (index, character) in trimmed.char_indices() {
+        if character == '[' { depth += 1; if depth == 2 { start = index; } }
+        if character == ']' { depth -= 1; if depth == 1 { rows.push(__codenix_vec_i32(&trimmed[start..=index])); } }
+    }
+    rows
+}
+`;
+  return `${helpers}
 fn main() {
     use std::io::{self, Read};
     let mut input = String::new();
     io::stdin().read_to_string(&mut input).unwrap();
-    solve(&input);
+    let result = solve(${args});
+    ${rustPrinter(outputType)}
 }
 `;
+}
 
 export function wrapSolutionSource(
   language: SupportedJudgeLanguage,
   sourceCode: string,
   parameters: unknown,
+  outputType = "number",
 ) {
-  const names = Array.isArray(parameters)
+  const parameterDefinitions = Array.isArray(parameters)
     ? parameters.flatMap((parameter) => {
         if (!parameter || typeof parameter !== "object") return [];
         const name = (parameter as { name?: unknown }).name;
+        const type = (parameter as { type?: unknown }).type;
         return typeof name === "string" && /^[A-Za-z_$][\w$]*$/.test(name)
-          ? [name]
+          ? [{ name, type: typeof type === "string" ? type : "number" }]
           : [];
       })
     : [];
+  const names = parameterDefinitions.map((parameter) => parameter.name);
   const args = names.map((name) => `__codenix_data[${JSON.stringify(name)}]`).join(", ");
   if (language === "python") {
     return `${sourceCode}${PYTHON_WRAPPER.replace("solve(__codenix_data)", `solve(${names.map((name) => `__codenix_data[${JSON.stringify(name)}]`).join(", ")})`)}`;
@@ -76,7 +140,7 @@ export function wrapSolutionSource(
     return `${sourceCode}${TYPESCRIPT_WRAPPER.replace("solve(__codenix_data)", `solve(${args})`)}`;
   }
   if (language === "c") return `${sourceCode}${C_WRAPPER}`;
-  return `${sourceCode}${RUST_WRAPPER}`;
+  return `${sourceCode}${buildRustWrapper(parameterDefinitions, outputType)}`;
 }
 
 export function validateSolutionSource(
