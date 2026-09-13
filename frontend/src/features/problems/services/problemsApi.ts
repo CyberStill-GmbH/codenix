@@ -12,6 +12,15 @@ type ProblemsQuery = {
   difficulty: Difficulty | 'All'
   topic: string
   sort: ProblemSort
+  page?: number
+  pageSize?: number
+}
+
+export type ProblemsPage = {
+  problems: Problem[]
+  total: number
+  totalPages: number
+  page: number
 }
 
 type BackendProblemListItem = {
@@ -108,9 +117,10 @@ const supportedLanguages: ProblemCodeLanguage[] = [
   'rust',
 ]
 
-export async function getProblems(query: ProblemsQuery, signal?: AbortSignal): Promise<Problem[]> {
+export async function getProblems(query: ProblemsQuery, signal?: AbortSignal): Promise<ProblemsPage> {
   const params = new URLSearchParams({
-    pageSize: '50',
+    page: String(query.page ?? 1),
+    pageSize: String(query.pageSize ?? 20),
     sort: mapProblemSort(query.sort),
   })
   const difficulty = difficultyQueryByLabel[query.difficulty]
@@ -121,7 +131,12 @@ export async function getProblems(query: ProblemsQuery, signal?: AbortSignal): P
 
   const response = await apiRequest<ProblemsResponse>(`/problems?${params.toString()}`, { signal })
 
-  return response.data.map(mapProblemListItem)
+  return {
+    problems: response.data.map(mapProblemListItem),
+    total: response.meta.total,
+    totalPages: response.meta.totalPages,
+    page: response.meta.page,
+  }
 }
 
 export async function getProblemBySlug(slug: string): Promise<Problem | undefined> {

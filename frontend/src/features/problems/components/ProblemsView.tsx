@@ -1,5 +1,6 @@
 import { BookOpen, CheckCircle2, ChevronRight, ListChecks, Target } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import type { RefObject } from 'react'
 
 import { DifficultySelector } from '@/features/problems/components/DifficultySelector'
 import { ProblemTable } from '@/features/problems/components/ProblemTable'
@@ -19,6 +20,10 @@ import { t } from '@/features/problems/utils/problemsI18n'
 type ProblemsViewProps = {
   problems: Problem[]
   allProblems: Problem[]
+  totalAvailable: number
+  hasMore: boolean
+  isLoadingMore: boolean
+  loadMoreRef: RefObject<HTMLDivElement | null>
   topics: string[]
   query: string
   selectedTopic: string
@@ -37,6 +42,10 @@ type ProblemsViewProps = {
 export function ProblemsView({
   problems,
   allProblems,
+  totalAvailable,
+  hasMore,
+  isLoadingMore,
+  loadMoreRef,
   topics,
   query,
   selectedTopic,
@@ -52,7 +61,7 @@ export function ProblemsView({
   onSortChange,
 }: ProblemsViewProps) {
   const solvedCount = allProblems.filter((problem) => problem.solved).length
-  const totalCount = allProblems.length
+  const totalCount = totalAvailable || allProblems.length
   const mediumAndHard = allProblems.filter((problem) => problem.difficulty !== 'Easy').length
 
   if (isLoading && allProblems.length === 0 && !error) {
@@ -166,6 +175,10 @@ export function ProblemsView({
       {!error && (
         <div className={`transition-opacity duration-200 ${isLoading ? 'opacity-70' : 'opacity-100'}`}>
           <ProblemTable problems={problems} />
+          <div ref={loadMoreRef} className="flex min-h-14 items-center justify-center py-4" aria-live="polite">
+            {isLoadingMore && <span className="text-xs font-semibold text-[var(--color-text-muted)]">Cargando más problemas…</span>}
+            {!hasMore && allProblems.length > 0 && <span className="text-xs text-[var(--color-text-subtle)]">Has llegado al final de la biblioteca.</span>}
+          </div>
         </div>
       )}
       </div>
