@@ -31,28 +31,28 @@ export type ProblemSeed = {
 };
 
 const twoSumStarterCode: ProblemSeed["starterCode"] = {
-  python: `def solve(nums, target):
+  python: `def twoSum(nums, target):
     # Escribe tu solucion aqui.
     return []
 `,
-  javascript: `function solve(nums, target) {
+  javascript: `function twoSum(nums, target) {
   // Escribe tu solucion aqui.
   return [];
 }
 `,
-  typescript: `function solve(data: { nums: number[]; target: number }): number[] {
+  typescript: `function twoSum(nums: number[], target: number): number[] {
   // Escribe tu solucion aqui.
   return [];
 }
 `,
   c: `#include <stddef.h>
 
-void solve(const char *input) {
+void twoSum(const char *input) {
   (void)input;
   /* Escribe tu solucion aqui. */
 }
 `,
-  rust: `fn solve(nums: Vec<i32>, target: i32) -> Vec<i32> {
+  rust: `fn twoSum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     // Escribe tu solucion aqui.
     Vec::new()
 }
@@ -60,28 +60,28 @@ void solve(const char *input) {
 };
 
 const validParenthesesStarterCode: ProblemSeed["starterCode"] = {
-  python: `def solve(s):
+  python: `def validParentheses(s):
     # Escribe tu solucion aqui.
     return False
 `,
-  javascript: `function solve(s) {
+  javascript: `function validParentheses(s) {
   // Escribe tu solucion aqui.
   return false;
 }
 `,
-  typescript: `function solve(data: { s: string }): boolean {
+  typescript: `function validParentheses(s: string): boolean {
   // Escribe tu solucion aqui.
   return false;
 }
 `,
   c: `#include <stddef.h>
 
-void solve(const char *input) {
+void validParentheses(const char *input) {
   (void)input;
   /* Escribe tu solucion aqui. */
 }
 `,
-  rust: `fn solve(s: String) -> bool {
+  rust: `fn validParentheses(s: String) -> bool {
     // Escribe tu solucion aqui.
     false
 }
