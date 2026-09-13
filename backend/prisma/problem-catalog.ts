@@ -47,9 +47,11 @@ const twoSumStarterCode: ProblemSeed["starterCode"] = {
 `,
   c: `#include <stddef.h>
 
-void twoSum(const char *input) {
-  (void)input;
+int *twoSum(const int *nums, size_t numsSize, int target, size_t *returnSize) {
+  (void)nums; (void)numsSize; (void)target;
   /* Escribe tu solucion aqui. */
+  *returnSize = 0;
+  return NULL;
 }
 `,
   rust: `fn twoSum(nums: Vec<i32>, target: i32) -> Vec<i32> {
@@ -76,9 +78,10 @@ const validParenthesesStarterCode: ProblemSeed["starterCode"] = {
 `,
   c: `#include <stddef.h>
 
-void validParentheses(const char *input) {
-  (void)input;
+int validParentheses(const char *s) {
+  (void)s;
   /* Escribe tu solucion aqui. */
+  return 0;
 }
 `,
   rust: `fn validParentheses(s: String) -> bool {

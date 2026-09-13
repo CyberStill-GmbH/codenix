@@ -25,6 +25,20 @@ const rustReturnValueFor = (outputType: string) => {
   return "0";
 };
 
+const cParameterFor = (name: string, value: unknown) => {
+  const type = typeFor(value);
+  if (type === "number[]") return `const int *${name}, size_t ${name}Size`;
+  if (type === "number[][]") return `const int *${name}, size_t ${name}Rows, size_t ${name}Cols`;
+  if (type === "string") return `const char *${name}`;
+  return `int ${name}`;
+};
+
+const cReturnTypeFor = (outputType: string) => {
+  if (outputType === "number[]" || outputType === "number[][]") return "int *";
+  if (outputType === "string") return "const char *";
+  return "int";
+};
+
 function createStarterCode(data: JsonValue, outputType: string, functionName: string): Record<SupportedJudgeLanguage, string> {
   const names = Object.keys(data);
   const pythonArgs = names.map((name) => `${name}`).join(", ");
@@ -34,7 +48,7 @@ function createStarterCode(data: JsonValue, outputType: string, functionName: st
   python: `def ${functionName}(${pythonArgs}):\n    # Implementa la funcion para este problema.\n    return None\n`,
   javascript: `function ${functionName}(${jsArgs}) {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
   typescript: `function ${functionName}(${tsArgs}): unknown {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
-  c: `#include <stddef.h>\n\nvoid ${functionName}(const char *input) {\n  (void)input;\n  /* Implementa la funcion para este problema. */\n}\n`,
+  c: `#include <stddef.h>\n\n${cReturnTypeFor(outputType)}${functionName}(${names.map((name) => cParameterFor(name, data[name])).join(", ")}${outputType === "number[]" || outputType === "number[][]" ? `${names.length ? ", " : ""}size_t *returnSize` : ""}) {\n  /* Implementa la funcion para este problema. */\n  ${outputType === "number[]" || outputType === "number[][]" ? "*returnSize = 0;" : ""}\n  return ${outputType === "string" ? "\"\"" : outputType === "number[]" || outputType === "number[][]" ? "NULL" : "0"};\n}\n`,
   rust: `fn ${functionName}(${names.map((name) => `${name}: ${rustTypeFor(data[name])}`).join(", ")}) -> ${outputType === "number[]" ? "Vec<i32>" : outputType === "number[][]" ? "Vec<Vec<i32>>" : outputType === "string" ? "String" : outputType === "boolean" ? "bool" : "i32"} {\n    // Implementa la funcion para este problema.\n    ${rustReturnValueFor(outputType)}\n}\n`
   };
 }
