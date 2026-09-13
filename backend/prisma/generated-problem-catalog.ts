@@ -34,7 +34,7 @@ function createStarterCode(data: JsonValue, outputType: string): Record<Supporte
   javascript: `function solve(${jsArgs}) {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
   typescript: `function solve(${tsArgs}): unknown {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
   c: `#include <stddef.h>\n\nvoid solve(const char *input) {\n  (void)input;\n  /* Implementa la funcion para este problema. */\n}\n`,
-  rust: `fn solve(${names.map((name) => `${name}: ${rustTypeFor(data[name])}`).join(", ")}) -> ${outputType === "number[]" ? "Vec<i32>" : outputType === "number[][]" ? "Vec<Vec<i32>>" : outputType === "string" ? "String" : outputType === "boolean" ? "bool" : "i32"} {\n    // Implementa la funcion para este problema.\n    ${names.length ? `let _ = (${names.join(", ")});` : ""}\n    ${rustReturnValueFor(outputType)}\n}\n`
+  rust: `fn solve(${names.map((name) => `${name}: ${rustTypeFor(data[name])}`).join(", ")}) -> ${outputType === "number[]" ? "Vec<i32>" : outputType === "number[][]" ? "Vec<Vec<i32>>" : outputType === "string" ? "String" : outputType === "boolean" ? "bool" : "i32"} {\n    // Implementa la funcion para este problema.\n    ${rustReturnValueFor(outputType)}\n}\n`
   };
 }
 

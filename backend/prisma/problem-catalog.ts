@@ -54,7 +54,6 @@ void solve(const char *input) {
 `,
   rust: `fn solve(nums: Vec<i32>, target: i32) -> Vec<i32> {
     // Escribe tu solucion aqui.
-    let _ = (nums, target);
     Vec::new()
 }
 `
@@ -84,7 +83,6 @@ void solve(const char *input) {
 `,
   rust: `fn solve(s: String) -> bool {
     // Escribe tu solucion aqui.
-    let _ = s;
     false
 }
 `
