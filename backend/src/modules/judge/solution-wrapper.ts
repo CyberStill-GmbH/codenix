@@ -28,17 +28,65 @@ const __codenix_result = solve(__codenix_data);
 console.log(JSON.stringify(__codenix_result));
 `;
 
-const C_WRAPPER = `
+function cArgumentNames(parameters: Array<{ name: string; type: string }>) {
+  return parameters.flatMap((parameter) => {
+    if (parameter.type === "number[]") return [parameter.name, `${parameter.name}Size`];
+    if (parameter.type === "number[][]") return [parameter.name, `${parameter.name}Rows`, `${parameter.name}Cols`];
+    return [parameter.name];
+  });
+}
 
-/* Codenix runtime adapter. solve receives the serialized test input. */
+function buildCWrapper(
+  functionName: string,
+  parameters: Array<{ name: string; type: string }>,
+  outputType: string,
+) {
+  const declarations = parameters.map((parameter) => {
+    if (parameter.type === "number[]" || parameter.type === "number[][]") {
+      const shape = parameter.type === "number[][]" ? `size_t ${parameter.name}Rows = 0, ${parameter.name}Cols = 0;` : `size_t ${parameter.name}Size = 0;`;
+      return `int ${parameter.name}[4096]; ${shape} __codenix_parse_array(input, "${parameter.name}", ${parameter.name}, &${parameter.name}${parameter.type === "number[][]" ? "Rows" : "Size"}, ${parameter.type === "number[][]" ? `&${parameter.name}Cols` : "NULL"});`;
+    }
+    if (parameter.type === "string") return `char ${parameter.name}[4096]; __codenix_parse_string(input, "${parameter.name}", ${parameter.name}, sizeof(${parameter.name}));`;
+    return `int ${parameter.name} = __codenix_parse_int(input, "${parameter.name}");`;
+  }).join("\n    ");
+  const args = cArgumentNames(parameters).join(", ");
+  const call = outputType === "number[]" || outputType === "number[][]"
+    ? `size_t returnSize = 0; int *result = ${functionName}(${args}${args ? ", " : ""}&returnSize); for (size_t i = 0; i < returnSize; i++) printf("%s%d", i ? "," : "", result[i]); printf("\\n");`
+    : outputType === "string"
+      ? `printf("%s\\n", ${functionName}(${args}));`
+      : `printf("%d\\n", ${functionName}(${args}));`;
+  return `
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static const char *__codenix_value(const char *input, const char *key) {
+    static char needle[128];
+    snprintf(needle, sizeof(needle), "\\\"%s\\\"", key);
+    const char *found = strstr(input, needle);
+    if (!found) return "0";
+    found = strchr(found + strlen(needle), ':');
+    return found ? found + 1 : "0";
+}
+static int __codenix_parse_int(const char *input, const char *key) { return (int)strtol(__codenix_value(input, key), NULL, 10); }
+static void __codenix_parse_string(const char *input, const char *key, char *out, size_t capacity) {
+    const char *value = __codenix_value(input, key); while (*value && (*value == ' ' || *value == '\\"')) value++;
+    size_t i = 0; while (value[i] && value[i] != '\\"' && value[i] != '}' && i + 1 < capacity) { out[i] = value[i]; i++; } out[i] = '\\0';
+}
+static void __codenix_parse_array(const char *input, const char *key, int *out, size_t *size, size_t *cols) {
+    const char *value = __codenix_value(input, key); while (*value && *value != '[') value++; if (!*value) { *size = 0; return; }
+    size_t count = 0, depth = 0, currentCols = 0; int inNumber = 0; long number = 0;
+    for (; *value && count < 4096; value++) { if (*value == '[') { depth++; if (depth == 2) currentCols = 0; } else if (*value == ']') { if (depth == 2 && cols && currentCols > *cols) *cols = currentCols; if (depth) depth--; } else if ((*value >= '0' && *value <= '9') || *value == '-') { if (!inNumber) { number = strtol(value, (char **)&value, 10); out[count++] = (int)number; inNumber = 1; currentCols++; value--; } } else { inNumber = 0; } }
+    *size = count; if (cols && *cols == 0) *cols = count;
+}
 int main(void) {
-  char input[65536];
-  size_t length = fread(input, 1, sizeof(input) - 1, stdin);
-  input[length] = '\\0';
-  solve(input);
-  return 0;
+    char input[65536]; size_t length = fread(input, 1, sizeof(input) - 1, stdin); input[length] = '\\0';
+    ${declarations}
+    ${call}
+    return 0;
 }
 `;
+}
 
 function rustType(type: string) {
   if (type === "number[]") return "Vec<i32>";
@@ -141,7 +189,7 @@ export function wrapSolutionSource(
   if (language === "typescript") {
     return `${sourceCode}${TYPESCRIPT_WRAPPER.replace("solve(__codenix_data)", `${functionName}(${args})`)}`;
   }
-  if (language === "c") return `${sourceCode}${C_WRAPPER.replace("solve(input)", `${functionName}(input)`)}`;
+  if (language === "c") return `${sourceCode}${buildCWrapper(functionName, parameterDefinitions, outputType)}`;
   return `${sourceCode}${buildRustWrapper(functionName, parameterDefinitions, outputType)}`;
 }
 
