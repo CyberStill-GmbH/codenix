@@ -159,7 +159,7 @@ export function ProblemsSection() {
         <motion.div className="mb-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 border-y border-[var(--color-border-soft)] py-3 font-mono text-[0.6875rem] text-[var(--color-text-muted)]" initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: 0.1, duration: 0.3, ease: 'easeOut' }}>
           <span><AnimatedMetric value={68.3} decimals={1} suffix="%" /> aceptación</span>
           <span><AnimatedMetric value={2841} suffix="" /> envíos simulados</span>
-          <span><AnimatedMetric value={800} suffix="" /> rating estimado</span>
+          <span><AnimatedMetric value={5} suffix="" /> lenguajes disponibles</span>
         </motion.div>
 
         <div>
@@ -390,7 +390,7 @@ export function ProblemsSection() {
               <div className="flex flex-wrap items-center gap-3 border-t border-white/[0.07] bg-[rgba(7,11,20,0.78)] px-4 py-3">
                 <StatusPill icon={<CheckCircle2 className="h-3.5 w-3.5" />} label="Aceptación 68.3%" />
                 <StatusPill icon={<ListChecks className="h-3.5 w-3.5" />} label="2 841 envíos" />
-                <StatusPill icon={<Trophy className="h-3.5 w-3.5" />} label="Rating estimado: 800" />
+                              <StatusPill icon={<Trophy className="h-3.5 w-3.5" />} label="Progreso por problemas" />
               </div>
             </motion.div>
           </div>

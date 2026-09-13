@@ -44,7 +44,6 @@ function RankingTooltip({ active, payload, totalUsers }: RankingTooltipProps) {
 
 export function RankingCard({
   rank,
-  percentile: _percentile,
   bucket,
   bucketRank,
   bucketTotalUsers,
@@ -65,7 +64,7 @@ export function RankingCard({
   return (
     <div className="flex h-full flex-col p-3.5">
       <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-        Ranking global
+        Ranking por problemas resueltos
       </p>
       <p className="mt-1.5 font-mono text-2xl font-bold leading-none text-[var(--color-accent)]">
         Top {topPercentage.toFixed(1)}% en tu nivel
@@ -77,7 +76,7 @@ export function RankingCard({
         de {totalUsers.toLocaleString()} usuarios
       </p>
       <p className="mt-1 text-xs text-[var(--color-text-subtle)]">
-        por problemas resueltos
+        LeetCode separa este progreso del rating de concursos.
       </p>
 
       <div className="mt-3 min-h-[96px] flex-1" role="img" aria-label="Distribución de usuarios por problemas resueltos">
