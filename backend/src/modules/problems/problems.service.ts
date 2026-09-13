@@ -289,6 +289,7 @@ export const problemService = {
         codeTemplates: {
           select: { language: true },
         },
+        parameters: true,
         testcases: {
           where: {
             visibility: "sample",
@@ -348,7 +349,7 @@ export const problemService = {
       runId: run.id,
       problemId: problem.id,
       language: data.language,
-      sourceCode: wrapSolutionSource(data.language, data.sourceCode),
+      sourceCode: wrapSolutionSource(data.language, data.sourceCode, problem.parameters),
       testcases: selectedTestcases,
       timeLimitMs: problem.timeLimitMs,
       memoryLimitMb: problem.memoryLimitMb,
@@ -393,6 +394,7 @@ export const problemService = {
         codeTemplates: {
           select: { language: true },
         },
+        parameters: true,
         testcases: true,
       },
     });
@@ -431,7 +433,7 @@ export const problemService = {
       submissionId: submission.id,
       problemId: problem.id,
       language: data.language,
-      sourceCode: wrapSolutionSource(data.language, data.sourceCode),
+      sourceCode: wrapSolutionSource(data.language, data.sourceCode, problem.parameters),
       testcases: problem.testcases.map((tc) => ({
         id: tc.id,
         input: tc.input,
