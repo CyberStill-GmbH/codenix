@@ -36,6 +36,42 @@ async function main() {
         }));
       })
     });
+
+    const rows = problems.flatMap((problem) => {
+      const seed = seeds.get(problem.slug);
+      return seed ? [{ problem, seed }] : [];
+    });
+    const values = rows
+      .map((_, index) => {
+        const offset = index * 9;
+        return `($${offset + 1}, $${offset + 2}, $${offset + 3}::\"ProblemDifficulty\", $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}::jsonb, $${offset + 9})`;
+      })
+      .join(",");
+    const parameters = rows.flatMap(({ seed }) => [
+      seed.slug,
+      seed.title,
+      seed.difficulty,
+      seed.statement,
+      seed.inputFormat,
+      seed.outputFormat,
+      seed.constraints,
+      JSON.stringify(seed.parameters),
+      seed.outputType
+    ]);
+    await tx.$executeRawUnsafe(
+      `UPDATE \"problems\" AS p
+       SET \"title\" = v.title,
+           \"difficulty\" = v.difficulty,
+           \"statement\" = v.statement,
+           \"inputFormat\" = v.input_format,
+           \"outputFormat\" = v.output_format,
+           \"constraints\" = v.constraints,
+           \"parameters\" = v.parameters,
+           \"outputType\" = v.output_type
+       FROM (VALUES ${values}) AS v(slug, title, difficulty, statement, input_format, outputFormat, constraints, parameters, output_type)
+       WHERE p.\"slug\" = v.slug`,
+      ...parameters
+    );
   });
 
   console.log(`Synchronized templates for ${problems.length} catalog problems.`);
