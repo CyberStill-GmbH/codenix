@@ -31,11 +31,11 @@ export type ProblemSeed = {
 };
 
 const twoSumStarterCode: ProblemSeed["starterCode"] = {
-  python: `def solve(data):
+  python: `def solve(nums, target):
     # Escribe tu solucion aqui.
     return []
 `,
-  javascript: `function solve(data) {
+  javascript: `function solve(nums, target) {
   // Escribe tu solucion aqui.
   return [];
 }
@@ -52,19 +52,20 @@ void solve(const char *input) {
   /* Escribe tu solucion aqui. */
 }
 `,
-  rust: `fn solve(input: &str) {
-    let _ = input;
+  rust: `fn solve(nums: Vec<i32>, target: i32) -> Vec<i32> {
     // Escribe tu solucion aqui.
+    let _ = (nums, target);
+    Vec::new()
 }
 `
 };
 
 const validParenthesesStarterCode: ProblemSeed["starterCode"] = {
-  python: `def solve(data):
+  python: `def solve(s):
     # Escribe tu solucion aqui.
     return False
 `,
-  javascript: `function solve(data) {
+  javascript: `function solve(s) {
   // Escribe tu solucion aqui.
   return false;
 }
@@ -81,9 +82,10 @@ void solve(const char *input) {
   /* Escribe tu solucion aqui. */
 }
 `,
-  rust: `fn solve(input: &str) {
-    let _ = input;
+  rust: `fn solve(s: String) -> bool {
     // Escribe tu solucion aqui.
+    let _ = s;
+    false
 }
 `
 };
