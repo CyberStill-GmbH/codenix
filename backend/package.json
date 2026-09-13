@@ -11,6 +11,7 @@
     "start": "tsx dist/server.js",
     "typecheck": "tsc --noEmit",
     "seed:problems": "tsx prisma/seed-problems.ts",
+    "sync:problem-templates": "tsx prisma/sync-problem-templates.ts",
     "seed:admin": "tsx prisma/seed-admin.ts",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate": "prisma migrate dev",

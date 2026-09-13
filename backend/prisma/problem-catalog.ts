@@ -31,90 +31,58 @@ export type ProblemSeed = {
 };
 
 const twoSumStarterCode: ProblemSeed["starterCode"] = {
-  python: `import json
-import sys
-
-def solve(nums: list[int], target: int) -> list[int]:
+  python: `def solve(data):
     # Escribe tu solucion aqui.
     return []
-
-data = json.loads(sys.stdin.read())
-print(json.dumps(solve(data["nums"], data["target"]), separators=(",", ":")))
 `,
-  javascript: `const fs = require("fs");
-
-function solve(nums, target) {
+  javascript: `function solve(data) {
   // Escribe tu solucion aqui.
   return [];
 }
-
-const data = JSON.parse(fs.readFileSync(0, "utf8"));
-console.log(JSON.stringify(solve(data.nums, data.target)));
 `,
-  typescript: `declare const require: (name: string) => any;
-const fs = require("fs");
-
-function solve(nums: number[], target: number): number[] {
+  typescript: `function solve(data: { nums: number[]; target: number }): number[] {
   // Escribe tu solucion aqui.
   return [];
 }
-
-const data = JSON.parse(fs.readFileSync(0, "utf8"));
-console.log(JSON.stringify(solve(data.nums, data.target)));
 `,
-  c: `#include <stdio.h>
+  c: `#include <stddef.h>
 
-int main(void) {
+void solve(const char *input) {
+  (void)input;
   /* Escribe tu solucion aqui. */
-  return 0;
 }
 `,
-  rust: `fn main() {
+  rust: `fn solve(input: &str) {
+    let _ = input;
     // Escribe tu solucion aqui.
 }
 `
 };
 
 const validParenthesesStarterCode: ProblemSeed["starterCode"] = {
-  python: `import json
-import sys
-
-def solve(s: str) -> bool:
+  python: `def solve(data):
     # Escribe tu solucion aqui.
     return False
-
-data = json.loads(sys.stdin.read())
-print(json.dumps(solve(data["s"])))
 `,
-  javascript: `const fs = require("fs");
-
-function solve(s) {
+  javascript: `function solve(data) {
   // Escribe tu solucion aqui.
   return false;
 }
-
-const data = JSON.parse(fs.readFileSync(0, "utf8"));
-console.log(JSON.stringify(solve(data.s)));
 `,
-  typescript: `declare const require: (name: string) => any;
-const fs = require("fs");
-
-function solve(s: string): boolean {
+  typescript: `function solve(data: { s: string }): boolean {
   // Escribe tu solucion aqui.
   return false;
 }
-
-const data = JSON.parse(fs.readFileSync(0, "utf8"));
-console.log(JSON.stringify(solve(data.s)));
 `,
-  c: `#include <stdio.h>
+  c: `#include <stddef.h>
 
-int main(void) {
+void solve(const char *input) {
+  (void)input;
   /* Escribe tu solucion aqui. */
-  return 0;
 }
 `,
-  rust: `fn main() {
+  rust: `fn solve(input: &str) {
+    let _ = input;
     // Escribe tu solucion aqui.
 }
 `
