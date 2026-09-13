@@ -3,6 +3,7 @@ import { env } from "./config/env";
 import { prisma } from "./db/prisma";
 import { ensureImagesUploadDir } from "./modules/admin/uploads/admin-uploads.service";
 import { judgeProducer } from "./modules/judge/queue/producer";
+import { redisCache } from "./shared/cache/redis-cache";
 
 let server: ReturnType<typeof app.listen>;
 
@@ -19,12 +20,14 @@ async function shutdown(signal: string) {
 
   if (!server) {
     await judgeProducer.close();
+    await redisCache.close();
     await prisma.$disconnect();
     process.exit(0);
   }
 
   server.close(async () => {
     await judgeProducer.close();
+    await redisCache.close();
     await prisma.$disconnect();
     process.exit(0);
   });
