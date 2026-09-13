@@ -149,7 +149,7 @@ function ProblemDetailContent() {
             difficulty: 'All',
             topic: 'All Topics',
             sort: 'id-asc',
-          }),
+          }).then((page) => page.problems),
         ])
 
         let submissionRequest: CodeLoadState['request'] = null

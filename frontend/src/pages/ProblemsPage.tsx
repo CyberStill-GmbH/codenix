@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { ProblemsView } from '@/features/problems/components/ProblemsView'
 import { getProblems, getProblemTopics } from '@/features/problems/services/problemsApi'
@@ -26,6 +26,12 @@ export function ProblemsPage() {
   const [topics, setTopics] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
+  const [totalAvailable, setTotalAvailable] = useState(0)
+  const [hasMore, setHasMore] = useState(false)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [nextPage, setNextPage] = useState(2)
+  const loadMoreRef = useRef<HTMLDivElement>(null)
+  const loadingMoreRef = useRef(false)
 
   useEffect(() => {
     let isMounted = true
@@ -40,12 +46,15 @@ export function ProblemsPage() {
         setLoadError('')
         const apiTopic = selectedTopic === 'all' ? 'All Topics' : selectedTopic
         const [nextProblems, nextTopics] = await Promise.all([
-          getProblems({ query, difficulty, topic: apiTopic, sort }, controller.signal),
+          getProblems({ query, difficulty, topic: apiTopic, sort, page: 1, pageSize: 20 }, controller.signal),
           getProblemTopics(),
         ])
 
         if (isMounted) {
-          setProblems(nextProblems)
+          setProblems(nextProblems.problems)
+          setTotalAvailable(nextProblems.total)
+          setHasMore(nextProblems.page < nextProblems.totalPages)
+          setNextPage(2)
           setTopics(nextTopics)
         }
       } catch (error) {
@@ -70,6 +79,42 @@ export function ProblemsPage() {
       window.clearTimeout(timeoutId)
     }
   }, [difficulty, query, selectedTopic, sort])
+
+  const loadNextPage = useCallback(async () => {
+    if (loadingMoreRef.current || !hasMore) return
+    loadingMoreRef.current = true
+    setIsLoadingMore(true)
+    const controller = new AbortController()
+    try {
+      const apiTopic = selectedTopic === 'all' ? 'All Topics' : selectedTopic
+      const response = await getProblems(
+        { query, difficulty, topic: apiTopic, sort, page: nextPage, pageSize: 20 },
+        controller.signal,
+      )
+      setProblems((current) => [...current, ...response.problems])
+      setTotalAvailable(response.total)
+      setHasMore(response.page < response.totalPages)
+      setNextPage((page) => page + 1)
+    } catch (error) {
+      if (!controller.signal.aborted) setLoadError(error instanceof Error ? error.message : 'No pudimos cargar más problemas.')
+    } finally {
+      loadingMoreRef.current = false
+      setIsLoadingMore(false)
+    }
+  }, [difficulty, hasMore, nextPage, query, selectedTopic, sort])
+
+  useEffect(() => {
+    const node = loadMoreRef.current
+    if (!node || !hasMore) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) void loadNextPage()
+      },
+      { rootMargin: '320px' },
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [hasMore, loadNextPage])
 
   const filteredProblems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -112,6 +157,10 @@ export function ProblemsPage() {
         <ProblemsView
           problems={filteredProblems}
           allProblems={problems}
+          totalAvailable={totalAvailable}
+          hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
+          loadMoreRef={loadMoreRef}
           topics={topics}
           query={query}
           selectedTopic={selectedTopic}
