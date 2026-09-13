@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "dev:worker": "tsx watch src/worker.ts",
     "worker": "tsx src/worker.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "tsx dist/server.js",
     "typecheck": "tsc --noEmit",
     "seed:problems": "tsx prisma/seed-problems.ts",
