@@ -61,6 +61,7 @@ function rustPrinter(outputType: string) {
 }
 
 function buildRustWrapper(
+  functionName: string,
   parameters: Array<{ name: string; type: string }>,
   outputType: string,
 ) {
@@ -106,7 +107,7 @@ fn main() {
     use std::io::{self, Read};
     let mut input = String::new();
     io::stdin().read_to_string(&mut input).unwrap();
-    let result = solve(${args});
+    let result = ${functionName}(${args});
     ${rustPrinter(outputType)}
 }
 `;
@@ -117,6 +118,7 @@ export function wrapSolutionSource(
   sourceCode: string,
   parameters: unknown,
   outputType = "number",
+  functionName = "solve",
 ) {
   const parameterDefinitions = Array.isArray(parameters)
     ? parameters.flatMap((parameter) => {
@@ -131,31 +133,33 @@ export function wrapSolutionSource(
   const names = parameterDefinitions.map((parameter) => parameter.name);
   const args = names.map((name) => `__codenix_data[${JSON.stringify(name)}]`).join(", ");
   if (language === "python") {
-    return `${sourceCode}${PYTHON_WRAPPER.replace("solve(__codenix_data)", `solve(${names.map((name) => `__codenix_data[${JSON.stringify(name)}]`).join(", ")})`)}`;
+    return `${sourceCode}${PYTHON_WRAPPER.replace("solve(__codenix_data)", `${functionName}(${names.map((name) => `__codenix_data[${JSON.stringify(name)}]`).join(", ")})`)}`;
   }
   if (language === "javascript") {
-    return `${sourceCode}${JAVASCRIPT_WRAPPER.replace("solve(__codenix_data)", `solve(${args})`)}`;
+    return `${sourceCode}${JAVASCRIPT_WRAPPER.replace("solve(__codenix_data)", `${functionName}(${args})`)}`;
   }
   if (language === "typescript") {
-    return `${sourceCode}${TYPESCRIPT_WRAPPER.replace("solve(__codenix_data)", `solve(${args})`)}`;
+    return `${sourceCode}${TYPESCRIPT_WRAPPER.replace("solve(__codenix_data)", `${functionName}(${args})`)}`;
   }
-  if (language === "c") return `${sourceCode}${C_WRAPPER}`;
-  return `${sourceCode}${buildRustWrapper(parameterDefinitions, outputType)}`;
+  if (language === "c") return `${sourceCode}${C_WRAPPER.replace("solve(input)", `${functionName}(input)`)}`;
+  return `${sourceCode}${buildRustWrapper(functionName, parameterDefinitions, outputType)}`;
 }
 
 export function validateSolutionSource(
   language: SupportedJudgeLanguage,
   sourceCode: string,
+  functionName = "solve",
 ) {
+  const escapedFunctionName = functionName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const hasSolveFunction =
     language === "python"
-      ? /(?:def\s+solve\s*\(|def\s+solve\s*\[)/.test(sourceCode)
+      ? new RegExp(`def\\s+${escapedFunctionName}\\s*\\(`).test(sourceCode)
       : language === "rust"
-        ? /fn\s+solve\s*\(/.test(sourceCode)
-        : /(?:function\s+solve\s*\(|\bsolve\s*=\s*(?:\([^)]*\)|[^=]+)=>|void\s+solve\s*\(|int\s+solve\s*\()/.test(sourceCode);
+        ? new RegExp(`fn\\s+${escapedFunctionName}\\s*\\(`).test(sourceCode)
+        : new RegExp(`(?:function\\s+${escapedFunctionName}\\s*\\(|\\b${escapedFunctionName}\\s*=\\s*(?:\\([^)]*\\)|[^=]+)=>|void\\s+${escapedFunctionName}\\s*\\(|int\\s+${escapedFunctionName}\\s*\\()`).test(sourceCode);
 
   if (!hasSolveFunction) {
-    return "Tu solucion debe implementar una funcion solve(data).";
+    return `Tu solucion debe implementar la funcion ${functionName} con la firma del problema.`;
   }
 
   if (sourceCode.length > 50_000) {

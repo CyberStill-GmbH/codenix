@@ -20,6 +20,7 @@ import {
   wrapSolutionSource,
 } from "../judge/solution-wrapper";
 import { redisCache } from "../../shared/cache/redis-cache";
+import { getProblemFunctionName } from "../../shared/problem-function-name";
 
 type ProblemListResponse = {
   data: Array<ReturnType<typeof toProblemListItem>>;
@@ -275,11 +276,6 @@ export const problemService = {
   },
 
   async runCode(identifier: string, data: RunCodeRequestInput, userId: string) {
-    const sourceError = validateSolutionSource(data.language, data.sourceCode);
-    if (sourceError) {
-      throw new AppError(422, "INVALID_SOLUTION_SHAPE", sourceError);
-    }
-
     const problem = await prisma.problem.findFirst({
       where: {
         OR: [{ id: identifier }, { slug: identifier }],
@@ -300,6 +296,12 @@ export const problemService = {
 
     if (!problem) {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
+    }
+
+    const functionName = getProblemFunctionName(problem.slug);
+    const sourceError = validateSolutionSource(data.language, data.sourceCode, functionName);
+    if (sourceError) {
+      throw new AppError(422, "INVALID_SOLUTION_SHAPE", sourceError);
     }
 
     if (
@@ -354,6 +356,7 @@ export const problemService = {
         data.sourceCode,
         problem.parameters,
         problem.outputType,
+        functionName,
       ),
       testcases: selectedTestcases,
       timeLimitMs: problem.timeLimitMs,
@@ -385,11 +388,6 @@ export const problemService = {
     data: CreateSubmissionRequestInput,
     userId: string,
   ) {
-    const sourceError = validateSolutionSource(data.language, data.sourceCode);
-    if (sourceError) {
-      throw new AppError(422, "INVALID_SOLUTION_SHAPE", sourceError);
-    }
-
     const problem = await prisma.problem.findFirst({
       where: {
         OR: [{ id: identifier }, { slug: identifier }],
@@ -406,6 +404,12 @@ export const problemService = {
 
     if (!problem) {
       throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
+    }
+
+    const functionName = getProblemFunctionName(problem.slug);
+    const sourceError = validateSolutionSource(data.language, data.sourceCode, functionName);
+    if (sourceError) {
+      throw new AppError(422, "INVALID_SOLUTION_SHAPE", sourceError);
     }
 
     if (
@@ -443,6 +447,7 @@ export const problemService = {
         data.sourceCode,
         problem.parameters,
         problem.outputType,
+        functionName,
       ),
       testcases: problem.testcases.map((tc) => ({
         id: tc.id,

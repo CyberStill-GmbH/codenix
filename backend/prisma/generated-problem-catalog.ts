@@ -1,4 +1,5 @@
 import type { SupportedJudgeLanguage } from "../src/modules/judge/supported-languages";
+import { getProblemFunctionName } from "../src/shared/problem-function-name";
 import type { ProblemSeed } from "./problem-catalog";
 
 type JsonValue = Record<string, unknown>;
@@ -24,17 +25,17 @@ const rustReturnValueFor = (outputType: string) => {
   return "0";
 };
 
-function createStarterCode(data: JsonValue, outputType: string): Record<SupportedJudgeLanguage, string> {
+function createStarterCode(data: JsonValue, outputType: string, functionName: string): Record<SupportedJudgeLanguage, string> {
   const names = Object.keys(data);
   const pythonArgs = names.map((name) => `${name}`).join(", ");
   const jsArgs = names.join(", ");
   const tsArgs = names.map((name) => `${name}: ${typeFor(data[name])}`).join(", ");
   return {
-  python: `def solve(${pythonArgs}):\n    # Implementa la funcion para este problema.\n    return None\n`,
-  javascript: `function solve(${jsArgs}) {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
-  typescript: `function solve(${tsArgs}): unknown {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
-  c: `#include <stddef.h>\n\nvoid solve(const char *input) {\n  (void)input;\n  /* Implementa la funcion para este problema. */\n}\n`,
-  rust: `fn solve(${names.map((name) => `${name}: ${rustTypeFor(data[name])}`).join(", ")}) -> ${outputType === "number[]" ? "Vec<i32>" : outputType === "number[][]" ? "Vec<Vec<i32>>" : outputType === "string" ? "String" : outputType === "boolean" ? "bool" : "i32"} {\n    // Implementa la funcion para este problema.\n    ${rustReturnValueFor(outputType)}\n}\n`
+  python: `def ${functionName}(${pythonArgs}):\n    # Implementa la funcion para este problema.\n    return None\n`,
+  javascript: `function ${functionName}(${jsArgs}) {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
+  typescript: `function ${functionName}(${tsArgs}): unknown {\n  // Implementa la funcion para este problema.\n  return null;\n}\n`,
+  c: `#include <stddef.h>\n\nvoid ${functionName}(const char *input) {\n  (void)input;\n  /* Implementa la funcion para este problema. */\n}\n`,
+  rust: `fn ${functionName}(${names.map((name) => `${name}: ${rustTypeFor(data[name])}`).join(", ")}) -> ${outputType === "number[]" ? "Vec<i32>" : outputType === "number[][]" ? "Vec<Vec<i32>>" : outputType === "string" ? "String" : outputType === "boolean" ? "bool" : "i32"} {\n    // Implementa la funcion para este problema.\n    ${rustReturnValueFor(outputType)}\n}\n`
   };
 }
 
@@ -361,10 +362,11 @@ function buildProblem(operation: Operation, index: number): ProblemSeed {
   const variant = Math.floor(index / operations.length) + 1;
   const context = contexts[(index - 1) % contexts.length];
   const cases = operation.cases(variant);
+  const slug = `${operation.slug}-${context.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-${variant}`;
   return {
     numericId: index + 2,
     title: `${operation.title} ${context} ${variant}`,
-    slug: `${operation.slug}-${context.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-${variant}`,
+    slug,
     difficulty: operation.difficulty,
     statement: `## Mision\n\n${operation.description} Resuelve el desafio ${context} ${variant} implementando la funcion indicada en el editor. Recibiras cada parametro como un argumento normal del lenguaje.\n\n## Restricciones\n\n- Respeta los tipos y limites indicados en los parametros.\n- Devuelve directamente el resultado solicitado.\n- Evita depender de red o de archivos externos.`,
     inputFormat: "Los parametros se entregan directamente a la funcion del editor.",
@@ -387,7 +389,7 @@ function buildProblem(operation: Operation, index: number): ProblemSeed {
       expectedOutput: JSON.stringify(testcase.expected),
       visibility: caseIndex < 2 ? "sample" : "hidden"
     })),
-    starterCode: createStarterCode(cases[0]?.data ?? {}, operation.output)
+    starterCode: createStarterCode(cases[0]?.data ?? {}, operation.output, getProblemFunctionName(slug))
   };
 }
 
