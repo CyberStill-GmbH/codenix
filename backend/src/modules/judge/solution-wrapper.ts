@@ -54,10 +54,27 @@ fn main() {
 export function wrapSolutionSource(
   language: SupportedJudgeLanguage,
   sourceCode: string,
+  parameters: unknown,
 ) {
-  if (language === "python") return `${sourceCode}${PYTHON_WRAPPER}`;
-  if (language === "javascript") return `${sourceCode}${JAVASCRIPT_WRAPPER}`;
-  if (language === "typescript") return `${sourceCode}${TYPESCRIPT_WRAPPER}`;
+  const names = Array.isArray(parameters)
+    ? parameters.flatMap((parameter) => {
+        if (!parameter || typeof parameter !== "object") return [];
+        const name = (parameter as { name?: unknown }).name;
+        return typeof name === "string" && /^[A-Za-z_$][\w$]*$/.test(name)
+          ? [name]
+          : [];
+      })
+    : [];
+  const args = names.map((name) => `__codenix_data[${JSON.stringify(name)}]`).join(", ");
+  if (language === "python") {
+    return `${sourceCode}${PYTHON_WRAPPER.replace("solve(__codenix_data)", `solve(${names.map((name) => `__codenix_data[${JSON.stringify(name)}]`).join(", ")})`)}`;
+  }
+  if (language === "javascript") {
+    return `${sourceCode}${JAVASCRIPT_WRAPPER.replace("solve(__codenix_data)", `solve(${args})`)}`;
+  }
+  if (language === "typescript") {
+    return `${sourceCode}${TYPESCRIPT_WRAPPER.replace("solve(__codenix_data)", `solve(${args})`)}`;
+  }
   if (language === "c") return `${sourceCode}${C_WRAPPER}`;
   return `${sourceCode}${RUST_WRAPPER}`;
 }

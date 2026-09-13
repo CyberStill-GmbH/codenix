@@ -109,8 +109,8 @@ Los indices pueden devolverse en cualquier orden siempre que identifiquen la par
 - \`2 <= nums.length <= 10^4\`
 - \`-10^9 <= nums[i], target <= 10^9\`
 - Existe exactamente una solucion valida.`,
-    inputFormat: "JSON object with nums (number[]) and target (number).",
-    outputFormat: "JSON array with the two zero-based indices.",
+    inputFormat: "La funcion recibe nums (number[]) y target (number).",
+    outputFormat: "Devuelve un arreglo con los dos indices.",
     constraints:
       "2 <= nums.length <= 10000\n-1000000000 <= nums[i], target <= 1000000000\nExactly one valid answer exists.",
     parameters: [
@@ -158,8 +158,8 @@ Una secuencia es valida cuando cada simbolo de apertura se cierra con el mismo t
 
 - \`0 <= s.length <= 10^4\`
 - \`s\` contiene solamente parentesis, corchetes y llaves.`,
-    inputFormat: "JSON object with s (string).",
-    outputFormat: "JSON boolean.",
+    inputFormat: "La funcion recibe s (string).",
+    outputFormat: "Devuelve un boolean.",
     constraints:
       "0 <= s.length <= 10000\ns contains only parentheses, brackets, and braces.",
     parameters: [
