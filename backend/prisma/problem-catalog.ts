@@ -1,4 +1,5 @@
 import type { SupportedJudgeLanguage } from "../src/modules/judge/supported-languages";
+import { GENERATED_PROBLEMS } from "./generated-problem-catalog";
 
 type ProblemExampleSeed = {
   input: string;
@@ -15,8 +16,8 @@ type ProblemTestcaseSeed = {
 export type ProblemSeed = {
   numericId: number;
   title: string;
-  slug: "two-sum" | "valid-parentheses";
-  difficulty: "easy";
+  slug: string;
+  difficulty: "easy" | "medium" | "hard";
   statement: string;
   inputFormat: string;
   outputFormat: string;
@@ -119,7 +120,7 @@ int main(void) {
 `
 };
 
-export const PROBLEM_CATALOG: ProblemSeed[] = [
+const CORE_PROBLEM_CATALOG: ProblemSeed[] = [
   {
     numericId: 1,
     title: "Two Sum",
@@ -227,4 +228,9 @@ Una secuencia es valida cuando cada simbolo de apertura se cierra con el mismo t
     ],
     starterCode: validParenthesesStarterCode
   }
+];
+
+export const PROBLEM_CATALOG: ProblemSeed[] = [
+  ...CORE_PROBLEM_CATALOG,
+  ...GENERATED_PROBLEMS
 ];
