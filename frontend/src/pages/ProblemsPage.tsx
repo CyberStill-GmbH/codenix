@@ -29,6 +29,10 @@ export function ProblemsPage() {
 
   useEffect(() => {
     let isMounted = true
+    const controller = new AbortController()
+    const timeoutId = window.setTimeout(() => {
+      void loadProblems()
+    }, query.trim() ? 300 : 0)
 
     async function loadProblems() {
       try {
@@ -36,7 +40,7 @@ export function ProblemsPage() {
         setLoadError('')
         const apiTopic = selectedTopic === 'all' ? 'All Topics' : selectedTopic
         const [nextProblems, nextTopics] = await Promise.all([
-          getProblems({ query, difficulty, topic: apiTopic, sort }),
+          getProblems({ query, difficulty, topic: apiTopic, sort }, controller.signal),
           getProblemTopics(),
         ])
 
@@ -45,6 +49,7 @@ export function ProblemsPage() {
           setTopics(nextTopics)
         }
       } catch (error) {
+        if (controller.signal.aborted) return
         if (isMounted) {
           setLoadError(
             error instanceof Error
@@ -59,10 +64,10 @@ export function ProblemsPage() {
       }
     }
 
-    loadProblems()
-
     return () => {
       isMounted = false
+      controller.abort()
+      window.clearTimeout(timeoutId)
     }
   }, [difficulty, query, selectedTopic, sort])
 
@@ -103,7 +108,7 @@ export function ProblemsPage() {
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <AppNavbar />
 
-      <main className="codenix-app-shell codenix-user-main">
+      <main id="main-content" className="codenix-app-shell codenix-user-main">
         <ProblemsView
           problems={filteredProblems}
           allProblems={problems}

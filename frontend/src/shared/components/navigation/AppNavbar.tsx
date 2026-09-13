@@ -54,6 +54,10 @@ export function AppNavbar() {
   const showMobileBottomNav = isMobile && !isEditorRoute
 
   return (
+    <>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[var(--color-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">
+        Saltar al contenido principal
+      </a>
     <header className="border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] md:sticky md:top-0 md:z-50 md:bg-[rgba(5,9,20,0.92)] md:backdrop-blur-xl">
       <nav
         className={cx(
@@ -164,7 +168,7 @@ export function AppNavbar() {
               <div
                 className="absolute right-0 top-12 z-50"
                 role="menu"
-                aria-label="Menu de usuario"
+                aria-label="Menú de usuario"
               >
                 <UserMenu
                   user={user}
@@ -230,5 +234,6 @@ export function AppNavbar() {
         </nav>
       )}
     </header>
+    </>
   )
 }

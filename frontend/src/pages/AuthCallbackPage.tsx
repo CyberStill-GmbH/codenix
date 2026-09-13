@@ -70,7 +70,7 @@ export function AuthCallbackPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
-        <main className="codenix-app-shell codenix-user-main">
+        <main id="main-content" className="codenix-app-shell codenix-user-main">
           <ErrorState title="No se pudo iniciar sesion" message={error} />
         </main>
       </div>

@@ -168,7 +168,7 @@ export function SubmissionFilters({
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
             placeholder="Buscar envío"
-            className="h-11 w-full rounded-full border border-[var(--color-border)] bg-[var(--color-surface-soft)] pl-10 pr-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+          className="h-11 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] pl-10 pr-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
           />
         </label>
 
@@ -177,7 +177,7 @@ export function SubmissionFilters({
             type="button"
             aria-expanded={isExpanded}
             onClick={() => setIsExpanded((v) => !v)}
-            className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/20 ${
+          className={`inline-flex h-10 items-center gap-2 rounded-lg border px-4 text-sm font-semibold transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/20 ${
               isExpanded
                 ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
                 : 'border-[var(--color-border)] bg-[var(--color-surface-soft)] text-[var(--color-text-muted)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)]'

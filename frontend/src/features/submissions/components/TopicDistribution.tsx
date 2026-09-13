@@ -18,7 +18,7 @@ export function TopicDistribution({ submissions }: TopicDistributionProps) {
   const max = Math.max(...topics.map(([, count]) => count), 1)
 
   return (
-    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-lg)]">
+    <section className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
       <div className="mb-5">
         <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
           Distribución por tema
