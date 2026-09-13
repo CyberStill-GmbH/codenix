@@ -11,6 +11,12 @@ import {
 
 import { JudgeStatusBadge } from '@/features/coding/components/JudgeStatusBadge'
 import { getJudgeStatusLabel } from '@/features/coding/utils/judgeStatus'
+import {
+  formatTestcaseInput,
+  formatTestcaseOutput,
+  serializeHumanInput,
+  serializeHumanOutput,
+} from '@/features/coding/utils/testcasePresentation'
 import type {
   RunCodeResponse,
   SubmitCodeResponse,
@@ -56,6 +62,35 @@ function CodeBlock({ label, value }: { label: string; value?: string | null }) {
   )
 }
 
+function TestcaseField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  minHeight = 'min-h-20',
+}: {
+  label: string
+  value: string
+  onChange: (value: string) => void
+  placeholder: string
+  minHeight?: string
+}) {
+  return (
+    <label className="grid gap-1.5">
+      <span className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
+        {label}
+      </span>
+      <textarea
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        spellCheck={false}
+        className={`${minHeight} resize-y rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-bg-muted)] p-3 font-mono text-xs leading-6 text-[var(--color-text-soft)] outline-none transition placeholder:text-[var(--color-text-subtle)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20`}
+      />
+    </label>
+  )
+}
+
 function TestcaseResultRow({ result }: { result: TestcaseRunResult }) {
   const isPending = result.status === 'pending'
   const isHidden = result.visibility === 'hidden' && !result.input && !result.expectedOutput
@@ -85,11 +120,15 @@ function TestcaseResultRow({ result }: { result: TestcaseRunResult }) {
         </p>
       ) : (
         <div className="grid gap-3 lg:grid-cols-3">
-          <CodeBlock label="Entrada" value={result.input} />
-          <CodeBlock label="Esperada" value={result.expectedOutput} />
+          <CodeBlock label="Entrada" value={formatTestcaseInput(result.input)} />
+          <CodeBlock label="Esperada" value={formatTestcaseOutput(result.expectedOutput)} />
           <CodeBlock
             label="Got"
-            value={isPending ? 'Ejecutando…' : result.actualOutput ?? result.stdout}
+            value={
+              isPending
+                ? 'Ejecutando…'
+                : formatTestcaseOutput(result.actualOutput ?? result.stdout)
+            }
           />
         </div>
       )}
@@ -294,7 +333,7 @@ export function ResultPanel({
         {activeTab === 'testcases' ? (
           <section className="space-y-3">
             <p className="text-xs text-[var(--color-text-subtle)]">
-              Ejecutar evalúa los casos de muestra almacenados en el servidor.
+              Escribe los argumentos como en LeetCode. El servidor serializa los valores y ejecuta tu función de forma segura.
             </p>
             {testcases.map((testcase, index) => {
               const result = resultByCaseId.get(testcase.id)
@@ -305,7 +344,7 @@ export function ResultPanel({
                 >
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <h2 className="text-sm font-bold text-[var(--color-text)]">
-                      Case {index + 1}
+                      Caso {index + 1}
                     </h2>
                     {testcase.isCustom && (
                       <button
@@ -318,41 +357,36 @@ export function ResultPanel({
                       </button>
                     )}
                   </div>
-                  <label className="grid gap-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
-                      Entrada
-                    </span>
-                    <textarea
-                      value={testcase.input}
-                      onChange={(event) =>
-                        updateTestcase(testcase.id, 'input', event.target.value)
-                      }
-                      className="min-h-20 resize-y rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 font-mono text-xs text-[var(--color-text-soft)] outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                    />
-                  </label>
-                  <label className="mt-3 grid gap-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
-                      Salida esperada
-                    </span>
-                    <textarea
-                      value={testcase.expectedOutput}
-                      onChange={(event) =>
+                  <TestcaseField
+                    label="Entrada"
+                    value={formatTestcaseInput(testcase.input)}
+                    placeholder={'nums = [2, 7, 11, 15]\ntarget = 9'}
+                    onChange={(value) =>
+                      updateTestcase(testcase.id, 'input', serializeHumanInput(value))
+                    }
+                  />
+                  <div className="mt-3">
+                    <TestcaseField
+                      label="Salida esperada"
+                      value={formatTestcaseOutput(testcase.expectedOutput)}
+                      placeholder="[0, 1]"
+                      minHeight="min-h-16"
+                      onChange={(value) =>
                         updateTestcase(
                           testcase.id,
                           'expectedOutput',
-                          event.target.value,
+                          serializeHumanOutput(value),
                         )
                       }
-                      className="min-h-16 resize-y rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 font-mono text-xs text-[var(--color-text-soft)] outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     />
-                  </label>
+                  </div>
                   {result && (
                     <div className="mt-3 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3">
                       <p className="text-xs font-bold text-[var(--color-text-muted)]">
                         Obtenida
                       </p>
                       <pre className="mt-2 whitespace-pre-wrap font-mono text-xs text-[var(--color-text-soft)]">
-                        {result.actualOutput ?? result.stdout ?? '-'}
+                        {formatTestcaseOutput(result.actualOutput ?? result.stdout) || '-'}
                       </pre>
                     </div>
                   )}

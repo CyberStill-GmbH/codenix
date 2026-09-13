@@ -17,6 +17,10 @@ import type {
   ProblemCodeLanguage,
 } from "@/features/problems/types/problem.types";
 import { ProblemMarkdownRenderer } from "@/features/problems/components/ProblemMarkdownRenderer";
+import {
+  formatTestcaseInput,
+  formatTestcaseOutput,
+} from "@/features/coding/utils/testcasePresentation";
 
 type ProblemContentTabsProps = {
   problem: Problem;
@@ -276,13 +280,32 @@ export function ProblemContentTabs({
                 key={example.id}
                 className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4"
               >
-                <h2 className="text-base font-bold text-[var(--color-text)]">
-                  Ejemplo {index + 1}
-                </h2>
-                <pre className="problem-example-code mt-3 whitespace-pre-wrap rounded-md border-l-2 border-[var(--color-border-strong)] bg-[var(--color-bg-muted)] p-3 font-mono text-xs text-[var(--color-text-soft)]">
-                  entrada: {example.input}
-                  {"\n"}salida: {example.output}
-                </pre>
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h2 className="text-base font-bold text-[var(--color-text)]">
+                    Ejemplo {index + 1}
+                  </h2>
+                  <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
+                    Caso de muestra
+                  </span>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-bg-muted)] p-3">
+                    <p className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
+                      Entrada
+                    </p>
+                    <pre className="mt-2 whitespace-pre-wrap font-mono text-xs leading-6 text-[var(--color-text-soft)]">
+                      {formatTestcaseInput(example.input)}
+                    </pre>
+                  </div>
+                  <div className="rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-bg-muted)] p-3">
+                    <p className="text-[0.6875rem] font-bold uppercase tracking-wider text-[var(--color-text-subtle)]">
+                      Salida
+                    </p>
+                    <pre className="mt-2 whitespace-pre-wrap font-mono text-xs leading-6 text-[var(--color-text-soft)]">
+                      {formatTestcaseOutput(example.output)}
+                    </pre>
+                  </div>
+                </div>
                 {example.explanation && (
                   <p className="mt-3 text-xs text-[var(--color-text-subtle)]">
                     {example.explanation}
