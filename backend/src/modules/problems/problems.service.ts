@@ -15,6 +15,21 @@ import type {
   CreateSubmissionRequestInput,
 } from "./problems.schema";
 import { judgeProducer } from "../judge/queue/producer";
+import { redisCache } from "../../shared/cache/redis-cache";
+
+type ProblemListResponse = {
+  data: Array<ReturnType<typeof toProblemListItem>>;
+  meta: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
+};
+
+function cacheKey(scope: string, value: unknown) {
+  return `codenix:${scope}:${JSON.stringify(value)}`;
+}
 
 function slugify(value: string) {
   return value
@@ -116,6 +131,10 @@ function buildSearchWhere(
 
 export const problemService = {
   async list(query: ProblemsQueryInput, userId?: string) {
+    const key = cacheKey("problems:list", { query, userId: userId ?? "public" });
+    const cached = await redisCache.get<ProblemListResponse>(key);
+    if (cached) return cached;
+
     const page = query.page;
     const pageSize = query.pageSize;
     const skip = (page - 1) * pageSize;
@@ -150,7 +169,7 @@ export const problemService = {
         )
       : new Set<string>();
 
-    return {
+    const response: ProblemListResponse = {
       data: problems.map((problem) =>
         toProblemListItem(problem, solvedProblemIds),
       ),
@@ -161,9 +180,16 @@ export const problemService = {
         totalPages: Math.ceil(total / pageSize),
       },
     };
+
+    await redisCache.set(key, response, userId ? 8 : 60);
+    return response;
   },
 
   async search(query: ProblemsSearchQueryInput) {
+    const key = cacheKey("problems:search", query);
+    const cached = await redisCache.get<{ data: Array<ReturnType<typeof toProblemSearchItem>> }>(key);
+    if (cached) return cached;
+
     const problems = await prisma.problem.findMany({
       where: buildSearchWhere(query),
       orderBy: {
@@ -179,12 +205,19 @@ export const problemService = {
       },
     });
 
-    return {
+    const response = {
       data: problems.map(toProblemSearchItem),
     };
+
+    await redisCache.set(key, response, 60);
+    return response;
   },
 
   async listTopics() {
+    const key = "codenix:problems:topics";
+    const cached = await redisCache.get<{ data: Array<ReturnType<typeof toProblemTopicItem>> }>(key);
+    if (cached) return cached;
+
     const topics = await prisma.topic.findMany({
       orderBy: {
         name: "asc",
@@ -196,12 +229,19 @@ export const problemService = {
       },
     });
 
-    return {
+    const response = {
       data: topics.map(toProblemTopicItem),
     };
+
+    await redisCache.set(key, response, 3_600);
+    return response;
   },
 
   async findBySlug(slug: string, userId?: string) {
+    const key = cacheKey("problems:detail", { slug, userId: userId ?? "public" });
+    const cached = await redisCache.get<ReturnType<typeof toProblemDetail>>(key);
+    if (cached) return cached;
+
     const problem = await prisma.problem.findUnique({
       where: {
         slug,
@@ -225,7 +265,9 @@ export const problemService = {
       ? await solvedProblemsService.getSolvedProblemIds(userId, [problem.id])
       : new Set<string>();
 
-    return toProblemDetail(problem, solvedProblemIds);
+    const response = toProblemDetail(problem, solvedProblemIds);
+    await redisCache.set(key, response, userId ? 10 : 60);
+    return response;
   },
 
   async runCode(identifier: string, data: RunCodeRequestInput, userId: string) {
@@ -398,6 +440,8 @@ export const problemService = {
         "The judge is temporarily unavailable.",
       );
     }
+
+    await redisCache.invalidate(`codenix:submissions:list:${userId}:`);
 
     return {
       id: submission.id,

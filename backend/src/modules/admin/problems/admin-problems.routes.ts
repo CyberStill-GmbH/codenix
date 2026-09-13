@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { adminProblemsController } from "./admin-problems.controller";
 import {
   adminProblemBodySchema,
@@ -11,6 +12,16 @@ import { asyncHandler } from "../../../shared/middleware/async-handler";
 import { authMiddleware } from "../../../shared/middleware/auth.middleware";
 import { adminMiddleware } from "../../../shared/middleware/admin.middleware";
 import { validate } from "../../../shared/middleware/validate.middleware";
+import { redisCache } from "../../../shared/cache/redis-cache";
+
+const invalidateProblemCache = (_req: Request, res: Response, next: NextFunction) => {
+  res.once("finish", () => {
+    if (res.statusCode < 400) {
+      void redisCache.invalidate("codenix:problems:");
+    }
+  });
+  next();
+};
 
 export const adminProblemsRoutes = Router();
 
@@ -26,6 +37,7 @@ adminProblemsRoutes.get(
 adminProblemsRoutes.post(
   "/",
   validate({ body: adminProblemBodySchema }),
+  invalidateProblemCache,
   asyncHandler(adminProblemsController.create)
 );
 
@@ -41,6 +53,7 @@ adminProblemsRoutes.post(
     params: adminProblemIdentifierParamsSchema,
     body: adminTestcaseBodySchema
   }),
+  invalidateProblemCache,
   asyncHandler(adminProblemsController.createTestcase)
 );
 
@@ -50,12 +63,14 @@ adminProblemsRoutes.put(
     params: adminProblemTestcaseParamsSchema,
     body: adminTestcaseBodySchema
   }),
+  invalidateProblemCache,
   asyncHandler(adminProblemsController.updateTestcase)
 );
 
 adminProblemsRoutes.delete(
   "/:problemId/testcases/:testcaseId",
   validate({ params: adminProblemTestcaseParamsSchema }),
+  invalidateProblemCache,
   asyncHandler(adminProblemsController.deleteTestcase)
 );
 
@@ -71,17 +86,20 @@ adminProblemsRoutes.put(
     params: adminProblemIdentifierParamsSchema,
     body: adminProblemBodySchema
   }),
+  invalidateProblemCache,
   asyncHandler(adminProblemsController.update)
 );
 
 adminProblemsRoutes.patch(
   "/:problemId/publish",
   validate({ params: adminProblemIdentifierParamsSchema }),
+  invalidateProblemCache,
   asyncHandler(adminProblemsController.publish)
 );
 
 adminProblemsRoutes.patch(
   "/:problemId/unpublish",
   validate({ params: adminProblemIdentifierParamsSchema }),
+  invalidateProblemCache,
   asyncHandler(adminProblemsController.unpublish)
 );
