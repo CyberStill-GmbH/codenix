@@ -63,7 +63,7 @@ export function UserMenu({ user, onClose }: UserMenuProps) {
       }`}
     >
       {/* Header */}
-      <div className="flex items-center gap-4 rounded-[var(--radius-lg)] bg-[rgba(7,18,37,0.58)] px-3 py-3">
+      <div className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-3 py-3">
         <UserAvatar src={user.avatarUrl} name={user.name} size="menu" />
         <div className="min-w-0">
           <p className="truncate text-base font-semibold text-[var(--color-text)]">
