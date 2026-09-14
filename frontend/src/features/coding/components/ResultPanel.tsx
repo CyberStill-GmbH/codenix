@@ -1,5 +1,15 @@
 import { useMemo, useState } from 'react'
-import { AlertTriangle, Check, CircleDotDashed, Plus, Trash2, X } from 'lucide-react'
+import {
+  AlertTriangle,
+  Check,
+  CheckCircle2,
+  CircleDotDashed,
+  ListChecks,
+  Plus,
+  Terminal,
+  Trash2,
+  X,
+} from 'lucide-react'
 import {
   Bar,
   BarChart,
@@ -245,18 +255,27 @@ export function ResultPanel({
   return (
     <div className="flex h-full min-h-0 flex-col bg-[var(--color-bg-soft)]">
       <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border-soft)] px-4 py-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" role="tablist" aria-label="Resultados de ejecución">
           {(['testcases', 'test-result', 'output'] as const).map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setUserTab(tab)}
-              className={`h-8 rounded-lg px-3 text-xs font-bold transition ${
+              role="tab"
+              aria-selected={activeTab === tab}
+              className={`inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${
                 activeTab === tab
                   ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
                   : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]'
               }`}
             >
+              {tab === 'testcases' ? (
+                <ListChecks className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
+              ) : tab === 'test-result' ? (
+                <CheckCircle2 className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
+              ) : (
+                <Terminal className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
+              )}
               {tab === 'testcases' ? 'Casos de prueba' : tab === 'test-result' ? 'Resultado' : 'Salida'}
             </button>
           ))}
