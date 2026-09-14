@@ -16,6 +16,7 @@ import {
   getUserProgress,
   getUserRecentSubmissions,
   getUserStats,
+  getPublicProfileStats,
 } from '@/features/user/services/userApi'
 import type {
   ActivityDay,
@@ -29,6 +30,7 @@ type ProfileData = {
   progress: DifficultyProgress
   activityDays: ActivityDay[]
   recentSubmissions: Submission[]
+  communityStats: { reputation: number; profileViews: number }
 }
 
 export function ProfilePage() {
@@ -45,11 +47,12 @@ export function ProfilePage() {
       try {
         setIsLoadingProfile(true)
         setProfileError('')
-        const [stats, progress, activityDays, recentSubmissions] = await Promise.all([
+        const [stats, progress, activityDays, recentSubmissions, communityStats] = await Promise.all([
           getUserStats(),
           getUserProgress(),
           getUserActivity(year),
           getUserRecentSubmissions(10),
+          getPublicProfileStats(user.id),
         ])
 
         if (isMounted) {
@@ -58,6 +61,7 @@ export function ProfilePage() {
             progress,
             activityDays,
             recentSubmissions,
+            communityStats,
           })
         }
       } catch (error) {
@@ -108,7 +112,7 @@ export function ProfilePage() {
         <div className="grid min-w-0 items-start gap-2.5 md:grid-cols-[17.5rem_minmax(0,1fr)] lg:grid-cols-[20rem_minmax(0,1fr)]">
           <div className="codenix-user-stack min-w-0 !gap-3 md:w-[17.5rem] lg:w-[20rem]">
             <PageSection>
-              <UserProfileCard user={user} submissions={profileData.recentSubmissions} />
+              <UserProfileCard user={user} submissions={profileData.recentSubmissions} communityStats={profileData.communityStats} />
             </PageSection>
           </div>
           <div className="codenix-user-stack min-w-0 !gap-3">

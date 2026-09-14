@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { ChevronDown, Pencil } from 'lucide-react'
+import { Award, ChevronDown, Eye, Pencil } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -149,9 +149,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 type UserProfileCardProps = {
   user: User
   submissions?: Submission[]
+  communityStats?: { reputation: number; profileViews: number }
 }
 
-export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps) {
+export function UserProfileCard({ user, submissions = [], communityStats = { reputation: 0, profileViews: 0 } }: UserProfileCardProps) {
   const navigate = useNavigate()
   const [showAllSkills, setShowAllSkills] = useState(false)
   const langEntries = buildLanguageStats(submissions)
@@ -229,6 +230,25 @@ export function UserProfileCard({ user, submissions = [] }: UserProfileCardProps
             </button>
           )
         })}
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 px-4 pb-4" aria-label="Reputación y vistas del perfil">
+        <div className={`rounded-xl px-3 py-3 ${profileInsetSurfaceClassName}`}>
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]">
+            <Award className="h-3.5 w-3.5 text-[var(--color-accent)]" aria-hidden="true" />
+            Reputación
+          </div>
+          <p className="mt-1 font-mono text-xl font-bold text-[var(--color-text)]">{communityStats.reputation}</p>
+          <p className="mt-0.5 text-[0.6875rem] text-[var(--color-text-muted)]">Por aportes recibidos</p>
+        </div>
+        <div className={`rounded-xl px-3 py-3 ${profileInsetSurfaceClassName}`}>
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]">
+            <Eye className="h-3.5 w-3.5 text-[var(--color-primary)]" aria-hidden="true" />
+            Vistas
+          </div>
+          <p className="mt-1 font-mono text-xl font-bold text-[var(--color-text)]">{communityStats.profileViews}</p>
+          <p className="mt-0.5 text-[0.6875rem] text-[var(--color-text-muted)]">Visitas únicas</p>
+        </div>
       </div>
 
       <Divider />

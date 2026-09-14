@@ -84,6 +84,19 @@ export async function getUserStats(): Promise<UserStats> {
   return apiRequest<BackendUserStats>('/users/me/stats')
 }
 
+export type PublicProfileStats = {
+  reputation: number
+  profileViews: number
+}
+
+export async function getPublicProfileStats(userId: string): Promise<PublicProfileStats> {
+  const response = await apiRequest<PublicProfileStats>(`/community/users/${userId}/profile`)
+  return {
+    reputation: response.reputation ?? 0,
+    profileViews: response.profileViews ?? 0,
+  }
+}
+
 export async function getUserProgress(): Promise<DifficultyProgress> {
   const response = await apiRequest<BackendProgressResponse>('/users/me/progress')
   const progress: DifficultyProgress = structuredClone(emptyProgress)
