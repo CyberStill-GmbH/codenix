@@ -35,7 +35,12 @@ export type TestcaseRunResult = {
 }
 
 export type RuntimeDistributionPoint = {
-  runtimeMs: number
+  value: number
+  submissions: number
+}
+
+export type MetricDistributionPoint = {
+  value: number
   submissions: number
 }
 
@@ -70,6 +75,8 @@ export type SubmitCodeResponse = {
   error?: JudgeError
   runtimePercentile?: number
   runtimeDistribution?: RuntimeDistributionPoint[]
+  memoryPercentile?: number
+  memoryDistribution?: MetricDistributionPoint[]
 }
 
 export type ProblemSubmission = {
@@ -80,6 +87,10 @@ export type ProblemSubmission = {
   submittedAt: string
   executionTimeMs?: number | null
   memoryKb?: number | null
+  runtimePercentile?: number
+  runtimeDistribution?: RuntimeDistributionPoint[]
+  memoryPercentile?: number
+  memoryDistribution?: MetricDistributionPoint[]
   sourceCode?: string
 }
 

@@ -160,6 +160,10 @@ function mapSubmissionDetail(detail: SubmissionDetail): SubmitCodeResponse {
     totalCases: testcases.length,
     executionTimeMs: detail.executionTimeMs ?? undefined,
     memoryKb: detail.memoryKb ?? undefined,
+    runtimePercentile: detail.runtimePercentile,
+    runtimeDistribution: detail.runtimeDistribution,
+    memoryPercentile: detail.memoryPercentile,
+    memoryDistribution: detail.memoryDistribution,
     language: detail.language as ProblemCodeLanguage,
     failedCase,
     error:

@@ -1,18 +1,25 @@
 import { useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   AlertTriangle,
   Check,
+  CheckCheck,
   CheckCircle2,
   CircleDotDashed,
+  Copy,
+  Cpu,
   ListChecks,
   Plus,
   Terminal,
+  Timer,
   Trash2,
   X,
 } from 'lucide-react'
 import {
   Bar,
   BarChart,
+  CartesianGrid,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -45,6 +52,10 @@ type ResultPanelProps = {
   onRetry: () => void
   testcases?: CodingTestcase[]
   onTestcasesChange?: (testcases: CodingTestcase[]) => void
+  sourceCode?: string
+  language?: string
+  avatarUrl?: string | null
+  username?: string
 }
 
 type ResultTab = 'testcases' | 'test-result' | 'output'
@@ -185,6 +196,142 @@ function SubmitBanner({ submitResult }: { submitResult: SubmitCodeResponse }) {
   )
 }
 
+type PerformanceMetric = 'runtime' | 'memory'
+
+function formatMetricValue(metric: PerformanceMetric, value: number) {
+  return metric === 'runtime' ? `${value} ms` : `${(value / 1024).toFixed(1)} MB`
+}
+
+function AcceptedPerformancePanel({
+  submitResult,
+  sourceCode,
+  language,
+  avatarUrl,
+  username,
+}: {
+  submitResult: SubmitCodeResponse
+  sourceCode?: string
+  language?: string
+  avatarUrl?: string | null
+  username?: string
+}) {
+  const [metric, setMetric] = useState<PerformanceMetric>('runtime')
+  const [copied, setCopied] = useState(false)
+  const runtimeData = submitResult.runtimeDistribution ?? []
+  const memoryData = submitResult.memoryDistribution ?? []
+  const data = metric === 'runtime' ? runtimeData : memoryData
+  const currentValue = metric === 'runtime' ? submitResult.executionTimeMs : submitResult.memoryKb
+  const percentile = metric === 'runtime' ? submitResult.runtimePercentile : submitResult.memoryPercentile
+
+  async function copyCode() {
+    if (!sourceCode) return
+    await navigator.clipboard?.writeText(sourceCode)
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1600)
+  }
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28, ease: 'easeOut' }}
+      className="overflow-hidden rounded-xl border border-[var(--color-success)]/30 bg-[var(--color-surface)]"
+      aria-labelledby="accepted-performance-title"
+    >
+      <div className="border-b border-[var(--color-border-soft)] bg-[var(--color-success-soft)]/30 px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="flex items-center gap-2 text-sm font-black text-[var(--color-success)]">
+              <CheckCheck className="h-4 w-4" aria-hidden="true" />
+              Envío aceptado
+            </p>
+            <h3 id="accepted-performance-title" className="mt-1 text-xs text-[var(--color-text-muted)]">
+              Tu solución pasó todos los casos y ya forma parte de la comparación.
+            </h3>
+          </div>
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={username ? `Avatar de ${username}` : 'Tu avatar'} className="h-9 w-9 rounded-full border border-[var(--color-success)]/50 object-cover" />
+          ) : (
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-success)]/50 bg-[var(--color-success-soft)] text-xs font-black text-[var(--color-success)]" aria-hidden="true">
+              {(username?.[0] ?? 'T').toUpperCase()}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="p-4">
+        <div className="grid gap-3 sm:grid-cols-2">
+          {([
+            { id: 'runtime' as const, label: 'Tiempo', icon: Timer, value: submitResult.executionTimeMs, percentile: submitResult.runtimePercentile },
+            { id: 'memory' as const, label: 'Memoria', icon: Cpu, value: submitResult.memoryKb, percentile: submitResult.memoryPercentile },
+          ]).map((item) => {
+            const Icon = item.icon
+            const selected = metric === item.id
+            return (
+              <button
+                key={item.id}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => setMetric(item.id)}
+                className={`group min-h-24 rounded-lg border p-3 text-left transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${selected ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)]/50 shadow-[var(--shadow-sm)]' : 'border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] hover:border-[var(--color-border-strong)]'}`}
+              >
+                <span className="flex items-center gap-2 text-xs font-bold text-[var(--color-text-muted)]">
+                  <Icon className={`h-4 w-4 ${selected ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-subtle)]'}`} aria-hidden="true" />
+                  {item.label}
+                </span>
+                <span className="mt-2 block text-xl font-black text-[var(--color-text)]">
+                  {item.value == null ? '-' : formatMetricValue(item.id, item.value)}
+                </span>
+                {item.percentile != null && <span className="mt-1 block text-xs font-semibold text-[var(--color-success)]">Mejor que el {item.percentile}%</span>}
+              </button>
+            )
+          })}
+        </div>
+
+        {data.length > 0 && currentValue != null ? (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div key={metric} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="mt-5">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-bold text-[var(--color-text-muted)]">Comparación con envíos aceptados</p>
+                {percentile != null && <p className="text-xs font-bold text-[var(--color-success)]">Percentil {percentile}</p>}
+              </div>
+              <div className="h-48 w-full" role="img" aria-label={`Distribución de ${metric === 'runtime' ? 'tiempo' : 'memoria'} de envíos aceptados`}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={data} margin={{ top: 12, right: 4, left: -18, bottom: 0 }}>
+                    <CartesianGrid stroke="var(--color-border-soft)" vertical={false} />
+                    <XAxis dataKey="value" tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }} tickFormatter={(value) => metric === 'runtime' ? `${value}ms` : `${(Number(value) / 1024).toFixed(0)}MB`} />
+                    <YAxis allowDecimals={false} tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }} />
+                    <Tooltip formatter={(value: number | string) => [`${value} envíos`, 'Cantidad']} labelFormatter={(value) => formatMetricValue(metric, Number(value))} contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 8, color: 'var(--color-text)' }} />
+                    <ReferenceLine x={currentValue} stroke="var(--color-success)" strokeDasharray="4 4" label={{ value: 'Tu envío', fill: 'var(--color-success)', fontSize: 10, position: 'top' }} />
+                    <Bar dataKey="submissions" fill="var(--color-primary)" radius={[4, 4, 0, 0]} animationDuration={450} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        ) : (
+          <p className="mt-5 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-3 text-xs text-[var(--color-text-muted)]">
+            Aún no hay suficientes envíos aceptados para construir una comparación.
+          </p>
+        )}
+
+        {sourceCode && (
+          <div className="mt-5 overflow-hidden rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-bg-muted)]">
+            <div className="flex items-center justify-between gap-3 px-3 py-2.5">
+              <p className="text-xs font-bold text-[var(--color-text-muted)]">Código enviado · {language ?? 'solución'}</p>
+              <button type="button" onClick={() => void copyCode()} className="inline-flex min-h-8 items-center gap-1.5 rounded-md px-2 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]" aria-label="Copiar código">
+                {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
+                {copied ? 'Copiado' : 'Copiar'}
+              </button>
+            </div>
+            <pre className="max-h-72 overflow-auto border-t border-[var(--color-border-soft)] p-3 font-mono text-xs leading-6 text-[var(--color-text-soft)]"><code>{sourceCode}</code></pre>
+          </div>
+        )}
+      </div>
+    </motion.section>
+  )
+}
+
 export function ResultPanel({
   activeAction,
   isRunning,
@@ -196,6 +343,10 @@ export function ResultPanel({
   onRetry,
   testcases = [],
   onTestcasesChange,
+  sourceCode,
+  language,
+  avatarUrl,
+  username,
 }: ResultPanelProps) {
   const [userTab, setUserTab] = useState<ResultTab>('testcases')
   const isBusy = isRunning || isSubmitting
@@ -249,8 +400,7 @@ export function ResultPanel({
     submitResult?.error?.message ??
     ''
 
-  const distribution = submitResult?.runtimeDistribution ?? []
-  const hasRuntimeDistribution = distribution.length > 0
+  const isFullyAccepted = submitResult?.status === 'accepted' && (submitResult.totalCases ?? 0) > 0 && submitResult.passedCases === submitResult.totalCases
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-[var(--color-bg-soft)]">
@@ -313,39 +463,7 @@ export function ResultPanel({
         {submitResult && activeAction === 'submit' && (
           <div className="mb-4 space-y-4">
             <SubmitBanner submitResult={submitResult} />
-            {submitResult.status === 'accepted' && hasRuntimeDistribution && (
-              <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-4">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <h3 className="text-sm font-bold text-[var(--color-text)]">
-                      Distribución de tiempo
-                    </h3>
-                  </div>
-                  {submitResult.runtimePercentile && (
-                    <p className="text-xs font-bold text-[var(--color-success)]">
-                      Más rápido que el {submitResult.runtimePercentile}% de los envíos
-                    </p>
-                  )}
-                </div>
-                <div className="h-32">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={distribution}>
-                      <XAxis dataKey="runtimeMs" tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }} />
-                      <YAxis tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }} />
-                      <Tooltip
-                        contentStyle={{
-                          background: 'var(--color-surface)',
-                          border: '1px solid var(--color-border)',
-                          borderRadius: 8,
-                          color: 'var(--color-text)',
-                        }}
-                      />
-                      <Bar dataKey="submissions" fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            )}
+            {isFullyAccepted && <AcceptedPerformancePanel submitResult={submitResult} sourceCode={sourceCode} language={language} avatarUrl={avatarUrl} username={username} />}
           </div>
         )}
 

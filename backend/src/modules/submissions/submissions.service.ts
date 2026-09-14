@@ -1,4 +1,4 @@
-﻿import type { Prisma } from "../../generated/prisma/client";
+import type { Prisma, SupportedLanguage } from "../../generated/prisma/client";
 import { prisma } from "../../db/prisma";
 import { AppError } from "../../shared/errors/app-error";
 import {
@@ -71,6 +71,92 @@ function buildOrderBy(
 
   return {
     submittedAt: "desc"
+  };
+}
+
+function percentileBeats(values: number[], current: number | null | undefined) {
+  if (current == null || values.length === 0) return undefined;
+  const slower = values.filter((value) => value > current).length;
+  return Math.round((slower / values.length) * 1000) / 10;
+}
+
+function buildDistribution(values: number[], current: number | null | undefined) {
+  if (values.length === 0) return undefined;
+
+  const unique = [...new Set(values)].sort((a, b) => a - b);
+  if (unique.length <= 12) {
+    return unique.map((value) => ({
+      value,
+      submissions: values.filter((item) => item === value).length,
+    }));
+  }
+
+  const min = unique[0]!;
+  const max = unique.at(-1)!;
+  const width = Math.max(1, (max - min) / 10);
+  const buckets = Array.from({ length: 10 }, (_, index) => ({
+    value: Math.round(min + width * index),
+    submissions: 0,
+  }));
+
+  for (const value of values) {
+    const index = Math.min(9, Math.floor((value - min) / width));
+    buckets[index]!.submissions += 1;
+  }
+
+  if (current != null && !buckets.some((bucket) => bucket.value === current)) {
+    const index = Math.min(9, Math.floor((current - min) / width));
+    buckets[index]!.value = current;
+  }
+
+  return buckets.filter((bucket) => bucket.submissions > 0);
+}
+
+async function getSubmissionPerformance(submission: {
+  problemId: string;
+  language: SupportedLanguage;
+  executionTimeMs: number | null;
+  memoryKb: number | null;
+}) {
+  const performanceKey = `codenix:submissions:performance:${submission.problemId}:${submission.language}`;
+  const cached = await redisCache.get<{
+    runtimes: number[];
+    memories: number[];
+  }>(performanceKey);
+
+  if (cached) {
+    return {
+      runtimePercentile: percentileBeats(cached.runtimes, submission.executionTimeMs),
+      memoryPercentile: percentileBeats(cached.memories, submission.memoryKb),
+      runtimeDistribution: buildDistribution(cached.runtimes, submission.executionTimeMs),
+      memoryDistribution: buildDistribution(cached.memories, submission.memoryKb),
+    };
+  }
+
+  const comparable = await prisma.submission.findMany({
+    where: {
+      problemId: submission.problemId,
+      language: submission.language,
+      result: "accepted",
+    },
+    select: { executionTimeMs: true, memoryKb: true },
+    orderBy: { submittedAt: "asc" },
+  });
+
+  const runtimes = comparable.flatMap((item) =>
+    item.executionTimeMs == null ? [] : [item.executionTimeMs],
+  );
+  const memories = comparable.flatMap((item) =>
+    item.memoryKb == null ? [] : [item.memoryKb],
+  );
+
+  await redisCache.set(performanceKey, { runtimes, memories }, 15);
+
+  return {
+    runtimePercentile: percentileBeats(runtimes, submission.executionTimeMs),
+    memoryPercentile: percentileBeats(memories, submission.memoryKb),
+    runtimeDistribution: buildDistribution(runtimes, submission.executionTimeMs),
+    memoryDistribution: buildDistribution(memories, submission.memoryKb),
   };
 }
 
@@ -169,7 +255,10 @@ export const submissionsService = {
       }
     });
 
-    const response = toSubmissionDetail(submission, testcaseResults);
+    const performance = submission.result === "accepted"
+      ? await getSubmissionPerformance(submission)
+      : {};
+    const response = toSubmissionDetail(submission, testcaseResults, performance);
     await redisCache.set(key, response, 15);
     return response;
   }

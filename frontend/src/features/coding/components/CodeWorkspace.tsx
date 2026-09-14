@@ -477,6 +477,10 @@ function CodeWorkspace(
             onRetry={activeAction === 'submit' ? handleSubmit : handleRun}
             testcases={testcases}
             onTestcasesChange={onTestcasesChange}
+            sourceCode={code}
+            language={selectedTemplate.label}
+            avatarUrl={user?.avatarUrl}
+            username={user?.username}
           />
         </div>
       </div>

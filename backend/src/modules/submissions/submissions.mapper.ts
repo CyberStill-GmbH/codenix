@@ -47,6 +47,13 @@ type TestcaseResultWithTestcase = SubmissionTestcaseResult & {
   testcase: Testcase;
 };
 
+export type SubmissionPerformance = {
+  runtimePercentile?: number;
+  memoryPercentile?: number;
+  runtimeDistribution?: Array<{ value: number; submissions: number }>;
+  memoryDistribution?: Array<{ value: number; submissions: number }>;
+};
+
 const resultLabels: Record<SubmissionResult, string> = {
   accepted: "Accepted",
   wrong_answer: "Wrong Answer",
@@ -85,6 +92,7 @@ export function toSubmissionListItem(submission: SubmissionListItemModel) {
 export function toSubmissionDetail(
   submission: SubmissionDetailModel,
   testcaseResults: TestcaseResultWithTestcase[],
+  performance: SubmissionPerformance = {},
 ) {
   const runtimeSubmission = submission as SubmissionWithOptionalRuntimeFields;
   const passedCases = testcaseResults.filter((result) => result.passed).length;
@@ -138,6 +146,7 @@ export function toSubmissionDetail(
 
     executionTimeMs: submission.executionTimeMs,
     memoryKb: submission.memoryKb,
+    ...performance,
 
     passedCases,
     totalCases: testcaseResults.length,
