@@ -63,6 +63,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [clearSession])
 
+  useEffect(() => {
+    function handleStorage(event: StorageEvent) {
+      if (event.key !== 'codenix:access-token') return
+
+      if (event.newValue) {
+        void initializeSession()
+      } else {
+        setUser(null)
+        setStatus('unauthenticated')
+      }
+    }
+
+    window.addEventListener('storage', handleStorage)
+    return () => window.removeEventListener('storage', handleStorage)
+  }, [initializeSession])
+
   const login = useCallback(
     async (values: LoginFormValues) => {
       const session = await authApi.login(values)
