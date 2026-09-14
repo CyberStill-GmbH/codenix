@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { AlertTriangle, ArrowDown, ArrowUp, Award, Eye, ImagePlus, MessageCircle, Reply, Send, Sparkles, X } from 'lucide-react'
+import { AlertTriangle, ArrowBigDown, ArrowBigUp, Award, Eye, ImagePlus, MessageCircle, Reply, Send, Sparkles, X } from 'lucide-react'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
 import { createComment, getComments, resolveCommentImageUrl, uploadCommentImage, voteComment, type PublicComment } from '@/features/community/services/commentsApi'
 import { getPublicProfile, type PublicProfile } from '@/features/user/services/userApi'
@@ -123,11 +123,6 @@ function CommentCard({ comment, onVote, onReply, depth = 0 }: { comment: PublicC
   return (
     <article className={`${depth === 0 ? 'border-b border-[var(--color-border-soft)] py-5 last:border-b-0' : 'border-l border-[var(--color-border)] pl-3 pt-3'} group`}>
       <div className="flex gap-3">
-        <div className="flex w-9 shrink-0 flex-col items-center gap-1 text-xs font-bold text-[var(--color-text-muted)]">
-          <button type="button" aria-label="Votar positivo" onClick={() => onVote(comment.id, 'up')} className={`rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${comment.viewerVote === 'up' ? 'text-[var(--color-success)]' : 'hover:text-[var(--color-success)]'}`}><ArrowUp className="h-4 w-4" /></button>
-          <span>{comment.score}</span>
-          <button type="button" aria-label="Votar negativo" onClick={() => onVote(comment.id, 'down')} className={`rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${comment.viewerVote === 'down' ? 'text-[var(--color-error)]' : 'hover:text-[var(--color-error)]'}`}><ArrowDown className="h-4 w-4" /></button>
-        </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-2">
             <UserAvatar src={comment.author.avatarUrl} name={comment.author.name || comment.author.username} size="sm" />
@@ -141,7 +136,12 @@ function CommentCard({ comment, onVote, onReply, depth = 0 }: { comment: PublicC
           </div>
           <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[var(--color-text-soft)]">{comment.content}</p>
           {comment.imageUrl && resolveCommentImageUrl(comment.imageUrl) && <a href={resolveCommentImageUrl(comment.imageUrl)} target="_blank" rel="noreferrer" className="mt-3 block max-w-md overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"><img src={resolveCommentImageUrl(comment.imageUrl)} alt="Imagen adjunta al comentario" loading="lazy" className="max-h-64 w-full object-contain" /></a>}
-          <button type="button" onClick={() => onReply(comment)} className="mt-2 inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-semibold text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"><Reply className="h-3.5 w-3.5" aria-hidden="true" />Responder</button>
+          <div className="mt-3 flex flex-wrap items-center justify-end gap-1.5">
+            <button type="button" onClick={() => onReply(comment)} className="inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs font-semibold text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"><Reply className="h-4 w-4" aria-hidden="true" />Responder</button>
+            <span className="mx-1 h-4 w-px bg-[var(--color-border-soft)]" aria-hidden="true" />
+            <button type="button" aria-label={`Votar positivo, ${comment.upvotes} votos`} aria-pressed={comment.viewerVote === 'up'} onClick={() => onVote(comment.id, 'up')} className={`inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs font-bold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${comment.viewerVote === 'up' ? 'bg-[var(--color-success-soft)] text-[var(--color-success)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-success-soft)] hover:text-[var(--color-success)]'}`}><ArrowBigUp className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />{comment.upvotes}</button>
+            <button type="button" aria-label={`Votar negativo, ${comment.downvotes} votos`} aria-pressed={comment.viewerVote === 'down'} onClick={() => onVote(comment.id, 'down')} className={`inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs font-bold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${comment.viewerVote === 'down' ? 'bg-[var(--color-error-soft)] text-[var(--color-error)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-error-soft)] hover:text-[var(--color-error)]'}`}><ArrowBigDown className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />{comment.downvotes}</button>
+          </div>
           {comment.replies.length > 0 && <div className="mt-3">{comment.replies.map((reply) => <CommentCard key={reply.id} comment={reply} onVote={onVote} onReply={onReply} depth={depth + 1} />)}</div>}
         </div>
       </div>
@@ -210,7 +210,7 @@ export function CommentsSection({ problemId }: CommentsSectionProps) {
   async function handleVote(id: string, vote: 'up' | 'down') {
     try {
       const result = await voteComment(id, vote)
-      setComments((current) => updateCommentTree(current, id, (comment) => ({ ...comment, score: result.score, viewerVote: result.viewerVote })))
+      setComments((current) => updateCommentTree(current, id, (comment) => ({ ...comment, score: result.score, upvotes: result.upvotes, downvotes: result.downvotes, viewerVote: result.viewerVote })))
     } catch { setNotice('Inicia sesión para votar.') }
   }
 

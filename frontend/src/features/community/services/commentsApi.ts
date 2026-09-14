@@ -5,6 +5,8 @@ export type PublicComment = {
   content: string
   imageUrl: string | null
   score: number
+  upvotes: number
+  downvotes: number
   viewerVote: 'up' | 'down' | null
   createdAt: string
   author: { id: string; username: string; name: string; avatarUrl: string }
@@ -36,7 +38,7 @@ export function resolveCommentImageUrl(url: string) {
 }
 
 export async function voteComment(commentId: string, vote: 'up' | 'down') {
-  return apiRequest<{ commentId: string; score: number; viewerVote: 'up' | 'down' | null }>(
+  return apiRequest<{ commentId: string; score: number; upvotes: number; downvotes: number; viewerVote: 'up' | 'down' | null }>(
     `/community/comments/${commentId}/vote`,
     { method: 'POST', body: JSON.stringify({ vote }) },
   )
