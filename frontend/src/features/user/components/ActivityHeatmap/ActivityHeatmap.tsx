@@ -40,7 +40,7 @@ const labels = {
   weekdays: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
   legend: {
     less: 'Menos',
-    more: 'Mas',
+    more: 'Más',
   },
 }
 
@@ -135,7 +135,7 @@ export function ActivityHeatmap({
               {totalSubmissions}
             </span>
             <span className="text-sm text-[var(--color-text-muted)]">
-              {isCurrentYear ? 'envios en el ultimo año' : `envios en ${year}`}
+              {isCurrentYear ? 'envíos en el último año' : `envíos en ${year}`}
             </span>
             <Info
               className="h-3.5 w-3.5 text-[var(--color-text-subtle)]"
@@ -145,15 +145,19 @@ export function ActivityHeatmap({
 
           <div className="flex items-center gap-4 text-sm text-[var(--color-text-muted)]">
             <span>
-              Dias activos:{' '}
+              Días activos:{' '}
               <span className="font-mono font-semibold text-[var(--color-text)]">{activeDays}</span>
             </span>
             <span>
-              Racha maxima:{' '}
+              Racha máxima:{' '}
               <span className="font-mono font-semibold text-[var(--color-text)]">{maxStreak}</span>
             </span>
 
-            <button className={`inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold text-[var(--color-text-soft)] ${profileInteractiveSurfaceClassName}`}>
+            <button
+              type="button"
+              aria-label={`Cambiar periodo: ${isCurrentYear ? 'año actual' : year}`}
+              className={`inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold text-[var(--color-text-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${profileInteractiveSurfaceClassName}`}
+            >
               {isCurrentYear ? 'Año actual' : year}
               <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
@@ -177,7 +181,7 @@ export function ActivityHeatmap({
               tooltips={{
                 activity: {
                   text: (activity) =>
-                    `${activity.count} ${activity.count === 1 ? 'envio' : 'envios'} · ${formatDate(activity.date)}`,
+                    `${activity.count} ${activity.count === 1 ? 'envío' : 'envíos'} · ${formatDate(activity.date)}`,
                 },
               }}
               weekStart={1}

@@ -58,9 +58,9 @@ export function RankingCard({
 
   return (
     <div className="flex h-full flex-col p-3.5">
-      <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
+      <h2 className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
         Rating de práctica
-      </p>
+      </h2>
       <p className="mt-1.5 font-mono text-2xl font-bold leading-none text-[var(--color-accent)]">
         {solvedProblems.toLocaleString()} problemas resueltos
       </p>

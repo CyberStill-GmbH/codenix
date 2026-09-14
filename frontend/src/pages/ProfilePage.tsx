@@ -30,7 +30,7 @@ type ProfileData = {
   progress: DifficultyProgress
   activityDays: ActivityDay[]
   recentSubmissions: Submission[]
-  communityStats: { reputation: number; profileViews: number }
+  communityStats: { reputation: number; profileViews: number; reputationChange: number; profileViewsChange: number }
 }
 
 export function ProfilePage() {
@@ -109,6 +109,17 @@ export function ProfilePage() {
         {profileError && !isLoadingProfile && <ErrorState message={profileError} />}
 
         {profileData && !isLoadingProfile && !profileError && (
+        <>
+        <header className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-accent)]">
+              Mi perfil
+            </p>
+            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+              Tu avance, actividad y envíos en un solo lugar.
+            </p>
+          </div>
+        </header>
         <div className="grid min-w-0 items-start gap-2.5 md:grid-cols-[17.5rem_minmax(0,1fr)] lg:grid-cols-[20rem_minmax(0,1fr)]">
           <div className="codenix-user-stack min-w-0 !gap-3 md:w-[17.5rem] lg:w-[20rem]">
             <PageSection>
@@ -136,6 +147,7 @@ export function ProfilePage() {
             </PageSection>
           </div>
         </div>
+        </>
         )}
       </main>
     </div>
