@@ -10,7 +10,9 @@ function formatTime(totalSeconds: number) {
 }
 
 export function EditorTimer({ problemId }: EditorTimerProps) {
-  const storageKey = `codenix_editor_timer_${problemId}`
+  // Versioned key prevents the previous elapsed-time stopwatch state from
+  // leaking into the configurable countdown experience.
+  const storageKey = `codenix_editor_timer_v2_${problemId}`
   const rootRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [customMinutes, setCustomMinutes] = useState('')
