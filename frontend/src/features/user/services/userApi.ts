@@ -55,6 +55,8 @@ type BackendSubmissionListItem = {
     | 'Runtime Error'
     | 'Time Limit Exceeded'
     | 'Compilation Error'
+    | 'Memory Limit Exceeded'
+    | 'Internal Error'
     | 'Pending'
   language: string
   submittedAt: string
@@ -77,6 +79,8 @@ const statusByBackendResult: Record<BackendSubmissionListItem['result'], Submiss
   'Runtime Error': 'runtime_error',
   'Time Limit Exceeded': 'time_limit_exceeded',
   'Compilation Error': 'compilation_error',
+  'Memory Limit Exceeded': 'memory_limit_exceeded',
+  'Internal Error': 'internal_error',
   Pending: 'pending',
 }
 
@@ -99,10 +103,28 @@ export type PublicProfile = PublicProfileStats & {
   degree?: string
   createdAt: string
   solvedSubmissions: number
+  stats: UserStats
+  progress: DifficultyProgress
+  activityDays: ActivityDay[]
+  recentSubmissions: Submission[]
 }
 
 export async function getPublicProfile(username: string): Promise<PublicProfile> {
-  return apiRequest<PublicProfile>(`/community/users/${encodeURIComponent(username)}/profile`)
+  const response = await apiRequest<Omit<PublicProfile, 'recentSubmissions'> & { recentSubmissions: BackendSubmissionListItem[] }>(`/community/users/${encodeURIComponent(username)}/profile`)
+  return {
+    ...response,
+    recentSubmissions: response.recentSubmissions.map((submission) => ({
+      id: submission.id,
+      problemId: submission.problemId,
+      problemSlug: submission.problemSlug,
+      problemName: submission.problemTitle,
+      difficulty: submission.difficulty,
+      language: submission.language,
+      status: statusByBackendResult[submission.result],
+      submittedAt: submission.submittedAt,
+      topics: submission.topics,
+    })),
+  }
 }
 
 export async function getPublicProfileStats(userId: string): Promise<PublicProfileStats> {

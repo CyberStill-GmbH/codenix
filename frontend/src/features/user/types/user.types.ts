@@ -59,6 +59,8 @@ export type Submission = {
     | 'time_limit_exceeded'
     | 'runtime_error'
     | 'compilation_error'
+    | 'memory_limit_exceeded'
+    | 'internal_error'
     | 'pending'
   submittedAt: string
   topics?: string[]
