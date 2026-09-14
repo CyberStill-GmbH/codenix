@@ -38,6 +38,14 @@ const statusMeta: Record<SubmissionStatus, { label: string; className: string }>
     label: 'Error de compilación',
     className: 'border-[var(--color-error)]/30 bg-[var(--color-error-soft)] text-[var(--color-error)]',
   },
+  memory_limit_exceeded: {
+    label: 'Memoria excedida',
+    className: 'border-[var(--color-warning)]/30 bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
+  },
+  internal_error: {
+    label: 'Error interno',
+    className: 'border-[var(--color-error)]/30 bg-[var(--color-error-soft)] text-[var(--color-error)]',
+  },
   pending: {
     label: 'Intentado',
     className: 'border-[var(--color-primary)]/30 bg-[var(--color-primary-soft)] text-[var(--color-primary)]',

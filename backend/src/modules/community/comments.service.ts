@@ -1,6 +1,8 @@
 import { prisma } from "../../db/prisma";
 import { redisCache } from "../../shared/cache/redis-cache";
 import { AppError } from "../../shared/errors/app-error";
+import { usersService } from "../users/users.service";
+import { submissionsService } from "../submissions/submissions.service";
 import { calculateReputation, canVoteOnComment, toggleVote, type VoteType } from "./comments.domain";
 import type { CommentListQuery } from "./comments.schema";
 
@@ -117,7 +119,14 @@ export const commentsService = {
       }),
     ]);
     const reputationChange = weeklyVotes.reduce((total, vote) => total + (vote.voteType === "up" ? 1 : -1), 0);
-    const profile = { ...user, reputation: user.reputation?.reputationScore ?? 0, solvedSubmissions: user._count.submissions, profileViews: views, reputationChange, profileViewsChange: weeklyViews };
+    const year = new Date().getFullYear();
+    const [stats, progress, activity, recentSubmissions] = await Promise.all([
+      usersService.getStats(profileUserId),
+      usersService.getProgress(profileUserId),
+      usersService.getActivity(profileUserId, { year }),
+      submissionsService.listByUser(profileUserId, { page: 1, pageSize: 10, sort: "submitted-desc" }),
+    ]);
+    const profile = { ...user, reputation: user.reputation?.reputationScore ?? 0, solvedSubmissions: user._count.submissions, profileViews: views, reputationChange, profileViewsChange: weeklyViews, stats, progress, activityDays: activity.data, recentSubmissions: recentSubmissions.data };
     await redisCache.set(key, profile, profileCacheTtl);
     return profile;
   },
