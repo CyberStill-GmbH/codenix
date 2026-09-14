@@ -83,6 +83,11 @@ model User {
 
   submissions Submission[]
   codeRuns    CodeRun[]
+  commentsAuthored Comment[] @relation("CommentAuthor")
+  commentVotes CommentVote[]
+  profileViewsReceived ProfileView[] @relation("ProfileViewsReceived")
+  profileViewsMade ProfileView[] @relation("ProfileViewsMade")
+  reputation UserReputation?
 
   oauthAccounts OAuthAccount[]
 
@@ -121,12 +126,82 @@ model Problem {
   testcases     Testcase[]
   submissions   Submission[]
   codeRuns      CodeRun[]
+  comments      Comment[]
 
   @@index([status])
   @@index([difficulty])
   @@index([status, difficulty])
   @@index([numericId])
   @@map("problems")
+}
+
+enum CommentVoteType {
+  up
+  down
+}
+
+model Comment {
+  id         String    @id @default(uuid())
+  problemId  String
+  authorId   String
+  parentId   String?
+  content    String    @db.Text
+  upvotes    Int       @default(0)
+  downvotes  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  problem    Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  author     User      @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  parent     Comment?  @relation("CommentThread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies    Comment[] @relation("CommentThread")
+  votes      CommentVote[]
+
+  @@index([problemId, createdAt])
+  @@index([problemId, parentId, createdAt])
+  @@index([authorId, createdAt])
+  @@map("comments")
+}
+
+model CommentVote {
+  id        String          @id @default(uuid())
+  commentId String
+  userId    String
+  voteType  CommentVoteType
+  createdAt DateTime        @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([commentId, voteType])
+  @@index([userId])
+  @@map("comment_votes")
+}
+
+model UserReputation {
+  userId           String   @id
+  reputationScore  Int      @default(0)
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_reputation")
+}
+
+model ProfileView {
+  id             String   @id @default(uuid())
+  viewerId       String?
+  profileUserId  String
+  createdAt      DateTime @default(now())
+
+  viewer       User? @relation("ProfileViewsMade", fields: [viewerId], references: [id], onDelete: SetNull)
+  profileUser  User  @relation("ProfileViewsReceived", fields: [profileUserId], references: [id], onDelete: Cascade)
+
+  @@index([profileUserId, createdAt])
+  @@index([viewerId, profileUserId, createdAt])
+  @@map("user_profile_views")
 }
 
 model ProblemExample {

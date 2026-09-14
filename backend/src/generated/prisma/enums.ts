@@ -90,3 +90,11 @@ export const SupportedLanguage = {
 } as const
 
 export type SupportedLanguage = (typeof SupportedLanguage)[keyof typeof SupportedLanguage]
+
+
+export const CommentVoteType = {
+  up: 'up',
+  down: 'down'
+} as const
+
+export type CommentVoteType = (typeof CommentVoteType)[keyof typeof CommentVoteType]

@@ -240,6 +240,11 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   submissions?: Prisma.SubmissionListRelationFilter
   codeRuns?: Prisma.CodeRunListRelationFilter
+  commentsAuthored?: Prisma.CommentListRelationFilter
+  commentVotes?: Prisma.CommentVoteListRelationFilter
+  profileViewsReceived?: Prisma.ProfileViewListRelationFilter
+  profileViewsMade?: Prisma.ProfileViewListRelationFilter
+  reputation?: Prisma.XOR<Prisma.UserReputationNullableScalarRelationFilter, Prisma.UserReputationWhereInput> | null
   oauthAccounts?: Prisma.OAuthAccountListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
 }
@@ -259,6 +264,11 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   submissions?: Prisma.SubmissionOrderByRelationAggregateInput
   codeRuns?: Prisma.CodeRunOrderByRelationAggregateInput
+  commentsAuthored?: Prisma.CommentOrderByRelationAggregateInput
+  commentVotes?: Prisma.CommentVoteOrderByRelationAggregateInput
+  profileViewsReceived?: Prisma.ProfileViewOrderByRelationAggregateInput
+  profileViewsMade?: Prisma.ProfileViewOrderByRelationAggregateInput
+  reputation?: Prisma.UserReputationOrderByWithRelationInput
   oauthAccounts?: Prisma.OAuthAccountOrderByRelationAggregateInput
   passwordResetTokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
 }
@@ -281,6 +291,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   submissions?: Prisma.SubmissionListRelationFilter
   codeRuns?: Prisma.CodeRunListRelationFilter
+  commentsAuthored?: Prisma.CommentListRelationFilter
+  commentVotes?: Prisma.CommentVoteListRelationFilter
+  profileViewsReceived?: Prisma.ProfileViewListRelationFilter
+  profileViewsMade?: Prisma.ProfileViewListRelationFilter
+  reputation?: Prisma.XOR<Prisma.UserReputationNullableScalarRelationFilter, Prisma.UserReputationWhereInput> | null
   oauthAccounts?: Prisma.OAuthAccountListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
 }, "id" | "username" | "email">
@@ -336,6 +351,11 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
   codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
   oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
 }
@@ -355,6 +375,11 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
   codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
 }
@@ -374,6 +399,11 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
   codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
 }
@@ -393,6 +423,11 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
   codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -492,6 +527,11 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -502,6 +542,78 @@ export type EnumRoleFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserCreateNestedOneWithoutCommentsAuthoredInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentsAuthoredInput, Prisma.UserUncheckedCreateWithoutCommentsAuthoredInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentsAuthoredInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCommentsAuthoredNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentsAuthoredInput, Prisma.UserUncheckedCreateWithoutCommentsAuthoredInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentsAuthoredInput
+  upsert?: Prisma.UserUpsertWithoutCommentsAuthoredInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentsAuthoredInput, Prisma.UserUpdateWithoutCommentsAuthoredInput>, Prisma.UserUncheckedUpdateWithoutCommentsAuthoredInput>
+}
+
+export type UserCreateNestedOneWithoutCommentVotesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentVotesInput, Prisma.UserUncheckedCreateWithoutCommentVotesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentVotesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCommentVotesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentVotesInput, Prisma.UserUncheckedCreateWithoutCommentVotesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentVotesInput
+  upsert?: Prisma.UserUpsertWithoutCommentVotesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentVotesInput, Prisma.UserUpdateWithoutCommentVotesInput>, Prisma.UserUncheckedUpdateWithoutCommentVotesInput>
+}
+
+export type UserCreateNestedOneWithoutReputationInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReputationInput, Prisma.UserUncheckedCreateWithoutReputationInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReputationInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReputationNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReputationInput, Prisma.UserUncheckedCreateWithoutReputationInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReputationInput
+  upsert?: Prisma.UserUpsertWithoutReputationInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReputationInput, Prisma.UserUpdateWithoutReputationInput>, Prisma.UserUncheckedUpdateWithoutReputationInput>
+}
+
+export type UserCreateNestedOneWithoutProfileViewsMadeInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProfileViewsMadeInput, Prisma.UserUncheckedCreateWithoutProfileViewsMadeInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProfileViewsMadeInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutProfileViewsReceivedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProfileViewsReceivedInput, Prisma.UserUncheckedCreateWithoutProfileViewsReceivedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProfileViewsReceivedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutProfileViewsMadeNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProfileViewsMadeInput, Prisma.UserUncheckedCreateWithoutProfileViewsMadeInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProfileViewsMadeInput
+  upsert?: Prisma.UserUpsertWithoutProfileViewsMadeInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProfileViewsMadeInput, Prisma.UserUpdateWithoutProfileViewsMadeInput>, Prisma.UserUncheckedUpdateWithoutProfileViewsMadeInput>
+}
+
+export type UserUpdateOneRequiredWithoutProfileViewsReceivedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProfileViewsReceivedInput, Prisma.UserUncheckedCreateWithoutProfileViewsReceivedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProfileViewsReceivedInput
+  upsert?: Prisma.UserUpsertWithoutProfileViewsReceivedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProfileViewsReceivedInput, Prisma.UserUpdateWithoutProfileViewsReceivedInput>, Prisma.UserUncheckedUpdateWithoutProfileViewsReceivedInput>
 }
 
 export type UserCreateNestedOneWithoutSubmissionsInput = {
@@ -560,6 +672,546 @@ export type UserUpdateOneRequiredWithoutCodeRunsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCodeRunsInput, Prisma.UserUpdateWithoutCodeRunsInput>, Prisma.UserUncheckedUpdateWithoutCodeRunsInput>
 }
 
+export type UserCreateWithoutCommentsAuthoredInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCommentsAuthoredInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCommentsAuthoredInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentsAuthoredInput, Prisma.UserUncheckedCreateWithoutCommentsAuthoredInput>
+}
+
+export type UserUpsertWithoutCommentsAuthoredInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCommentsAuthoredInput, Prisma.UserUncheckedUpdateWithoutCommentsAuthoredInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentsAuthoredInput, Prisma.UserUncheckedCreateWithoutCommentsAuthoredInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCommentsAuthoredInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCommentsAuthoredInput, Prisma.UserUncheckedUpdateWithoutCommentsAuthoredInput>
+}
+
+export type UserUpdateWithoutCommentsAuthoredInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCommentsAuthoredInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCommentVotesInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCommentVotesInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCommentVotesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentVotesInput, Prisma.UserUncheckedCreateWithoutCommentVotesInput>
+}
+
+export type UserUpsertWithoutCommentVotesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCommentVotesInput, Prisma.UserUncheckedUpdateWithoutCommentVotesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentVotesInput, Prisma.UserUncheckedCreateWithoutCommentVotesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCommentVotesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCommentVotesInput, Prisma.UserUncheckedUpdateWithoutCommentVotesInput>
+}
+
+export type UserUpdateWithoutCommentVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCommentVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutReputationInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReputationInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReputationInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReputationInput, Prisma.UserUncheckedCreateWithoutReputationInput>
+}
+
+export type UserUpsertWithoutReputationInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReputationInput, Prisma.UserUncheckedUpdateWithoutReputationInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReputationInput, Prisma.UserUncheckedCreateWithoutReputationInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReputationInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReputationInput, Prisma.UserUncheckedUpdateWithoutReputationInput>
+}
+
+export type UserUpdateWithoutReputationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReputationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutProfileViewsMadeInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutProfileViewsMadeInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutProfileViewsMadeInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutProfileViewsMadeInput, Prisma.UserUncheckedCreateWithoutProfileViewsMadeInput>
+}
+
+export type UserCreateWithoutProfileViewsReceivedInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutProfileViewsReceivedInput = {
+  id?: string
+  name: string
+  username: string
+  email: string
+  passwordHash: string
+  avatarUrl?: string
+  degree?: string
+  githubUrl?: string
+  linkedinUrl?: string
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutProfileViewsReceivedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutProfileViewsReceivedInput, Prisma.UserUncheckedCreateWithoutProfileViewsReceivedInput>
+}
+
+export type UserUpsertWithoutProfileViewsMadeInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutProfileViewsMadeInput, Prisma.UserUncheckedUpdateWithoutProfileViewsMadeInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutProfileViewsMadeInput, Prisma.UserUncheckedCreateWithoutProfileViewsMadeInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutProfileViewsMadeInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutProfileViewsMadeInput, Prisma.UserUncheckedUpdateWithoutProfileViewsMadeInput>
+}
+
+export type UserUpdateWithoutProfileViewsMadeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutProfileViewsMadeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutProfileViewsReceivedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutProfileViewsReceivedInput, Prisma.UserUncheckedUpdateWithoutProfileViewsReceivedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutProfileViewsReceivedInput, Prisma.UserUncheckedCreateWithoutProfileViewsReceivedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutProfileViewsReceivedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutProfileViewsReceivedInput, Prisma.UserUncheckedUpdateWithoutProfileViewsReceivedInput>
+}
+
+export type UserUpdateWithoutProfileViewsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutProfileViewsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  degree?: Prisma.StringFieldUpdateOperationsInput | string
+  githubUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedinUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutSubmissionsInput = {
   id?: string
   name: string
@@ -574,6 +1226,11 @@ export type UserCreateWithoutSubmissionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
   oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
 }
@@ -592,6 +1249,11 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
 }
@@ -626,6 +1288,11 @@ export type UserUpdateWithoutSubmissionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
 }
@@ -644,6 +1311,11 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -663,6 +1335,11 @@ export type UserCreateWithoutOauthAccountsInput = {
   updatedAt?: Date | string
   submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
   codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
 }
 
@@ -681,6 +1358,11 @@ export type UserUncheckedCreateWithoutOauthAccountsInput = {
   updatedAt?: Date | string
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
   codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -715,6 +1397,11 @@ export type UserUpdateWithoutOauthAccountsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
   codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
 }
 
@@ -733,6 +1420,11 @@ export type UserUncheckedUpdateWithoutOauthAccountsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
   codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -751,6 +1443,11 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   updatedAt?: Date | string
   submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
   codeRuns?: Prisma.CodeRunCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
   oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
 }
 
@@ -769,6 +1466,11 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   updatedAt?: Date | string
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
   codeRuns?: Prisma.CodeRunUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -803,6 +1505,11 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
   codeRuns?: Prisma.CodeRunUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
 }
 
@@ -821,6 +1528,11 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
   codeRuns?: Prisma.CodeRunUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -838,6 +1550,11 @@ export type UserCreateWithoutCodeRunsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   submissions?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationCreateNestedOneWithoutUserInput
   oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
 }
@@ -856,6 +1573,11 @@ export type UserUncheckedCreateWithoutCodeRunsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  commentsAuthored?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentVotes?: Prisma.CommentVoteUncheckedCreateNestedManyWithoutUserInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutProfileUserInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedCreateNestedManyWithoutViewerInput
+  reputation?: Prisma.UserReputationUncheckedCreateNestedOneWithoutUserInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
 }
@@ -890,6 +1612,11 @@ export type UserUpdateWithoutCodeRunsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUpdateOneWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
 }
@@ -908,6 +1635,11 @@ export type UserUncheckedUpdateWithoutCodeRunsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  commentsAuthored?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentVotes?: Prisma.CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+  profileViewsReceived?: Prisma.ProfileViewUncheckedUpdateManyWithoutProfileUserNestedInput
+  profileViewsMade?: Prisma.ProfileViewUncheckedUpdateManyWithoutViewerNestedInput
+  reputation?: Prisma.UserReputationUncheckedUpdateOneWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -920,6 +1652,10 @@ export type UserUncheckedUpdateWithoutCodeRunsInput = {
 export type UserCountOutputType = {
   submissions: number
   codeRuns: number
+  commentsAuthored: number
+  commentVotes: number
+  profileViewsReceived: number
+  profileViewsMade: number
   oauthAccounts: number
   passwordResetTokens: number
 }
@@ -927,6 +1663,10 @@ export type UserCountOutputType = {
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   submissions?: boolean | UserCountOutputTypeCountSubmissionsArgs
   codeRuns?: boolean | UserCountOutputTypeCountCodeRunsArgs
+  commentsAuthored?: boolean | UserCountOutputTypeCountCommentsAuthoredArgs
+  commentVotes?: boolean | UserCountOutputTypeCountCommentVotesArgs
+  profileViewsReceived?: boolean | UserCountOutputTypeCountProfileViewsReceivedArgs
+  profileViewsMade?: boolean | UserCountOutputTypeCountProfileViewsMadeArgs
   oauthAccounts?: boolean | UserCountOutputTypeCountOauthAccountsArgs
   passwordResetTokens?: boolean | UserCountOutputTypeCountPasswordResetTokensArgs
 }
@@ -953,6 +1693,34 @@ export type UserCountOutputTypeCountSubmissionsArgs<ExtArgs extends runtime.Type
  */
 export type UserCountOutputTypeCountCodeRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CodeRunWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCommentsAuthoredArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCommentVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentVoteWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountProfileViewsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProfileViewWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountProfileViewsMadeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProfileViewWhereInput
 }
 
 /**
@@ -985,6 +1753,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   submissions?: boolean | Prisma.User$submissionsArgs<ExtArgs>
   codeRuns?: boolean | Prisma.User$codeRunsArgs<ExtArgs>
+  commentsAuthored?: boolean | Prisma.User$commentsAuthoredArgs<ExtArgs>
+  commentVotes?: boolean | Prisma.User$commentVotesArgs<ExtArgs>
+  profileViewsReceived?: boolean | Prisma.User$profileViewsReceivedArgs<ExtArgs>
+  profileViewsMade?: boolean | Prisma.User$profileViewsMadeArgs<ExtArgs>
+  reputation?: boolean | Prisma.User$reputationArgs<ExtArgs>
   oauthAccounts?: boolean | Prisma.User$oauthAccountsArgs<ExtArgs>
   passwordResetTokens?: boolean | Prisma.User$passwordResetTokensArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1039,6 +1812,11 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   submissions?: boolean | Prisma.User$submissionsArgs<ExtArgs>
   codeRuns?: boolean | Prisma.User$codeRunsArgs<ExtArgs>
+  commentsAuthored?: boolean | Prisma.User$commentsAuthoredArgs<ExtArgs>
+  commentVotes?: boolean | Prisma.User$commentVotesArgs<ExtArgs>
+  profileViewsReceived?: boolean | Prisma.User$profileViewsReceivedArgs<ExtArgs>
+  profileViewsMade?: boolean | Prisma.User$profileViewsMadeArgs<ExtArgs>
+  reputation?: boolean | Prisma.User$reputationArgs<ExtArgs>
   oauthAccounts?: boolean | Prisma.User$oauthAccountsArgs<ExtArgs>
   passwordResetTokens?: boolean | Prisma.User$passwordResetTokensArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1051,6 +1829,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     submissions: Prisma.$SubmissionPayload<ExtArgs>[]
     codeRuns: Prisma.$CodeRunPayload<ExtArgs>[]
+    commentsAuthored: Prisma.$CommentPayload<ExtArgs>[]
+    commentVotes: Prisma.$CommentVotePayload<ExtArgs>[]
+    profileViewsReceived: Prisma.$ProfileViewPayload<ExtArgs>[]
+    profileViewsMade: Prisma.$ProfileViewPayload<ExtArgs>[]
+    reputation: Prisma.$UserReputationPayload<ExtArgs> | null
     oauthAccounts: Prisma.$OAuthAccountPayload<ExtArgs>[]
     passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
   }
@@ -1463,6 +2246,11 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   submissions<T extends Prisma.User$submissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   codeRuns<T extends Prisma.User$codeRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$codeRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodeRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commentsAuthored<T extends Prisma.User$commentsAuthoredArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsAuthoredArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commentVotes<T extends Prisma.User$commentVotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentVotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  profileViewsReceived<T extends Prisma.User$profileViewsReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profileViewsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  profileViewsMade<T extends Prisma.User$profileViewsMadeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profileViewsMadeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reputation<T extends Prisma.User$reputationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reputationArgs<ExtArgs>>): Prisma.Prisma__UserReputationClient<runtime.Types.Result.GetResult<Prisma.$UserReputationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   oauthAccounts<T extends Prisma.User$oauthAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$oauthAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OAuthAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   passwordResetTokens<T extends Prisma.User$passwordResetTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1944,6 +2732,121 @@ export type User$codeRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.CodeRunScalarFieldEnum | Prisma.CodeRunScalarFieldEnum[]
+}
+
+/**
+ * User.commentsAuthored
+ */
+export type User$commentsAuthoredArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * User.commentVotes
+ */
+export type User$commentVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommentVote
+   */
+  select?: Prisma.CommentVoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommentVote
+   */
+  omit?: Prisma.CommentVoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentVoteInclude<ExtArgs> | null
+  where?: Prisma.CommentVoteWhereInput
+  orderBy?: Prisma.CommentVoteOrderByWithRelationInput | Prisma.CommentVoteOrderByWithRelationInput[]
+  cursor?: Prisma.CommentVoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentVoteScalarFieldEnum | Prisma.CommentVoteScalarFieldEnum[]
+}
+
+/**
+ * User.profileViewsReceived
+ */
+export type User$profileViewsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProfileView
+   */
+  select?: Prisma.ProfileViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProfileView
+   */
+  omit?: Prisma.ProfileViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProfileViewInclude<ExtArgs> | null
+  where?: Prisma.ProfileViewWhereInput
+  orderBy?: Prisma.ProfileViewOrderByWithRelationInput | Prisma.ProfileViewOrderByWithRelationInput[]
+  cursor?: Prisma.ProfileViewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProfileViewScalarFieldEnum | Prisma.ProfileViewScalarFieldEnum[]
+}
+
+/**
+ * User.profileViewsMade
+ */
+export type User$profileViewsMadeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProfileView
+   */
+  select?: Prisma.ProfileViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProfileView
+   */
+  omit?: Prisma.ProfileViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProfileViewInclude<ExtArgs> | null
+  where?: Prisma.ProfileViewWhereInput
+  orderBy?: Prisma.ProfileViewOrderByWithRelationInput | Prisma.ProfileViewOrderByWithRelationInput[]
+  cursor?: Prisma.ProfileViewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProfileViewScalarFieldEnum | Prisma.ProfileViewScalarFieldEnum[]
+}
+
+/**
+ * User.reputation
+ */
+export type User$reputationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserReputation
+   */
+  select?: Prisma.UserReputationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserReputation
+   */
+  omit?: Prisma.UserReputationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserReputationInclude<ExtArgs> | null
+  where?: Prisma.UserReputationWhereInput
 }
 
 /**

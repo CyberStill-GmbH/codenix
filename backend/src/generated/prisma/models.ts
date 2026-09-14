@@ -10,6 +10,10 @@
  */
 export type * from './models/User'
 export type * from './models/Problem'
+export type * from './models/Comment'
+export type * from './models/CommentVote'
+export type * from './models/UserReputation'
+export type * from './models/ProfileView'
 export type * from './models/ProblemExample'
 export type * from './models/ProblemCodeTemplate'
 export type * from './models/Topic'
