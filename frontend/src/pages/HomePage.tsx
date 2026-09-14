@@ -11,7 +11,7 @@ export function HomePage() {
   return (
     <div
       data-theme="dark"
-      className="codenix-landing min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]"
+      className="codenix-landing min-h-screen overflow-x-clip bg-[var(--color-bg)] text-[var(--color-text)]"
     >
       <NavbarSection />
       <HeroSection />

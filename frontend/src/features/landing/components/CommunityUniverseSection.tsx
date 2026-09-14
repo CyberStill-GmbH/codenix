@@ -62,7 +62,7 @@ function OrbitLogo({ link, index }: { link: SocialLink; index: number }) {
   const colors = ['#5865F2', '#25D366', '#0A66C2', '#FF0000']
   const angle = index * 90
   return (
-    <div className="community-orbit absolute left-1/2 top-1/2 z-20" style={{ '--orbit-start': `${angle}deg`, '--orbit-duration': '34s', '--orbit-delay': '0s', '--orbit-radius': 'clamp(132px, 20vw, 176px)' } as CSSProperties}>
+    <div className="community-orbit absolute left-1/2 top-1/2 z-20" style={{ '--orbit-start': `${angle}deg`, '--orbit-duration': '34s', '--orbit-delay': '0s', '--orbit-radius': 'clamp(96px, 30vw, 176px)' } as CSSProperties}>
       <div style={{ transform: 'translateX(var(--orbit-radius))' }}>
         <a href={link.href} target="_blank" rel="noopener noreferrer" title={link.label} className="group relative flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(56,189,248,0.2)] bg-[rgba(5,9,20,0.78)] p-3 shadow-[0_8px_24px_rgba(0,0,0,0.24)] transition-transform duration-150 hover:scale-110" aria-label={`Abrir ${link.label}`}>
           <link.Icon className="h-8 w-8" style={{ color: colors[index] }} aria-hidden="true" />

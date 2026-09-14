@@ -38,7 +38,7 @@ export const landingTokens = {
       'mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8',
     link: 'relative inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] px-3 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
     mobileLink:
-      'relative flex w-full items-center justify-between rounded-[var(--radius-md)] px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
+      'relative flex min-h-11 w-full items-center justify-between gap-3 rounded-[var(--radius-md)] px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
     activeLink:
       'bg-[var(--color-primary-soft)] text-[var(--color-text)] after:absolute after:inset-x-3 after:-bottom-px after:h-px after:bg-[var(--color-accent)]',
     badge:
@@ -47,7 +47,7 @@ export const landingTokens = {
     mobileCta:
       'inline-flex min-h-11 items-center justify-center gap-1.5 rounded-[var(--radius-lg)] border border-[var(--color-primary)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white transition-colors duration-200 hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
     menuButton:
-      'inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-glass-border)] bg-[var(--color-surface-translucent)] text-[var(--color-text-muted)] transition-colors duration-200 hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)] md:hidden',
+      'inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-glass-border)] bg-[var(--color-surface-translucent)] text-[var(--color-text-muted)] transition-colors duration-200 hover:border-[var(--color-border-strong)] hover:text-[var(--color-text)] lg:hidden',
     mobileMenu:
       'fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-4 py-6 shadow-[var(--shadow-xl)] backdrop-blur-xl [animation:codenix-mobile-menu-in_180ms_var(--ease-out-expo)_both] motion-reduce:[animation:none] md:hidden',
   },
