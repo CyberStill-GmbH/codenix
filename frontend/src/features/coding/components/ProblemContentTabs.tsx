@@ -397,7 +397,7 @@ export function ProblemContentTabs({
           </section>
         )}
 
-        {activeTab === "community" && <CommentsSection problemId={problem.apiId} />}
+        {activeTab === "community" && <CommentsSection problemId={problem.apiId ?? problem.id} />}
       </div>
     </aside>
   );
