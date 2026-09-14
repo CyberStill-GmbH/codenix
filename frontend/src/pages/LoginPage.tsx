@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { LogIn, Mail } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -35,11 +35,17 @@ export function LoginPage() {
   const location = useLocation()
   const locationState = location.state as LocationState | null
   const returnTo = locationState?.returnTo ?? '/problems'
-  const { login } = useAuth()
+  const { login, isAuthenticated, status } = useAuth()
   const [values, setValues] = useState<LoginFormValues>(initialValues)
   const [errors, setErrors] = useState<LoginFormErrors>({})
   const [serverError, setServerError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (status === 'authenticated' && isAuthenticated) {
+      navigate(returnTo, { replace: true })
+    }
+  }, [isAuthenticated, navigate, returnTo, status])
 
   function update<K extends keyof LoginFormValues>(field: K, value: LoginFormValues[K]) {
     setValues((current) => ({ ...current, [field]: value }))
