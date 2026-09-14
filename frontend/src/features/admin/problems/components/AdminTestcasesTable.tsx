@@ -24,8 +24,8 @@ export function AdminTestcasesTable({
   if (testcases.length === 0) {
     return (
       <EmptyState
-        title="No testcases yet"
-        description="Add at least one sample testcase and one hidden testcase before publishing this problem."
+        title="Aún no hay casos de prueba"
+        description="Agrega al menos un caso visible y uno oculto antes de publicar este problema."
       />
     )
   }
@@ -33,7 +33,7 @@ export function AdminTestcasesTable({
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
       <div className="hidden grid-cols-[8rem_minmax(14rem,1fr)_minmax(14rem,1fr)_6rem_minmax(12rem,0.7fr)] gap-4 border-b border-slate-800 px-5 py-3 lg:grid">
-        {['Visibility', 'Input preview', 'Expected output', 'Weight', 'Actions'].map(
+        {['Visibilidad', 'Vista previa de entrada', 'Salida esperada', 'Peso', 'Acciones'].map(
           (heading) => (
             <span
               key={heading}

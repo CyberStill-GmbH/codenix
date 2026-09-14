@@ -26,7 +26,7 @@ export function AdminProblemStatementFields({
           Statement
         </h2>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Problem content shown in the solving workspace.
+          Contenido del problema que verá la persona usuaria.
         </p>
       </div>
 
@@ -41,21 +41,21 @@ export function AdminProblemStatementFields({
         </StatementField>
 
         <div className="grid gap-4 lg:grid-cols-2">
-          <StatementField label="Input format">
+          <StatementField label="Formato de entrada">
             <textarea
               value={values.inputFormat}
               onChange={(event) => onChange('inputFormat', event.target.value)}
               className={textareaClassName}
-              placeholder="Describe the input shape."
+              placeholder="Describe la forma de entrada."
             />
           </StatementField>
 
-          <StatementField label="Output format">
+          <StatementField label="Formato de salida">
             <textarea
               value={values.outputFormat}
               onChange={(event) => onChange('outputFormat', event.target.value)}
               className={textareaClassName}
-              placeholder="Describe the expected output."
+              placeholder="Describe la salida esperada."
             />
           </StatementField>
         </div>

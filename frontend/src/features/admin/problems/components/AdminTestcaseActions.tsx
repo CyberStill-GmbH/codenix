@@ -36,7 +36,7 @@ export function AdminTestcaseActions({
         onClick={() => onDelete(testcase)}
       >
         <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-        {isDeleting ? 'Deleting' : 'Delete'}
+        {isDeleting ? 'Eliminando' : 'Eliminar'}
       </button>
     </div>
   )

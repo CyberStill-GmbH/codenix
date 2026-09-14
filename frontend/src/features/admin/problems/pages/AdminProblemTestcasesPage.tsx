@@ -35,7 +35,7 @@ export function AdminProblemTestcasesPage() {
 
     async function loadTestcases() {
       if (!problemId) {
-        setError('Problem id is required.')
+        setError('Se necesita el identificador del problema.')
         setIsLoading(false)
         return
       }
@@ -57,7 +57,7 @@ export function AdminProblemTestcasesPage() {
           setError(
             loadError instanceof Error
               ? loadError.message
-              : 'We could not load this problem testcases.',
+              : 'No se pudieron cargar los casos de prueba.',
           )
         }
       } finally {
@@ -94,21 +94,21 @@ export function AdminProblemTestcasesPage() {
     const hasHidden = testcaseStats.hidden > 0
 
     if (hasSample && hasHidden) {
-      return { canPublish: true, message: 'Problem is ready to publish.' }
+      return { canPublish: true, message: 'El problema está listo para publicarse.' }
     }
 
     if (!hasSample && !hasHidden) {
       return {
         canPublish: false,
-        message: 'Add at least 1 sample testcase and 1 hidden testcase before publishing.',
+        message: 'Agrega al menos un caso visible y uno oculto antes de publicar.',
       }
     }
 
     return {
       canPublish: false,
       message: hasSample
-        ? 'Add at least 1 hidden testcase before publishing.'
-        : 'Add at least 1 sample testcase before publishing.',
+        ? 'Agrega al menos un caso oculto antes de publicar.'
+        : 'Agrega al menos un caso visible antes de publicar.',
     }
   }, [testcaseStats.hidden, testcaseStats.sample])
 
@@ -145,14 +145,14 @@ export function AdminProblemTestcasesPage() {
 
       const nextProblem = await adminProblemsService.getProblem(problemId)
       setProblem(nextProblem)
-      setFeedback(editingTestcase ? 'Testcase updated.' : 'Testcase created.')
+      setFeedback(editingTestcase ? 'Caso de prueba actualizado.' : 'Caso de prueba creado.')
       setEditingTestcase(null)
       setIsFormOpen(false)
     } catch (saveError) {
       setError(
         saveError instanceof Error
           ? saveError.message
-          : 'We could not save the testcase. Try again.',
+          : 'No se pudo guardar el caso de prueba. Inténtalo de nuevo.',
       )
     } finally {
       setIsSubmitting(false)
@@ -162,7 +162,7 @@ export function AdminProblemTestcasesPage() {
   const handleDelete = async (testcase: AdminTestcase) => {
     if (!problemId) return
 
-    const confirmed = window.confirm('Delete this testcase? This action cannot be undone.')
+    const confirmed = window.confirm('¿Eliminar este caso de prueba? Esta acción no se puede deshacer.')
 
     if (!confirmed) return
 
@@ -176,12 +176,12 @@ export function AdminProblemTestcasesPage() {
 
       const nextProblem = await adminProblemsService.getProblem(problemId)
       setProblem(nextProblem)
-      setFeedback('Testcase deleted.')
+      setFeedback('Caso de prueba eliminado.')
     } catch (deleteError) {
       setError(
         deleteError instanceof Error
           ? deleteError.message
-          : 'We could not delete the testcase. Try again.',
+          : 'No se pudo eliminar el caso de prueba. Inténtalo de nuevo.',
       )
     } finally {
       setDeletingTestcaseId(null)
@@ -201,8 +201,8 @@ export function AdminProblemTestcasesPage() {
 
     const confirmed = window.confirm(
       nextStatus === 'published'
-        ? `Publish "${problem.title}"?`
-        : `Unpublish "${problem.title}"?`,
+        ? `¿Publicar «${problem.title}»?`
+        : `¿Retirar «${problem.title}»?`,
     )
 
     if (!confirmed) return
@@ -218,15 +218,15 @@ export function AdminProblemTestcasesPage() {
 
       setProblem(updatedProblem)
       setFeedback(
-        `"${updatedProblem.title}" is now ${
-          updatedProblem.status === 'published' ? 'Published' : 'Draft'
+        `«${updatedProblem.title}» ahora está ${
+          updatedProblem.status === 'published' ? 'publicado' : 'borrador'
         }.`,
       )
     } catch (publishError) {
       setError(
         publishError instanceof Error
           ? publishError.message
-          : 'We could not update the publish status. Try again.',
+          : 'No se pudo actualizar el estado de publicación. Inténtalo de nuevo.',
       )
     } finally {
       setIsPublishing(false)
@@ -240,26 +240,25 @@ export function AdminProblemTestcasesPage() {
       <main className="codenix-app-shell codenix-user-main">
         <StaggerContainer>
           <PageSection>
-            <header className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+            <header className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
               <Link
                 to="/admin/problems"
                 className="inline-flex items-center gap-2 rounded-full text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                Back to problems
+                Volver a problemas
               </Link>
 
               <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
                     <h1 className="font-display text-3xl font-bold tracking-normal text-[var(--color-text)]">
-                      {problem?.title ?? 'Problem testcases'}
+                      {problem?.title ?? 'Casos de prueba del problema'}
                     </h1>
                     {problem && <AdminProblemStatusBadge status={problem.status} />}
                   </div>
                   <p className="mt-2 max-w-2xl text-sm text-[var(--color-text-muted)]">
-                    Manage sample cases shown to users and hidden judge cases used for
-                    validation.
+                    Administra los casos visibles del enunciado y los casos ocultos que validan las soluciones.
                   </p>
                 </div>
 
@@ -271,7 +270,7 @@ export function AdminProblemTestcasesPage() {
                     className="rounded-full"
                   >
                     <Plus className="h-4 w-4" aria-hidden="true" />
-                    Create testcase
+                    Crear caso de prueba
                   </Button>
 
                   <Button
@@ -283,10 +282,10 @@ export function AdminProblemTestcasesPage() {
                   >
                     <UploadCloud className="h-4 w-4" aria-hidden="true" />
                     {isPublishing
-                      ? 'Saving'
+                      ? 'Guardando'
                       : problem?.status === 'published'
-                        ? 'Unpublish'
-                        : 'Publish'}
+                        ? 'Retirar publicación'
+                        : 'Publicar'}
                   </Button>
                 </div>
               </div>
@@ -295,14 +294,14 @@ export function AdminProblemTestcasesPage() {
 
           <PageSection delay={75}>
             <section className="grid gap-3 md:grid-cols-3">
-              <AdminTestcaseMetric label="Total testcases" value={testcaseStats.total} />
+              <AdminTestcaseMetric label="Casos totales" value={testcaseStats.total} />
               <AdminTestcaseMetric
-                label="Sample testcases"
+                label="Casos visibles"
                 value={testcaseStats.sample}
                 tone="sample"
               />
               <AdminTestcaseMetric
-                label="Hidden testcases"
+                label="Casos ocultos"
                 value={testcaseStats.hidden}
                 tone="hidden"
               />
@@ -380,7 +379,7 @@ function AdminTestcaseMetric({
   tone = 'default',
 }: AdminTestcaseMetricProps) {
   return (
-    <div className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-4">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
       <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
         {label}
       </span>
@@ -396,7 +395,7 @@ function AdminTestcaseMetric({
 
 function AdminTestcasesLoadingState() {
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-950/60 p-3 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+    <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)]">
       {[0, 1, 2].map((item) => (
         <div
           key={item}

@@ -48,7 +48,7 @@ export function AdminTestcaseForm({
     event.preventDefault()
 
     if (!payload.input.trim() || !payload.expectedOutput.trim()) {
-      setFormError('Input and expected output are required.')
+      setFormError('La entrada y la salida esperada son obligatorias.')
       return
     }
 
@@ -64,15 +64,14 @@ export function AdminTestcaseForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]"
+      className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]"
     >
       <div className="flex flex-col gap-1">
         <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
-          {testcase ? 'Edit testcase' : 'Create testcase'}
+          {testcase ? 'Editar caso de prueba' : 'Crear caso de prueba'}
         </h2>
         <p className="text-sm text-[var(--color-text-muted)]">
-          Sample cases appear in the problem statement. Hidden cases are reserved for judge
-          validation.
+          Los casos visibles aparecen en el enunciado. Los ocultos se reservan para validar las soluciones.
         </p>
       </div>
 
@@ -127,8 +126,8 @@ export function AdminTestcaseForm({
             }
             className={fieldClassName}
           >
-            <option value="sample">Sample</option>
-            <option value="hidden">Hidden</option>
+            <option value="sample">Visible</option>
+            <option value="hidden">Oculto</option>
           </select>
         </label>
 
@@ -149,7 +148,7 @@ export function AdminTestcaseForm({
               }))
             }
             className={fieldClassName}
-            placeholder="Optional"
+            placeholder="Opcional"
           />
         </label>
       </div>
@@ -178,7 +177,7 @@ export function AdminTestcaseForm({
           className="rounded-full"
         >
           <Save className="h-4 w-4" aria-hidden="true" />
-          {isSubmitting ? 'Saving' : testcase ? 'Save changes' : 'Create testcase'}
+          {isSubmitting ? 'Guardando' : testcase ? 'Guardar cambios' : 'Crear caso de prueba'}
         </Button>
       </div>
     </form>

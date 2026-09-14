@@ -28,7 +28,7 @@ const emptyProblemFormValues: AdminProblemFormValues = {
   difficulty: 'easy',
   tags: [],
   descriptionMarkdown:
-    '## Descripcion\n\nEscribe el enunciado del problema aqui...\n\n## Ejemplos\n\n...',
+    '## Descripción\n\nEscribe aquí el enunciado del problema.\n\n## Ejemplos\n\n...',
   constraintsList: [],
   parameters: [],
   outputType: 'number',
@@ -75,7 +75,7 @@ export function AdminProblemFormPage() {
         }
       } catch {
         if (isMounted) {
-          setError('We could not load this problem for editing.')
+          setError('No se pudo cargar este problema para editarlo.')
         }
       } finally {
         if (isMounted) {
@@ -141,20 +141,20 @@ export function AdminProblemFormPage() {
       if (isEditMode && problemId) {
         const updatedProblem = await adminProblemsService.updateProblem(problemId, values)
         setProblem(updatedProblem)
-        setFeedback('Problem changes saved.')
+        setFeedback('Cambios guardados.')
         return
       }
 
       const createdProblem = await adminProblemsService.createProblem(values)
       navigate(`/admin/problems/${createdProblem.slug}/edit`, {
         replace: true,
-        state: { message: 'Problem draft created.' },
+        state: { message: 'Borrador creado.' },
       })
     } catch (saveError) {
       setError(
         saveError instanceof Error
           ? saveError.message
-          : 'We could not save this problem. Try again.',
+          : 'No se pudo guardar el problema. Inténtalo de nuevo.',
       )
     } finally {
       setIsSaving(false)
@@ -168,13 +168,13 @@ export function AdminProblemFormPage() {
       <main className="codenix-app-shell codenix-user-main">
         <StaggerContainer>
           <PageSection>
-            <header className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+            <header className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
               <Link
                 to="/admin/problems"
                 className="inline-flex items-center gap-2 rounded-full text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                Back to problems
+                Volver a problemas
               </Link>
 
               <div className="mt-5 flex flex-col gap-2">
@@ -184,14 +184,13 @@ export function AdminProblemFormPage() {
                   ) : (
                     <Plus className="h-4 w-4 text-[var(--color-primary)]" />
                   )}
-                  {isEditMode ? 'Edit problem' : 'New draft'}
+                  {isEditMode ? 'Editar problema' : 'Nuevo borrador'}
                 </div>
                 <h1 className="font-display text-3xl font-bold tracking-normal text-[var(--color-text)]">
-                  {isEditMode ? problem?.title ?? 'Edit problem' : 'Create problem'}
+                  {isEditMode ? problem?.title ?? 'Editar problema' : 'Crear problema'}
                 </h1>
                 <p className="max-w-2xl text-sm text-[var(--color-text-muted)]">
-                  Draft the statement, examples and starter code before publishing to the
-                  Codenix catalog.
+                  Prepara el enunciado, los ejemplos y las plantillas antes de publicar el problema en el catálogo de Codenix.
                 </p>
               </div>
             </header>
@@ -229,7 +228,7 @@ export function AdminProblemFormPage() {
 
 function AdminProblemFormLoadingState() {
   return (
-    <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
       <div className="animate-pulse space-y-4">
         <span className="block h-6 w-48 rounded-full bg-slate-800" />
         <span className="block h-11 rounded-2xl bg-slate-800" />

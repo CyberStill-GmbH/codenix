@@ -12,8 +12,8 @@ const visibilityClassName: Record<TestcaseVisibility, string> = {
 }
 
 const visibilityLabel: Record<TestcaseVisibility, string> = {
-  sample: 'Sample',
-  hidden: 'Hidden',
+  sample: 'Visible',
+  hidden: 'Oculto',
 }
 
 export function AdminTestcaseVisibilityBadge({

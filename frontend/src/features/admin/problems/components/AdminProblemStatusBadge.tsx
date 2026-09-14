@@ -12,8 +12,8 @@ const statusClassName: Record<ProblemStatus, string> = {
 }
 
 const statusLabel: Record<ProblemStatus, string> = {
-  published: 'Published',
-  draft: 'Draft',
+  published: 'Publicado',
+  draft: 'Borrador',
 }
 
 export function AdminProblemStatusBadge({ status }: AdminProblemStatusBadgeProps) {

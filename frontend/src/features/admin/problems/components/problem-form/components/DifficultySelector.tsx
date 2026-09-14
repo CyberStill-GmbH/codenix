@@ -8,17 +8,17 @@ type DifficultySelectorProps = {
 const options: Array<{ value: ProblemDifficulty; label: string; className: string }> = [
   {
     value: 'easy',
-    label: 'EASY',
+    label: 'FÁCIL',
     className: 'border-[var(--color-success)]/40 text-[var(--color-success)]',
   },
   {
     value: 'medium',
-    label: 'MEDIUM',
+    label: 'MEDIO',
     className: 'border-[var(--color-warning)]/40 text-[var(--color-warning)]',
   },
   {
     value: 'hard',
-    label: 'HARD',
+    label: 'DIFÍCIL',
     className: 'border-[var(--color-error)]/40 text-[var(--color-error)]',
   },
 ]

@@ -18,9 +18,9 @@ const inputClassName =
   'h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]'
 
 const difficultyOptions: Array<{ value: ProblemDifficulty; label: string }> = [
-  { value: 'easy', label: 'Easy' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'hard', label: 'Hard' },
+  { value: 'easy', label: 'Fácil' },
+  { value: 'medium', label: 'Medio' },
+  { value: 'hard', label: 'Difícil' },
 ]
 
 export function AdminProblemMetadataFields({
@@ -40,7 +40,7 @@ export function AdminProblemMetadataFields({
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-2">
-        <Field label="Title" error={errors.title}>
+        <Field label="Título" error={errors.title}>
           <input
             value={values.title}
             onChange={(event) => onChange('title', event.target.value)}
@@ -58,7 +58,7 @@ export function AdminProblemMetadataFields({
           />
         </Field>
 
-        <Field label="Difficulty" error={errors.difficulty}>
+        <Field label="Dificultad" error={errors.difficulty}>
           <select
             value={values.difficulty}
             onChange={(event) =>
@@ -74,7 +74,7 @@ export function AdminProblemMetadataFields({
           </select>
         </Field>
 
-        <Field label="Tags" error={errors.tags}>
+        <Field label="Etiquetas" error={errors.tags}>
           <input
             value={values.tags.join(', ')}
             onChange={(event) =>

@@ -81,9 +81,9 @@ const autosaveDelayMs = 7000;
 type FormTab = "statement" | "testcases" | "starterCode";
 
 const difficultyOptions: Array<{ value: ProblemDifficulty; label: string }> = [
-  { value: "easy", label: "Easy" },
-  { value: "medium", label: "Medium" },
-  { value: "hard", label: "Hard" },
+  { value: "easy", label: "Fácil" },
+  { value: "medium", label: "Medio" },
+  { value: "hard", label: "Difícil" },
 ];
 
 function syncLegacyStatementFields(
@@ -286,16 +286,16 @@ export function ProblemForm({
             </p>
             <p className="mt-1 text-xs text-[var(--color-text-subtle)]">
               {lastAutosavedAt
-                ? `Autosave ${lastAutosavedAt}`
-                : "Autosave activo"}
+                ? `Guardado automático ${lastAutosavedAt}`
+                : "Guardado automático activo"}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="hidden items-center gap-2 sm:flex">
               <CompletionBadge label="Enunciado" complete={statementComplete} />
-              <CompletionBadge label="Testcases" complete={testcasesComplete} />
-              <CompletionBadge label="Starter Code" complete={starterCodeComplete} />
+              <CompletionBadge label="Casos de prueba" complete={testcasesComplete} />
+              <CompletionBadge label="Plantillas de código" complete={starterCodeComplete} />
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -313,7 +313,7 @@ export function ProblemForm({
                 className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 px-4 text-sm font-bold text-[var(--color-text-soft)]"
               >
                 <Eye className="h-4 w-4" />
-                Preview
+                Vista previa
               </button>
               <button
                 type="button"
@@ -370,7 +370,7 @@ export function ProblemForm({
               active={activeTab === "testcases"}
               onClick={() => setActiveTab("testcases")}
               icon={<Play className="h-4 w-4" />}
-              label="Testcases"
+              label="Casos de prueba"
               complete={testcasesComplete}
               count={values.testcases.length}
             />
@@ -378,7 +378,7 @@ export function ProblemForm({
               active={activeTab === "starterCode"}
               onClick={() => setActiveTab("starterCode")}
               icon={<Code2 className="h-4 w-4" />}
-              label="Starter Code"
+              label="Plantillas de código"
               complete={starterCodeComplete}
             />
           </nav>
@@ -566,7 +566,7 @@ function MetadataSidebar({
     <aside className="h-fit rounded-xl border border-slate-700/50 bg-slate-950/70 p-4 shadow-[0_18px_50px_rgba(2,8,23,0.18)] xl:sticky xl:top-36">
       <div className="space-y-4">
         <TextField
-          label="Problem Title"
+          label="Título del problema"
           value={values.title}
           error={errors.title}
           maxLength={100}
@@ -587,7 +587,7 @@ function MetadataSidebar({
 
         <div className="grid gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-            Difficulty
+            Dificultad
           </span>
           <div className="grid grid-cols-3 rounded-lg border border-slate-800 bg-slate-950/70 p-1">
             {difficultyOptions.map((option) => (
@@ -609,7 +609,7 @@ function MetadataSidebar({
 
         <div className="grid gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-            Tags
+            Etiquetas
           </span>
           <TagInput
             value={values.tags}
@@ -625,7 +625,7 @@ function MetadataSidebar({
         />
 
         <NumberField
-          label="Time Limit"
+          label="Límite de tiempo"
           suffix="ms"
           value={values.timeLimitMs}
           min={500}
@@ -635,7 +635,7 @@ function MetadataSidebar({
           onChange={(value) => onChange("timeLimitMs", value)}
         />
         <NumberField
-          label="Memory Limit"
+          label="Límite de memoria"
           suffix="MB"
           value={values.memoryLimitMb}
           min={64}
@@ -647,7 +647,7 @@ function MetadataSidebar({
 
         <fieldset>
           <legend className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-            Supported Languages
+            Lenguajes disponibles
           </legend>
           <div className="mt-2 grid gap-2">
             {availableLanguages.map((language) => (
@@ -670,14 +670,14 @@ function MetadataSidebar({
         </fieldset>
 
         <TextField
-          label="Contest"
+          label="Concurso"
           value=""
           onChange={() => undefined}
           placeholder="Opcional"
           disabled
         />
         <NumberField
-          label="Points"
+          label="Puntos"
           suffix="pts"
           value={0}
           min={0}
@@ -903,7 +903,7 @@ function StatusControl({
   return (
     <div className="grid gap-2">
       <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-        Visibility
+        Visibilidad
       </span>
       <div className="grid grid-cols-2 rounded-lg border border-slate-800 bg-slate-950/60 p-1">
         {(["draft", "published"] as ProblemStatus[]).map((option) => (
@@ -919,7 +919,7 @@ function StatusControl({
                 : "text-[var(--color-text-muted)] hover:text-white"
             }`}
           >
-            {option === "published" ? "Public" : "Draft"}
+            {option === "published" ? "Publicado" : "Borrador"}
           </button>
         ))}
       </div>

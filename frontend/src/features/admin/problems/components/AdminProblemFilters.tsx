@@ -38,17 +38,17 @@ export function AdminProblemFilters({
   return (
     <section
       className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]"
-      aria-label="Admin problem filters"
+      aria-label="Filtros de problemas"
     >
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <label className="relative block w-full lg:max-w-sm">
-          <span className="sr-only">Search problems by title</span>
+          <span className="sr-only">Buscar problemas por título</span>
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-subtle)]" />
           <input
             type="search"
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Search by title"
+            placeholder="Buscar por título"
             className="h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] pl-10 pr-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]"
           />
         </label>
@@ -60,12 +60,12 @@ export function AdminProblemFilters({
               onDifficultyChange(event.target.value as AdminProblemDifficultyFilter)
             }
             className={selectClassName}
-            aria-label="Filter by difficulty"
+            aria-label="Filtrar por dificultad"
           >
-            <option value="all">Difficulty</option>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
+            <option value="all">Dificultad</option>
+            <option value="easy">Fácil</option>
+            <option value="medium">Medio</option>
+            <option value="hard">Difícil</option>
           </select>
 
           <select
@@ -74,20 +74,20 @@ export function AdminProblemFilters({
               onStatusChange(event.target.value as AdminProblemStatusFilter)
             }
             className={selectClassName}
-            aria-label="Filter by status"
+            aria-label="Filtrar por estado"
           >
-            <option value="all">Status</option>
-            <option value="published">Published</option>
-            <option value="draft">Draft</option>
+            <option value="all">Estado</option>
+            <option value="published">Publicado</option>
+            <option value="draft">Borrador</option>
           </select>
 
           <select
             value={tag}
             onChange={(event) => onTagChange(event.target.value)}
             className={selectClassName}
-            aria-label="Filter by tag"
+            aria-label="Filtrar por etiqueta"
           >
-            <option value="all">Tags</option>
+            <option value="all">Etiquetas</option>
             {tags.map((availableTag) => (
               <option key={availableTag} value={availableTag}>
                 {availableTag}
@@ -101,7 +101,7 @@ export function AdminProblemFilters({
         <span className="h-2.5 w-2.5 rounded-full border border-[var(--color-primary)] bg-[var(--color-primary-soft)]" />
         <span>
           <span className="font-mono text-[var(--color-text)]">{resultCount}</span>/
-          <span className="font-mono">{totalCount}</span> visible
+          <span className="font-mono">{totalCount}</span> visibles
         </span>
       </div>
     </section>

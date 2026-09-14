@@ -1,7 +1,7 @@
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { Plus, Trash2, Upload } from 'lucide-react'
+import { Info, Plus, Trash2, Upload } from 'lucide-react'
 import { useState } from 'react'
 
 import type {
@@ -86,7 +86,7 @@ export function TestcasesSection({
     try {
       const parsed = JSON.parse(importText) as StructuredProblemTestcase[]
       if (!Array.isArray(parsed)) {
-        setImportError('El JSON debe ser un array de testcases.')
+        setImportError('El archivo debe contener una lista de casos de prueba válida.')
         return
       }
       onTestcasesChange(parsed)
@@ -94,7 +94,7 @@ export function TestcasesSection({
       setImportError('')
       setIsImportOpen(false)
     } catch {
-      setImportError('JSON invalido.')
+      setImportError('El contenido no es válido.')
     }
   }
 
@@ -109,20 +109,25 @@ export function TestcasesSection({
 
   return (
     <FormSection
-      title="Testcases estructurados"
-      description="El judge consume JSON. No mezcles estos datos con el Markdown."
+      title="Casos de prueba estructurados"
+      description="Define aquí los casos de forma estructurada. El servidor se encarga de serializarlos al ejecutar la función."
     >
+      <div role="note" className="flex gap-3 border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-3 py-3 text-sm text-[var(--color-text-muted)]">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-primary)]" aria-hidden="true" />
+        <p>Los valores se guardan como datos estructurados. La capa de ejecución añade la serialización y mantiene el JSON fuera del editor de la persona usuaria.</p>
+      </div>
+
       <div className="space-y-6">
         <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="font-bold text-[var(--color-text)]">Schema de parametros</h3>
+            <h3 className="font-bold text-[var(--color-text)]">Esquema de parámetros</h3>
             <button
               type="button"
               onClick={() => onParametersChange([...parameters, createEmptyParameter()])}
               className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-700/60 px-3 text-xs font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
             >
               <Plus className="h-4 w-4" />
-              Parametro
+              Parámetro
             </button>
           </div>
 
@@ -153,7 +158,7 @@ export function TestcasesSection({
                   onChange={(event) =>
                     updateParameter(parameter.id, { description: event.target.value })
                   }
-                  placeholder="Descripcion opcional"
+                  placeholder="Descripción opcional"
                   className="h-10 rounded-xl border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
                 />
                 <button type="button" aria-label="Eliminar parametro" onClick={() => onParametersChange(parameters.filter((item) => item.id !== parameter.id))} className="h-10 w-10 rounded-lg text-[var(--color-error)] hover:bg-[var(--color-error-soft)]">
@@ -165,7 +170,7 @@ export function TestcasesSection({
 
           <label className="mt-4 grid gap-2 lg:max-w-xs">
             <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-              Tipo de output esperado
+              Tipo de salida esperada
             </span>
             <select
               value={outputType}
@@ -186,7 +191,7 @@ export function TestcasesSection({
             className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
           >
             <Plus className="h-4 w-4" />
-            Agregar testcase
+            Agregar caso de prueba
           </button>
           <button
             type="button"
@@ -194,7 +199,7 @@ export function TestcasesSection({
             className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
           >
             <Upload className="h-4 w-4" />
-            Importar desde JSON
+            Importar lote avanzado
           </button>
         </div>
 
@@ -225,10 +230,10 @@ export function TestcasesSection({
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-[var(--color-text)]">Caso {index + 1}</h3>
                   <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${testcase.isSample ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]' : 'bg-slate-800 text-[var(--color-text-muted)]'}`}>
-                    {testcase.isSample ? 'SAMPLE' : 'HIDDEN'}
+                    {testcase.isSample ? 'VISIBLE' : 'OCULTO'}
                   </span>
                 </div>
-                <button type="button" aria-label="Eliminar testcase" onClick={() => onTestcasesChange(testcases.filter((item) => item.id !== testcase.id))} className="h-9 w-9 rounded-lg text-[var(--color-error)] hover:bg-[var(--color-error-soft)]">
+                <button type="button" aria-label="Eliminar caso de prueba" onClick={() => onTestcasesChange(testcases.filter((item) => item.id !== testcase.id))} className="h-9 w-9 rounded-lg text-[var(--color-error)] hover:bg-[var(--color-error-soft)]">
                   <Trash2 className="mx-auto h-4 w-4" />
                 </button>
               </div>
@@ -240,7 +245,7 @@ export function TestcasesSection({
                   return (
                     <label key={parameter.id} className="grid gap-1">
                       <span className="text-xs font-bold text-[var(--color-text-subtle)]">
-                        {parameter.name || 'parametro'} ({parameter.type})
+                        {parameter.name || 'parámetro'} ({parameter.type})
                       </span>
                       <textarea
                         value={formatJsonValue(currentValue)}
@@ -283,7 +288,7 @@ export function TestcasesSection({
                   checked={testcase.isSample}
                   onChange={(event) => updateTestcase(testcase.id, { isSample: event.target.checked })}
                 />
-                Es sample visible para Run
+                Visible para las pruebas de ejemplo
               </label>
             </article>
                 </SortableItem>

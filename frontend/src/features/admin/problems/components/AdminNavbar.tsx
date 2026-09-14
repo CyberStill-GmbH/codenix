@@ -12,14 +12,14 @@ const cx = (...classes: Array<string | false | undefined>) =>
 
 const adminNavItems = [
   {
-    label: 'Problems',
+    label: 'Problemas',
     href: '/admin/problems',
     icon: LayoutDashboard,
     preload: 'adminProblems',
     match: (pathname: string) => pathname === '/admin' || pathname === '/admin/problems',
   },
   {
-    label: 'Create',
+    label: 'Nuevo problema',
     href: '/admin/problems/new',
     icon: Plus,
     preload: 'adminProblemForm',
@@ -50,14 +50,14 @@ export function AdminNavbar() {
   const contextualNavItems = contextualProblemId
     ? [
         {
-          label: 'Edit',
+          label: 'Editar',
           href: `/admin/problems/${contextualProblemId}/edit`,
           icon: FilePenLine,
           preload: 'adminProblemForm' as const,
           match: (pathname: string) => pathname.endsWith('/edit'),
         },
         {
-          label: 'Testcases',
+          label: 'Casos de prueba',
           href: `/admin/problems/${contextualProblemId}/testcases`,
           icon: ClipboardList,
           preload: 'adminProblemTestcases' as const,
@@ -72,7 +72,7 @@ export function AdminNavbar() {
     <header className="sticky top-0 z-50 border-b border-[var(--color-border-soft)] bg-[var(--color-navbar-bg)] shadow-[var(--shadow-navbar)] backdrop-blur-xl">
       <nav
         className="codenix-app-shell flex min-h-16 flex-col gap-3 px-6 py-3 lg:flex-row lg:items-center lg:justify-between"
-        aria-label="Navegacion de administracion de Codenix"
+        aria-label="NavegaciÃ³n de administraciÃ³n de Codenix"
       >
         <div className="flex min-w-0 items-center justify-between gap-4">
           <Link
@@ -92,7 +92,7 @@ export function AdminNavbar() {
               Codenix
             </span>
             <span className="rounded-full border border-[var(--color-primary)]/30 bg-[var(--color-primary-soft)] px-2 py-0.5 text-[0.625rem] font-bold uppercase tracking-wider text-[var(--color-accent-muted)]">
-              Admin
+              Administración
             </span>
           </Link>
 
@@ -102,7 +102,7 @@ export function AdminNavbar() {
             onFocus={preloadProblemsRoute}
             className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-xs font-semibold text-[var(--color-text-soft)] transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:hidden"
           >
-            Preview
+            Vista previa
           </Link>
         </div>
 
@@ -138,10 +138,10 @@ export function AdminNavbar() {
             to="/problems"
             onMouseEnter={preloadProblemsRoute}
             onFocus={preloadProblemsRoute}
-            className="hidden h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm font-semibold text-[var(--color-text-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/50 hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:inline-flex"
+            className="hidden h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm font-semibold text-[var(--color-text-soft)] transition duration-200 hover:border-[var(--color-primary)]/50 hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:inline-flex"
           >
             <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-            Preview user app
+            Ver aplicaciÃ³n
           </Link>
         </div>
       </nav>

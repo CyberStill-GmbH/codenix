@@ -55,9 +55,9 @@ export function ExamplesSection({ examples, error, onChange }: ExamplesSectionPr
                     </div>
 
                     <div className="grid gap-3">
-                      <textarea value={example.input} onChange={(event) => updateExample(example.id, { input: event.target.value })} placeholder="Input" className="min-h-20 rounded-xl border border-slate-800 bg-slate-900/70 p-3 font-mono text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]" />
-                      <textarea value={example.output} onChange={(event) => updateExample(example.id, { output: event.target.value })} placeholder="Output" className="min-h-16 rounded-xl border border-slate-800 bg-slate-900/70 p-3 font-mono text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]" />
-                      <textarea value={example.explanation ?? ''} onChange={(event) => updateExample(example.id, { explanation: event.target.value })} placeholder="Explicacion opcional" className="min-h-16 rounded-xl border border-slate-800 bg-slate-900/70 p-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]" />
+                      <textarea value={example.input} onChange={(event) => updateExample(example.id, { input: event.target.value })} placeholder="Entrada" className="min-h-20 rounded-xl border border-slate-800 bg-slate-900/70 p-3 font-mono text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]" />
+                      <textarea value={example.output} onChange={(event) => updateExample(example.id, { output: event.target.value })} placeholder="Salida" className="min-h-16 rounded-xl border border-slate-800 bg-slate-900/70 p-3 font-mono text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]" />
+                      <textarea value={example.explanation ?? ''} onChange={(event) => updateExample(example.id, { explanation: event.target.value })} placeholder="Explicación opcional" className="min-h-16 rounded-xl border border-slate-800 bg-slate-900/70 p-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]" />
                     </div>
                   </article>
                 </SortableItem>
@@ -79,12 +79,12 @@ export function ExamplesSection({ examples, error, onChange }: ExamplesSectionPr
         </DndContext>
 
         <aside className="rounded-xl border border-slate-800 bg-slate-950/55 p-4">
-          <h3 className="text-sm font-bold text-[var(--color-text)]">Preview</h3>
+          <h3 className="text-sm font-bold text-[var(--color-text)]">Vista previa</h3>
           <div className="mt-3 space-y-3">
             {examples.map((example, index) => (
               <div key={example.id} className="rounded-lg border border-slate-800 bg-slate-900/50 p-3">
-                <p className="text-xs font-bold text-[var(--color-text)]">Example {index + 1}</p>
-                <pre className="mt-2 whitespace-pre-wrap font-mono text-xs text-[var(--color-text-soft)]">input: {example.input}{'\n'}output: {example.output}</pre>
+                <p className="text-xs font-bold text-[var(--color-text)]">Ejemplo {index + 1}</p>
+                <pre className="mt-2 whitespace-pre-wrap font-mono text-xs text-[var(--color-text-soft)]">entrada: {example.input}{'\n'}salida: {example.output}</pre>
                 {example.explanation && <p className="mt-2 text-xs text-[var(--color-text-subtle)]">{example.explanation}</p>}
               </div>
             ))}

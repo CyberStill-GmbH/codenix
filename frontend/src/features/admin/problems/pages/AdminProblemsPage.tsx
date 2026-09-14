@@ -44,7 +44,7 @@ export function AdminProblemsPage() {
         }
       } catch {
         if (isMounted) {
-          setError('We could not load the admin problem list.')
+          setError('No se pudo cargar la lista de problemas.')
         }
       } finally {
         if (isMounted) {
@@ -100,8 +100,8 @@ export function AdminProblemsPage() {
     const nextStatus = problem.status === 'published' ? 'draft' : 'published'
     const confirmationText =
       nextStatus === 'published'
-        ? `Publish "${problem.title}"?`
-        : `Unpublish "${problem.title}"?`
+        ? `¿Publicar «${problem.title}»?`
+        : `¿Retirar «${problem.title}»?`
 
     const confirmed = window.confirm(confirmationText)
 
@@ -123,15 +123,15 @@ export function AdminProblemsPage() {
       )
 
       setConfirmationMessage(
-        `"${updatedProblem.title}" is now ${
-          updatedProblem.status === 'published' ? 'Published' : 'Draft'
+        `«${updatedProblem.title}» ahora está ${
+          updatedProblem.status === 'published' ? 'publicado' : 'borrador'
         }.`,
       )
     } catch (publishError) {
       setError(
         publishError instanceof Error
           ? publishError.message
-          : 'We could not update the publish status. Try again.',
+          : 'No se pudo actualizar el estado de publicación. Inténtalo de nuevo.',
       )
     } finally {
       setUpdatingProblemId(null)
@@ -149,33 +149,32 @@ export function AdminProblemsPage() {
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
                   <ShieldCheck className="h-4 w-4 text-[var(--color-primary)]" />
-                  Admin Console
+                  Administración
                 </div>
                 <h1 className="mt-2 font-display text-3xl font-bold tracking-normal text-[var(--color-text)]">
-                  Problem Management
+                  Gestión de problemas
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm text-[var(--color-text-muted)]">
-                  Create, curate, publish and maintain Codenix problems before they reach
-                  the user catalog.
+                  Crea, revisa y publica los problemas antes de que lleguen al catálogo de usuarios.
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={() => navigate('/admin/problems/new')}
-                className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-sky-300/30 bg-[linear-gradient(135deg,var(--color-primary)_0%,var(--color-accent)_100%)] px-5 text-sm font-bold text-white shadow-[0_10px_28px_rgba(14,165,233,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(14,165,233,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+                className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-sky-300/30 bg-[linear-gradient(135deg,var(--color-primary)_0%,var(--color-accent)_100%)] px-5 text-sm font-bold text-white shadow-[0_10px_28px_rgba(14,165,233,0.22)] transition-colors duration-150 hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
               >
                 <Plus className="h-4 w-4" aria-hidden="true" />
-                Create problem
+                Crear problema
               </button>
             </header>
           </PageSection>
 
           <PageSection delay={75}>
             <section className="grid gap-3 md:grid-cols-3">
-              <AdminMetric label="Total problems" value={problems.length} />
-              <AdminMetric label="Published" value={publishedCount} tone="success" />
-              <AdminMetric label="Drafts" value={draftCount} tone="warning" />
+              <AdminMetric label="Problemas" value={problems.length} />
+              <AdminMetric label="Publicados" value={publishedCount} tone="success" />
+              <AdminMetric label="Borradores" value={draftCount} tone="warning" />
             </section>
           </PageSection>
 

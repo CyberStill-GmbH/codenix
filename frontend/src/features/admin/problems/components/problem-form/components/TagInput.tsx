@@ -60,7 +60,7 @@ export function TagInput({ value, suggestions, onChange }: TagInputProps) {
           </span>
         ))}
       </div>
-      <p className="text-xs text-[var(--color-text-subtle)]">Maximo 5 tags. Enter o click para agregar.</p>
+      <p className="text-xs text-[var(--color-text-subtle)]">Máximo 5 etiquetas. Pulsa Enter o haz clic para agregar.</p>
     </div>
   )
 }

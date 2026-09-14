@@ -53,10 +53,10 @@ export function AdminProblemExamplesEditor({
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
-            Examples
+            Ejemplos
           </h2>
           <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-            At least one example is required before saving the problem.
+            Agrega al menos un ejemplo antes de guardar el problema.
           </p>
         </div>
 
@@ -85,7 +85,7 @@ export function AdminProblemExamplesEditor({
           >
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-mono text-sm font-bold text-[var(--color-text-soft)]">
-                Example {index + 1}
+                Ejemplo {index + 1}
               </h3>
               <Button
                 type="button"
@@ -102,7 +102,7 @@ export function AdminProblemExamplesEditor({
             <div className="mt-4 grid gap-4 lg:grid-cols-2">
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-                  Input
+                  Entrada
                 </span>
                 <Textarea
                   value={example.input}
@@ -114,7 +114,7 @@ export function AdminProblemExamplesEditor({
 
               <label className="flex flex-col gap-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-                  Output
+                  Salida
                 </span>
                 <Textarea
                   value={example.output}

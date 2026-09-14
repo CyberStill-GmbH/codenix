@@ -24,13 +24,13 @@ export function SettingsSection({
 }: SettingsSectionProps) {
   return (
     <FormSection
-      title="Configuracion"
-      description="Limites del judge y estado de publicacion."
+      title="Configuración"
+      description="Límites de ejecución y estado de publicación."
     >
       <div className="grid gap-5 lg:grid-cols-3">
         <label className="grid gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-            Time limit: {timeLimitMs} ms
+            Límite de tiempo: {timeLimitMs} ms
           </span>
           <input type="range" min={500} max={10000} step={100} value={timeLimitMs} onChange={(event) => onTimeLimitChange(Number(event.target.value))} />
           <input type="number" min={500} max={10000} value={timeLimitMs} onChange={(event) => onTimeLimitChange(Number(event.target.value))} className="h-10 rounded-xl border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]" />
@@ -39,7 +39,7 @@ export function SettingsSection({
 
         <label className="grid gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-            Memory limit: {memoryLimitMb} MB
+            Límite de memoria: {memoryLimitMb} MB
           </span>
           <input type="range" min={64} max={512} step={32} value={memoryLimitMb} onChange={(event) => onMemoryLimitChange(Number(event.target.value))} />
           <input type="number" min={64} max={512} value={memoryLimitMb} onChange={(event) => onMemoryLimitChange(Number(event.target.value))} className="h-10 rounded-xl border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]" />
@@ -64,7 +64,7 @@ export function SettingsSection({
                     : 'text-[var(--color-text-muted)] hover:text-white'
                 }`}
               >
-                {option === 'published' ? 'PUBLISHED' : 'DRAFT'}
+                {option === 'published' ? 'PUBLICADO' : 'BORRADOR'}
               </button>
             ))}
           </div>

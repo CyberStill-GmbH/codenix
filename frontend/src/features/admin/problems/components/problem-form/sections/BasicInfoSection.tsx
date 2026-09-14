@@ -38,13 +38,13 @@ export function BasicInfoSection({
 
   return (
     <FormSection
-      title="Informacion basica"
-      description="Datos de catalogo, descubrimiento y lenguajes soportados."
+      title="Información básica"
+      description="Datos de catálogo, descubrimiento y lenguajes disponibles."
     >
       <div className="grid gap-4 lg:grid-cols-2">
         <label className="grid gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-            Titulo
+            Título
           </span>
           <input
             value={values.title}
@@ -99,7 +99,7 @@ export function BasicInfoSection({
 
         <div className="grid gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-            Tags
+            Etiquetas
           </span>
           <TagInput
             value={values.tags}

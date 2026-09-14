@@ -69,7 +69,7 @@ export function MarkdownEditor({ value, onChange, onUploadImage }: MarkdownEdito
 
       <div className="min-h-[400px] overflow-auto rounded-xl border border-slate-700/50 bg-slate-950/70 p-4">
         <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
-          Preview seguro
+          Vista previa segura
         </p>
         <ProblemDescription markdown={value || markdownPlaceholder} />
       </div>

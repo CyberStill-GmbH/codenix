@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Info } from 'lucide-react'
 
 import type { ProblemLanguage } from '@/features/admin/problems/types/problem.types'
 import { FormSection } from '@/features/admin/problems/components/problem-form/components/FormSection'
@@ -28,15 +29,20 @@ export function StarterCodeSection({
 
   return (
     <FormSection
-      title="Starter code"
-      description="Un template por cada lenguaje soportado."
+      title="Plantillas de código"
+      description="Una plantilla por cada lenguaje disponible."
     >
       {supportedLanguages.length === 0 ? (
         <p className="text-sm font-semibold text-[var(--color-warning)]">
-          Selecciona al menos un lenguaje en Informacion basica.
+          Selecciona al menos un lenguaje en Información básica.
         </p>
       ) : (
         <div>
+          <div role="note" className="mb-4 flex gap-3 border border-[var(--color-primary)]/25 bg-[var(--color-primary-soft)]/40 px-3 py-3 text-sm text-[var(--color-text-soft)]">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-primary)]" aria-hidden="true" />
+            <p>Escribe solo la función del problema. El nombre se deriva del slug. El servidor genera el adaptador, serializa los casos y ejecuta las pruebas; no pegues JSON en esta plantilla.</p>
+          </div>
+
           <div className="flex flex-wrap gap-2">
             {supportedLanguages.map((language) => {
               const label =
@@ -81,7 +87,7 @@ export function StarterCodeSection({
             }
             className="mt-3 h-9 rounded-full border border-slate-700/60 px-4 text-xs font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
           >
-            Restaurar template
+            Restaurar plantilla
           </button>
         </div>
       )}

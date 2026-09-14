@@ -20,7 +20,7 @@ export function AdminProblemActions({
   onManageTestcases,
   onTogglePublish,
 }: AdminProblemActionsProps) {
-  const publishLabel = problem.status === 'published' ? 'Unpublish' : 'Publish'
+  const publishLabel = problem.status === 'published' ? 'Retirar publicación' : 'Publicar'
 
   return (
     <div className="flex flex-wrap items-center justify-end gap-2">
@@ -30,7 +30,7 @@ export function AdminProblemActions({
         onClick={() => onEdit(problem)}
       >
         <FilePenLine className="h-3.5 w-3.5" aria-hidden="true" />
-        Edit
+        Editar
       </button>
 
       <button
@@ -39,7 +39,7 @@ export function AdminProblemActions({
         onClick={() => onManageTestcases(problem)}
       >
         <ClipboardList className="h-3.5 w-3.5" aria-hidden="true" />
-        Testcases
+        Casos de prueba
       </button>
 
       <button
@@ -53,7 +53,7 @@ export function AdminProblemActions({
         onClick={() => onTogglePublish(problem)}
       >
         <UploadCloud className="h-3.5 w-3.5" aria-hidden="true" />
-        {isUpdating ? 'Saving' : publishLabel}
+        {isUpdating ? 'Guardando' : publishLabel}
       </button>
     </div>
   )

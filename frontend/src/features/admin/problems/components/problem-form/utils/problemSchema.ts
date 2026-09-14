@@ -101,7 +101,7 @@ const problemFormBaseSchema = z.object({
         isSample: z.boolean(),
       }),
     )
-    .min(1, "Agrega al menos un testcase."),
+    .min(1, "Agrega al menos un caso de prueba."),
   supportedLanguages: z
     .array(problemLanguageSchema)
     .min(1, "Selecciona al menos un lenguaje."),
@@ -141,7 +141,7 @@ export const problemFormSchema = problemFormBaseSchema.superRefine(
       context.addIssue({
         code: "custom",
         path: ["testcases"],
-        message: "Agrega al menos un testcase sample.",
+        message: "Agrega al menos un caso visible.",
       });
     }
 
@@ -149,7 +149,7 @@ export const problemFormSchema = problemFormBaseSchema.superRefine(
       context.addIssue({
         code: "custom",
         path: ["testcases"],
-        message: "Agrega al menos un testcase hidden.",
+        message: "Agrega al menos un caso oculto.",
       });
     }
   },

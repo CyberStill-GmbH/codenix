@@ -71,7 +71,7 @@ export function ConstraintsSection({ constraints, onChange }: ConstraintsSection
         </DndContext>
 
         <div className="rounded-xl border border-slate-800 bg-slate-950/55 p-4">
-          <h3 className="text-sm font-bold text-[var(--color-text)]">Preview</h3>
+          <h3 className="text-sm font-bold text-[var(--color-text)]">Vista previa</h3>
           <ul className="mt-3 space-y-2">
             {constraints.filter(Boolean).map((constraint, index) => (
               <li key={`${constraint}-preview-${index}`} className="ml-5 list-disc text-sm text-[var(--color-text-soft)]">

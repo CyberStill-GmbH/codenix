@@ -18,13 +18,13 @@ const difficultyClassName: Record<ProblemDifficulty, string> = {
 }
 
 const difficultyLabel: Record<ProblemDifficulty, string> = {
-  easy: 'Easy',
-  medium: 'Medium',
-  hard: 'Hard',
+  easy: 'Fácil',
+  medium: 'Medio',
+  hard: 'Difícil',
 }
 
 const formatUpdatedDate = (date: string) =>
-  new Intl.DateTimeFormat('en', {
+  new Intl.DateTimeFormat('es-PE', {
     month: 'short',
     day: '2-digit',
     year: 'numeric',
@@ -40,8 +40,8 @@ export function AdminProblemsTable({
   if (problems.length === 0) {
     return (
       <EmptyState
-        title="No problems found"
-        description="Adjust the search or filters to find existing problems, or create a new draft for the catalog."
+        title="No se encontraron problemas"
+        description="Ajusta la búsqueda o los filtros, o crea un borrador para el catálogo."
       />
     )
   }
@@ -49,7 +49,7 @@ export function AdminProblemsTable({
   return (
     <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]">
       <div className="hidden grid-cols-[minmax(16rem,1.4fr)_7rem_minmax(12rem,1fr)_8rem_7rem_8rem_minmax(18rem,1fr)] gap-4 border-b border-[var(--color-border-soft)] px-5 py-3 xl:grid">
-        {['Title', 'Difficulty', 'Tags', 'Status', 'Testcases', 'Updated', 'Actions'].map(
+        {['Título', 'Dificultad', 'Etiquetas', 'Estado', 'Casos', 'Actualizado', 'Acciones'].map(
           (heading) => (
             <span
               key={heading}
