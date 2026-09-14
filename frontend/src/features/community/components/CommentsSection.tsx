@@ -9,6 +9,23 @@ import { getPublicProfile, type PublicProfile } from '@/features/user/services/u
 
 type CommentsSectionProps = { problemId?: string }
 
+function formatCommentAge(createdAt: string) {
+  const elapsed = Math.max(0, Date.now() - new Date(createdAt).getTime())
+  const minute = 60_000
+  const hour = 60 * minute
+  const month = 30 * 24 * hour
+  const year = 12 * month
+  if (elapsed < minute) return 'ahora'
+  if (elapsed < hour) return `${Math.floor(elapsed / minute)} min`
+  if (elapsed < month) return `${Math.floor(elapsed / hour)} h`
+  if (elapsed < year) {
+    const months = Math.floor(elapsed / month)
+    return `${months} ${months === 1 ? 'mes' : 'meses'}`
+  }
+  const years = Math.floor(elapsed / year)
+  return `${years} ${years === 1 ? 'año' : 'años'}`
+}
+
 function AuthorProfilePopover({ author }: { author: PublicComment['author'] }) {
   const anchorRef = useRef<HTMLSpanElement>(null)
   const closeTimerRef = useRef<number | null>(null)
@@ -129,7 +146,7 @@ function CommentCard({ comment, onVote, onReply, depth = 0 }: { comment: PublicC
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--color-text-muted)]">
                 <AuthorProfilePopover author={comment.author} />
-                <span>·</span><time dateTime={comment.createdAt}>{new Date(comment.createdAt).toLocaleDateString()}</time>
+                <span>·</span><time dateTime={comment.createdAt} title={new Date(comment.createdAt).toLocaleString()}>{formatCommentAge(comment.createdAt)}</time>
               </div>
               <span className="text-[0.6875rem] text-[var(--color-text-subtle)]">{comment.author.name}</span>
             </div>
@@ -137,10 +154,10 @@ function CommentCard({ comment, onVote, onReply, depth = 0 }: { comment: PublicC
           <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[var(--color-text-soft)]">{comment.content}</p>
           {comment.imageUrl && resolveCommentImageUrl(comment.imageUrl) && <a href={resolveCommentImageUrl(comment.imageUrl)} target="_blank" rel="noreferrer" className="mt-3 block max-w-md overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"><img src={resolveCommentImageUrl(comment.imageUrl)} alt="Imagen adjunta al comentario" loading="lazy" className="max-h-64 w-full object-contain" /></a>}
           <div className="mt-3 flex flex-wrap items-center justify-end gap-1.5">
-            <button type="button" onClick={() => onReply(comment)} className="inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs font-semibold text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"><Reply className="h-4 w-4" aria-hidden="true" />Responder</button>
+            <button type="button" onClick={() => onReply(comment)} className="inline-flex min-h-8 items-center gap-1 rounded-md px-1.5 text-[0.6875rem] font-semibold text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"><Reply className="h-3.5 w-3.5" aria-hidden="true" />Responder</button>
             <span className="mx-1 h-4 w-px bg-[var(--color-border-soft)]" aria-hidden="true" />
-            <button type="button" aria-label={`Votar positivo, ${comment.upvotes} votos`} aria-pressed={comment.viewerVote === 'up'} onClick={() => onVote(comment.id, 'up')} className={`inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs font-bold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${comment.viewerVote === 'up' ? 'bg-[var(--color-success-soft)] text-[var(--color-success)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-success-soft)] hover:text-[var(--color-success)]'}`}><ArrowBigUp className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />{comment.upvotes}</button>
-            <button type="button" aria-label={`Votar negativo, ${comment.downvotes} votos`} aria-pressed={comment.viewerVote === 'down'} onClick={() => onVote(comment.id, 'down')} className={`inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs font-bold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${comment.viewerVote === 'down' ? 'bg-[var(--color-error-soft)] text-[var(--color-error)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-error-soft)] hover:text-[var(--color-error)]'}`}><ArrowBigDown className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />{comment.downvotes}</button>
+            <button type="button" aria-label={`Votar positivo, ${comment.upvotes} votos`} aria-pressed={comment.viewerVote === 'up'} onClick={() => onVote(comment.id, 'up')} className={`inline-flex min-h-8 items-center gap-1 rounded-md px-1.5 text-[0.6875rem] font-bold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${comment.viewerVote === 'up' ? 'bg-[var(--color-success-soft)] text-[var(--color-success)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-success-soft)] hover:text-[var(--color-success)]'}`}><ArrowBigUp className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />{comment.upvotes}</button>
+            <button type="button" aria-label={`Votar negativo, ${comment.downvotes} votos`} aria-pressed={comment.viewerVote === 'down'} onClick={() => onVote(comment.id, 'down')} className={`inline-flex min-h-8 items-center gap-1 rounded-md px-1.5 text-[0.6875rem] font-bold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${comment.viewerVote === 'down' ? 'bg-[var(--color-error-soft)] text-[var(--color-error)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-error-soft)] hover:text-[var(--color-error)]'}`}><ArrowBigDown className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />{comment.downvotes}</button>
           </div>
           {comment.replies.length > 0 && <div className="mt-3">{comment.replies.map((reply) => <CommentCard key={reply.id} comment={reply} onVote={onVote} onReply={onReply} depth={depth + 1} />)}</div>}
         </div>
