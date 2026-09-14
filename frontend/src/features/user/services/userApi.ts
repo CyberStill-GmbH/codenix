@@ -110,7 +110,12 @@ export type PublicProfile = PublicProfileStats & {
 }
 
 export async function getPublicProfile(username: string): Promise<PublicProfile> {
-  const response = await apiRequest<Partial<PublicProfile> & { recentSubmissions?: BackendSubmissionListItem[] }>(`/community/users/${encodeURIComponent(username)}/profile`)
+  const response = await apiRequest<Partial<PublicProfile> & {
+    recentSubmissions?: BackendSubmissionListItem[]
+    progress?: {
+      data?: Array<{ difficulty: 'easy' | 'medium' | 'hard'; solved: number; total: number }>
+    }
+  }>(`/community/users/${encodeURIComponent(username)}/profile`)
   const solved = response.solvedSubmissions ?? 0
   const stats: UserStats = response.stats ?? {
     totalSubmissions: solved,
@@ -128,6 +133,10 @@ export async function getPublicProfile(username: string): Promise<PublicProfile>
     totalUsers: 0,
     distribution: [],
   }
+  const progress: DifficultyProgress = structuredClone(emptyProgress)
+  for (const item of response.progress?.data ?? []) {
+    progress[item.difficulty] = { solved: item.solved, total: item.total }
+  }
   return {
     id: response.id ?? '',
     username: response.username ?? username,
@@ -141,7 +150,7 @@ export async function getPublicProfile(username: string): Promise<PublicProfile>
     profileViewsChange: response.profileViewsChange ?? 0,
     solvedSubmissions: solved,
     stats,
-    progress: response.progress ?? emptyProgress,
+    progress,
     activityDays: response.activityDays ?? [],
     recentSubmissions: (response.recentSubmissions ?? []).map((submission) => ({
       id: submission.id,
