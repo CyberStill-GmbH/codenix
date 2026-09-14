@@ -110,10 +110,40 @@ export type PublicProfile = PublicProfileStats & {
 }
 
 export async function getPublicProfile(username: string): Promise<PublicProfile> {
-  const response = await apiRequest<Omit<PublicProfile, 'recentSubmissions'> & { recentSubmissions: BackendSubmissionListItem[] }>(`/community/users/${encodeURIComponent(username)}/profile`)
+  const response = await apiRequest<Partial<PublicProfile> & { recentSubmissions?: BackendSubmissionListItem[] }>(`/community/users/${encodeURIComponent(username)}/profile`)
+  const solved = response.solvedSubmissions ?? 0
+  const stats: UserStats = response.stats ?? {
+    totalSubmissions: solved,
+    acceptedSubmissions: solved,
+    attemptedProblems: solved,
+    solvedProblems: solved,
+    acceptanceRate: solved > 0 ? 100 : 0,
+    currentStreak: 0,
+    rank: 0,
+    percentile: 0,
+    bucket: '0',
+    bucketRank: 0,
+    bucketTotalUsers: 0,
+    bucketPercentile: 0,
+    totalUsers: 0,
+    distribution: [],
+  }
   return {
-    ...response,
-    recentSubmissions: response.recentSubmissions.map((submission) => ({
+    id: response.id ?? '',
+    username: response.username ?? username,
+    name: response.name ?? username,
+    avatarUrl: response.avatarUrl,
+    degree: response.degree,
+    createdAt: response.createdAt ?? new Date().toISOString(),
+    reputation: response.reputation ?? 0,
+    profileViews: response.profileViews ?? 0,
+    reputationChange: response.reputationChange ?? 0,
+    profileViewsChange: response.profileViewsChange ?? 0,
+    solvedSubmissions: solved,
+    stats,
+    progress: response.progress ?? emptyProgress,
+    activityDays: response.activityDays ?? [],
+    recentSubmissions: (response.recentSubmissions ?? []).map((submission) => ({
       id: submission.id,
       problemId: submission.problemId,
       problemSlug: submission.problemSlug,

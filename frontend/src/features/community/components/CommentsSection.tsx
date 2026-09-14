@@ -1,10 +1,123 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AlertTriangle, ArrowDown, ArrowUp, MessageCircle, Send, Sparkles, X } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import { AlertTriangle, ArrowDown, ArrowUp, Award, Eye, MessageCircle, Send, Sparkles, X } from 'lucide-react'
 import { UserAvatar } from '@/features/user/components/UserAvatar'
 import { createComment, getComments, voteComment, type PublicComment } from '@/features/community/services/commentsApi'
+import { getPublicProfile, type PublicProfile } from '@/features/user/services/userApi'
 
 type CommentsSectionProps = { problemId?: string }
+
+function AuthorProfilePopover({ author }: { author: PublicComment['author'] }) {
+  const anchorRef = useRef<HTMLSpanElement>(null)
+  const closeTimerRef = useRef<number | null>(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [profile, setProfile] = useState<PublicProfile | null>(null)
+  const [position, setPosition] = useState({ top: 0, left: 0 })
+
+  const clearCloseTimer = () => {
+    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current)
+  }
+
+  const scheduleClose = () => {
+    clearCloseTimer()
+    closeTimerRef.current = window.setTimeout(() => setIsOpen(false), 140)
+  }
+
+  const updatePosition = () => {
+    const anchor = anchorRef.current
+    if (!anchor) return
+    const rect = anchor.getBoundingClientRect()
+    const width = 280
+    setPosition({
+      top: rect.bottom + 8,
+      left: Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)),
+    })
+  }
+
+  const openPopover = () => {
+    clearCloseTimer()
+    updatePosition()
+    setIsOpen(true)
+    if (!profile) getPublicProfile(author.username).then(setProfile).catch(() => setProfile(null))
+  }
+
+  useEffect(() => {
+    if (!isOpen) return
+    const reposition = () => updatePosition()
+    window.addEventListener('resize', reposition)
+    window.addEventListener('scroll', reposition, true)
+    return () => {
+      window.removeEventListener('resize', reposition)
+      window.removeEventListener('scroll', reposition, true)
+    }
+  }, [isOpen])
+
+  useEffect(() => () => clearCloseTimer(), [])
+
+  return (
+    <span ref={anchorRef} className="relative inline-flex" onMouseEnter={openPopover} onMouseLeave={scheduleClose}>
+      <Link
+        to={`/u/${encodeURIComponent(author.username)}`}
+        className="font-semibold text-[var(--color-text)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+        title={`Ver perfil de ${author.username}`}
+        onFocus={openPopover}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') setIsOpen(false)
+        }}
+      >
+        {author.username}
+      </Link>
+      {createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -5, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -4, scale: 0.98 }}
+              transition={{ duration: 0.14, ease: 'easeOut' }}
+              className="fixed z-[80] w-[280px] overflow-hidden rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-surface-elevated)] p-4 text-left shadow-[var(--shadow-lg)]"
+              style={{ top: position.top, left: position.left }}
+              onMouseEnter={clearCloseTimer}
+              onMouseLeave={scheduleClose}
+              role="dialog"
+              aria-label={`Resumen del perfil de ${author.username}`}
+            >
+              <div className="flex items-center gap-3">
+                <UserAvatar src={profile?.avatarUrl ?? author.avatarUrl} name={profile?.name ?? author.name} size="md" />
+                <div className="min-w-0">
+                  <p className="truncate font-display text-sm font-bold text-[var(--color-text)]">{profile?.name ?? author.name}</p>
+                  <p className="truncate text-xs text-[var(--color-text-muted)]">@{author.username}</p>
+                </div>
+              </div>
+              {profile ? (
+                <div className="mt-4 grid grid-cols-3 gap-2 border-t border-[var(--color-border-soft)] pt-3">
+                  <div>
+                    <p className="flex items-center gap-1 text-[0.625rem] font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]"><Award className="h-3 w-3 text-[var(--color-accent)]" aria-hidden="true" />Reputación</p>
+                    <p className="mt-1 font-mono text-sm font-bold text-[var(--color-text)]">{profile.reputation}</p>
+                  </div>
+                  <div>
+                    <p className="flex items-center gap-1 text-[0.625rem] font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]"><Eye className="h-3 w-3 text-[var(--color-primary)]" aria-hidden="true" />Vistas</p>
+                    <p className="mt-1 font-mono text-sm font-bold text-[var(--color-text)]">{profile.profileViews}</p>
+                  </div>
+                  <div>
+                    <p className="text-[0.625rem] font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]">Resueltos</p>
+                    <p className="mt-1 font-mono text-sm font-bold text-[var(--color-text)]">{profile.solvedSubmissions}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-4 h-12 animate-pulse rounded-lg bg-[var(--color-surface-soft)]" aria-label="Cargando datos del perfil" />
+              )}
+              <Link to={`/u/${encodeURIComponent(author.username)}`} className="mt-4 inline-flex text-xs font-bold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]">Ver perfil completo</Link>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
+    </span>
+  )
+}
 
 function CommentCard({ comment, onVote, depth = 0 }: { comment: PublicComment; onVote: (id: string, vote: 'up' | 'down') => void; depth?: number }) {
   return (
@@ -20,7 +133,7 @@ function CommentCard({ comment, onVote, depth = 0 }: { comment: PublicComment; o
             <UserAvatar src={comment.author.avatarUrl} name={comment.author.name || comment.author.username} size="sm" />
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--color-text-muted)]">
-                <Link to="/profile" className="font-semibold text-[var(--color-text)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]" title={`Ver perfil de ${comment.author.username}`}>{comment.author.username}</Link>
+                <AuthorProfilePopover author={comment.author} />
                 <span>·</span><time dateTime={comment.createdAt}>{new Date(comment.createdAt).toLocaleDateString()}</time>
               </div>
               <span className="text-[0.6875rem] text-[var(--color-text-subtle)]">{comment.author.name}</span>
