@@ -28,21 +28,26 @@ export function CommunityUniverseSection() {
   return (
     <motion.section ref={sectionRef} id="community" className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-auth-brand-bg)] py-20 text-white sm:py-28" aria-label="Canales de comunidad Codenix" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.18 }} transition={{ duration: 0.4, ease: 'easeOut' }}>
       <CommunityStars active={active} />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
-        <div className="relative z-20 max-w-xl">
+      <motion.div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}>
+        <motion.div className="relative z-20 max-w-xl" variants={communityReveal}>
           <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)]">Comunidad</p>
           <h2 className="mt-4 max-w-[12ch] text-3xl font-black leading-[0.98] tracking-[-0.05em] sm:text-4xl">Únete a la comunidad que entrena contigo.</h2>
           <p className="mt-5 max-w-md text-sm leading-6 text-slate-300">Sigue novedades, retos y conversaciones de práctica competitiva desde los espacios donde IEEE CS UNI ya se mueve.</p>
         </div>
-        <div className="relative mx-auto flex min-h-[32rem] w-full max-w-[38rem] items-center justify-center overflow-hidden rounded-[var(--radius-2xl)]">
+        <motion.div className="relative mx-auto flex min-h-[32rem] w-full max-w-[38rem] items-center justify-center overflow-hidden rounded-[var(--radius-2xl)]" variants={communityReveal}>
           <Suspense fallback={<div className="h-[min(82vw,26rem)] w-full max-w-[26rem]" aria-hidden="true" />}>
             <CommunityGlobe active={active} />
           </Suspense>
           {socialLinks.map((link, index) => <OrbitLogo key={link.label} link={link} index={index} />)}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </motion.section>
   )
+}
+
+const communityReveal = {
+  hidden: { opacity: 0, y: 18, filter: 'blur(4px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.55, ease: 'easeOut' } },
 }
 
 function OrbitLogo({ link, index }: { link: SocialLink; index: number }) {

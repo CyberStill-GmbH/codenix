@@ -36,6 +36,23 @@ export function FeatureSection() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
           >
             <LandingBadge>¿Qué es Codenix?</LandingBadge>
+            <motion.div
+              className="relative mt-7 flex w-fit items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 py-2 shadow-[var(--shadow-sm)]"
+              initial={{ opacity: 0, y: 8, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ delay: 0.12, duration: 0.45, ease: 'easeOut' }}
+            >
+              <span className="pointer-events-none absolute -inset-2 -z-10 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] opacity-50 blur-xl" aria-hidden="true" />
+              <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--color-border-strong)] bg-white p-1.5 shadow-[var(--shadow-sm)] motion-safe:animate-[codenix-mascot-hover_3.8s_ease-in-out_infinite]">
+                <img src="/ieee-logo.png" alt="" className="h-full w-full object-contain" />
+                <span className="pointer-events-none absolute -right-1 -top-1 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_0_3px_var(--color-surface),0_0_12px_var(--color-accent)]" aria-hidden="true" />
+              </span>
+              <span className="pr-1">
+                <span className="block text-xs font-bold text-[var(--color-text)]">IEEE Computer Society UNI</span>
+                <span className="mt-0.5 block text-[0.6875rem] text-[var(--color-text-muted)]">Una iniciativa para practicar en comunidad</span>
+              </span>
+            </motion.div>
             <h2
               id="features-title"
               className="mt-6 max-w-[12ch] text-3xl font-black leading-[0.98] tracking-[-0.05em] text-[var(--color-text)] sm:text-4xl"
