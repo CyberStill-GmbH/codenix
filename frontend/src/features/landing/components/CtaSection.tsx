@@ -5,6 +5,9 @@ import { LandingBadge } from '@/features/landing/components/common/LandingBadge'
 import { LandingButton } from '@/features/landing/components/common/LandingButton'
 import { SectionContainer } from '@/features/landing/components/common/SectionContainer'
 import logo from '@/assets/icons/logo.png'
+import { FlipWords } from '@/components/ui/flip-words'
+
+const ctaFlipWords = ['sesión real hoy.', 'rutina constante.', 'señal de avance.']
 
 export function CtaSection() {
   return (
@@ -21,15 +24,22 @@ export function CtaSection() {
         <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 opacity-[0.09]" style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat`, backgroundColor: 'var(--color-accent)' }} aria-hidden="true" />
         <div className="relative z-10 w-full max-w-4xl px-6 py-4 sm:px-12 sm:py-8">
           <div className="relative mx-auto flex max-w-2xl flex-col items-center text-center">
-            <LandingBadge>
+            <LandingBadge className="text-xs sm:text-sm">
               IEEE Computer Society UNI
             </LandingBadge>
 
             <h2
               id="cta-title"
-              className="mt-5 max-w-xl text-balance text-3xl font-black tracking-[-0.04em] text-[var(--color-text)] sm:text-4xl"
+              className="mt-5 max-w-3xl text-balance text-4xl font-black leading-[0.98] tracking-[-0.045em] text-[var(--color-text)] sm:text-5xl lg:text-6xl"
             >
-              Convierte la intención de practicar en una sesión real hoy.
+              <span className="block">Convierte la intención de practicar en una</span>
+              <span className="mt-2 block text-[var(--color-primary)]">
+                <FlipWords
+                  words={ctaFlipWords}
+                  duration={3600}
+                  className="px-0 text-[var(--color-primary)]"
+                />
+              </span>
             </h2>
 
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-[var(--color-text-soft)] sm:text-base">
@@ -41,7 +51,7 @@ export function CtaSection() {
               <LandingButton
                 to="/login"
                 variant="primary"
-                className="shadow-[var(--shadow-auth-button)] hover:scale-[1.02] hover:brightness-110"
+                className="landing-cta-button landing-cta-button--primary shadow-[var(--shadow-auth-button)] hover:scale-[1.02] hover:brightness-110"
                 icon={<ArrowRight className="h-4 w-4" />}
               >
                 Empezar a practicar

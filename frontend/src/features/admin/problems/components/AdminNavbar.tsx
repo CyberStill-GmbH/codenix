@@ -118,10 +118,10 @@ export function AdminNavbar() {
                 onMouseEnter={() => preloadRoute(item.preload)}
                 onFocus={() => preloadRoute(item.preload)}
                 className={cx(
-                  'inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition duration-200',
+                  'inline-flex h-10 items-center gap-2 rounded-[var(--radius-md)] border px-3 text-sm font-semibold transition duration-200',
                   isActive
-                    ? 'border-[var(--color-primary)]/45 bg-[var(--color-primary-soft)] text-[var(--color-text)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
-                    : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:-translate-y-0.5 hover:border-[var(--color-primary)]/45 hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]',
+                    ? 'border-[var(--color-primary)]/45 bg-[var(--color-primary-soft)] text-[var(--color-primary)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
+                    : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)]/45 hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]',
                   landingTokens.focus,
                 )}
                 aria-current={isActive ? 'page' : undefined}

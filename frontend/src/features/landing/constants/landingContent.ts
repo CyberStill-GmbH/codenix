@@ -58,48 +58,48 @@ export const features: FeatureItem[] = [
 
 export const visionCards: VisionCard[] = [
   {
-    title: 'Plataforma propia',
+    title: 'Elige el siguiente reto',
     description:
-      'Un espacio diseñado desde la comunidad, no adaptado de otra herramienta.',
+      'Filtros claros, dificultad visible y problemas que puedes retomar sin perder contexto.',
     icon: 'git-branch',
   },
   {
-    title: 'Práctica algorítmica',
+    title: 'Escribe y envía',
     description:
-      'Resolver problemas, entrenar estructuras de datos y mejorar el razonamiento.',
+      'Un editor preparado para la función del problema; el servidor ejecuta los casos por ti.',
     icon: 'code2',
   },
   {
-    title: 'Progreso técnico',
+    title: 'Mira qué cambió',
     description:
-      'Centralizar el avance para que entrenar sea constante, no disperso.',
+      'Cada envío suma a tu historial para saber qué tema practicar después.',
     icon: 'line-chart',
   },
 ]
 
 export const roadmapItems: RoadmapItem[] = [
   {
-    title: 'Problemas y práctica',
+    title: 'Biblioteca viva',
     description:
-      'Base inicial para explorar ejercicios y construir el flujo principal de entrenamiento.',
+      'La base V1 para encontrar un reto, abrirlo y empezar a resolver sin pasos extra.',
     status: 'Base V1',
   },
   {
-    title: 'Seguimiento de progreso',
+    title: 'Rachas que tienen sentido',
     description:
-      'Evolución hacia métricas, historial de avance y una vista más clara del crecimiento técnico.',
+      'Historial y métricas que conectan tus envíos con el siguiente tema que conviene practicar.',
     status: 'Visión',
   },
   {
-    title: 'Contests y ranking',
+    title: 'Contests de la comunidad',
     description:
-      'La siguiente capa activa: retos internos, ranking y señales de progreso competitivo.',
+      'Retos internos para comparar estrategias, aprender de otros y celebrar avances juntos.',
     status: 'Próximamente',
   },
   {
-    title: 'Aprendizaje estructurado',
+    title: 'Rutas por dominio',
     description:
-      'Rutas y cursos para acompañar la práctica con una guía ordenada por temas.',
+      'Recorridos por estructuras de datos y algoritmos para pasar de un problema al siguiente con dirección.',
     status: 'Visión',
   },
 ]

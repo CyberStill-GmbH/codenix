@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState, type ComponentType, type C
 import { motion } from 'framer-motion'
 
 import { CommunityStars } from '@/features/landing/components/community/CommunityStars'
+import { LandingBadge } from '@/features/landing/components/common/LandingBadge'
 
 const CommunityGlobe = lazy(() => import('@/features/landing/components/community/CommunityGlobe'))
 
@@ -26,15 +27,17 @@ export function CommunityUniverseSection() {
   }, [])
 
   return (
-    <motion.section ref={sectionRef} id="community" className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-auth-brand-bg)] py-20 text-white sm:py-28" aria-label="Canales de comunidad Codenix" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.18 }} transition={{ duration: 0.4, ease: 'easeOut' }}>
+    <motion.section ref={sectionRef} id="community" className="relative z-10 isolate overflow-hidden border-b border-[var(--color-border-soft)] bg-transparent py-20 sm:py-28" aria-label="Canales de comunidad Codenix" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.18 }} transition={{ duration: 0.4, ease: 'easeOut' }}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_72%_48%,rgba(14,165,233,0.12),transparent_48%),linear-gradient(180deg,transparent,rgba(5,9,20,0.34))]" aria-hidden="true" />
       <CommunityStars active={active} />
       <motion.div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} variants={communityContainerReveal}>
         <motion.div className="relative z-20 max-w-xl" variants={communityReveal}>
-          <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)]">Comunidad</p>
-          <h2 className="mt-4 max-w-[12ch] text-3xl font-black leading-[0.98] tracking-[-0.05em] sm:text-4xl">Únete a la comunidad que entrena contigo.</h2>
-          <p className="mt-5 max-w-md text-sm leading-6 text-slate-300">Sigue novedades, retos y conversaciones de práctica competitiva desde los espacios donde IEEE CS UNI ya se mueve.</p>
+          <LandingBadge variant="primary" className="text-xs sm:text-sm">Comunidad</LandingBadge>
+          <h2 className="mt-5 max-w-[12ch] text-4xl font-black leading-[0.94] tracking-[-0.055em] text-[var(--color-text)] sm:text-5xl">Únete a la comunidad que entrena contigo.</h2>
+          <p className="mt-5 max-w-md text-sm leading-6 text-[var(--color-text-soft)] sm:text-base">Sigue novedades, retos y conversaciones de práctica competitiva desde los espacios donde IEEE CS UNI ya se mueve.</p>
+          <p className="mt-7 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-[var(--color-text-subtle)]">Cuatro espacios. Una misma práctica.</p>
         </motion.div>
-        <motion.div className="relative mx-auto flex min-h-[32rem] w-full max-w-[38rem] items-center justify-center overflow-hidden rounded-[var(--radius-2xl)]" variants={communityReveal}>
+        <motion.div className="relative mx-auto flex min-h-[30rem] w-full max-w-[38rem] items-center justify-center overflow-hidden" variants={communityReveal}>
           <Suspense fallback={<div className="h-[min(82vw,26rem)] w-full max-w-[26rem]" aria-hidden="true" />}>
             <CommunityGlobe active={active} />
           </Suspense>
@@ -46,8 +49,8 @@ export function CommunityUniverseSection() {
 }
 
 const communityReveal = {
-  hidden: { opacity: 0, y: 18, filter: 'blur(4px)' },
-  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.55, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' } },
 }
 
 const communityContainerReveal = {
@@ -57,12 +60,11 @@ const communityContainerReveal = {
 
 function OrbitLogo({ link, index }: { link: SocialLink; index: number }) {
   const colors = ['#5865F2', '#25D366', '#0A66C2', '#FF0000']
-  const radius = 148
   const angle = index * 90
   return (
-    <div className="community-orbit absolute left-1/2 top-1/2 z-20" style={{ '--orbit-start': `${angle}deg`, '--orbit-duration': '34s', '--orbit-delay': '0s' } as CSSProperties}>
-      <div style={{ transform: `translateX(${radius}px)` }}>
-        <a href={link.href} target="_blank" rel="noopener noreferrer" title={link.label} className="group relative flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full p-3 transition-transform duration-150 hover:scale-110" aria-label={`Abrir ${link.label}`}>
+    <div className="community-orbit absolute left-1/2 top-1/2 z-20" style={{ '--orbit-start': `${angle}deg`, '--orbit-duration': '34s', '--orbit-delay': '0s', '--orbit-radius': 'clamp(112px, 18vw, 148px)' } as CSSProperties}>
+      <div style={{ transform: 'translateX(var(--orbit-radius))' }}>
+        <a href={link.href} target="_blank" rel="noopener noreferrer" title={link.label} className="group relative flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(56,189,248,0.2)] bg-[rgba(5,9,20,0.78)] p-3 shadow-[0_8px_24px_rgba(0,0,0,0.24)] transition-transform duration-150 hover:scale-110" aria-label={`Abrir ${link.label}`}>
           <link.Icon className="h-8 w-8" style={{ color: colors[index] }} aria-hidden="true" />
           <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded-[var(--radius-sm)] bg-white px-2 py-1 text-[0.625rem] font-semibold text-slate-900 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">{link.label}</span>
         </a>

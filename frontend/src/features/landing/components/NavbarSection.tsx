@@ -1,5 +1,5 @@
-import { Navbar } from '@/features/landing/components/Navbar'
+import { ResizableLandingNavbar } from '@/features/landing/components/ResizableLandingNavbar'
 
 export function NavbarSection() {
-  return <Navbar />
+  return <ResizableLandingNavbar />
 }
