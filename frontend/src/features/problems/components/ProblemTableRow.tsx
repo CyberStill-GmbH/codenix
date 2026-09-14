@@ -4,6 +4,7 @@ import { DifficultyBadge } from '@/features/problems/components/DifficultyBadge'
 import { StatusIcon } from '@/features/problems/components/StatusIcon'
 import type { Problem } from '@/features/problems/types/problem.types'
 import { translateTopic } from '@/features/problems/utils/problemsI18n'
+import { TopicIcon } from '@/features/problems/components/TopicIcon'
 
 type ProblemTableRowProps = {
   problem: Problem
@@ -34,7 +35,10 @@ function ProblemTableRowComponent({ problem, onOpen, onPreload }: ProblemTableRo
         {problem.topics.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1 text-xs text-[var(--color-text-subtle)]">
             {problem.topics.slice(0, 3).map((topic) => (
-              <span key={topic}>{translateTopic(topic)}</span>
+              <span key={topic} className="inline-flex items-center gap-1">
+                <TopicIcon topic={topic} className="h-3 w-3" />
+                {translateTopic(topic)}
+              </span>
             ))}
           </div>
         )}

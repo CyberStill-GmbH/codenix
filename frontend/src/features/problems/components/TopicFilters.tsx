@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { t, translateTopic } from '@/features/problems/utils/problemsI18n'
+import { TopicIcon } from '@/features/problems/components/TopicIcon'
 
 type TopicFiltersProps = {
   topics: string[]
@@ -91,6 +92,7 @@ export function TopicFilters({ topics, selected, onSelect }: TopicFiltersProps) 
                   : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]'
               }`}
             >
+              {topic !== 'all' && <TopicIcon topic={topic} className="mr-2 h-4 w-4" />}
               {label}
             </button>
           )
