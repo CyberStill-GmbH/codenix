@@ -94,7 +94,10 @@ export const commentsService = {
     }).then(async (result) => { await redisCache.invalidate(`codenix:comments:${commentId}:`); return result; });
   },
 
-  async getPublicProfile(profileUserId: string, viewerId?: string) {
+  async getPublicProfile(profileUserIdOrUsername: string, viewerId?: string) {
+    const user = await prisma.user.findFirst({ where: { OR: [{ id: profileUserIdOrUsername }, { username: profileUserIdOrUsername }] }, select: { id: true, username: true, name: true, avatarUrl: true, degree: true, createdAt: true, reputation: { select: { reputationScore: true } }, _count: { select: { submissions: true } } } });
+    if (!user) throw new AppError(404, "USER_NOT_FOUND", "User not found.");
+    const profileUserId = user.id;
     const viewerKey = viewerId ?? "anonymous";
     const shouldCountView = viewerId !== profileUserId && await redisCache.setIfAbsent(`codenix:profile-view:${viewerKey}:${profileUserId}`, "1", 900);
     if (shouldCountView) {
@@ -104,8 +107,6 @@ export const commentsService = {
     const key = `codenix:profile:public:${profileUserId}`;
     const cached = await redisCache.get<any>(key);
     if (cached) return cached;
-    const user = await prisma.user.findUnique({ where: { id: profileUserId }, select: { id: true, username: true, name: true, avatarUrl: true, degree: true, createdAt: true, reputation: { select: { reputationScore: true } }, _count: { select: { submissions: true } } } });
-    if (!user) throw new AppError(404, "USER_NOT_FOUND", "User not found.");
     const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const [views, weeklyViews, weeklyVotes] = await Promise.all([
       prisma.profileView.count({ where: { profileUserId } }),
