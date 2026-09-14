@@ -19,10 +19,10 @@ export function AppBootstrap({ children }: AppBootstrapProps) {
   const [isSplashMounted, setIsSplashMounted] = useState(true)
   const [isTransitionSplashMounted, setIsTransitionSplashMounted] = useState(false)
 
-  const isDarkPublicRoute = ['/', '/login', '/register', '/forgot-password', '/reset-password'].includes(
-    location.pathname,
-  )
-  const splashTheme = isDarkPublicRoute ? 'dark' : resolvedTheme
+  // The marketing landing is intentionally dark-only. Internal routes (including
+  // the authenticated user experience) should match the theme the user selected.
+  const isLandingRoute = location.pathname === '/'
+  const splashTheme = isLandingRoute ? 'dark' : resolvedTheme
 
   useEffect(() => {
     let isMounted = true
