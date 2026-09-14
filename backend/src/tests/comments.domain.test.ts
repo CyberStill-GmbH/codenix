@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateReputation, toggleVote } from "../modules/community/comments.domain";
+import { calculateReputation, canVoteOnComment, toggleVote } from "../modules/community/comments.domain";
 
 describe("comment vote rules", () => {
   it("adds a vote when the user has not voted", () => {
@@ -22,5 +22,12 @@ describe("comment reputation", () => {
 
   it("never drops below zero", () => {
     expect(calculateReputation(1, 4)).toBe(0);
+  });
+});
+
+describe("comment ownership", () => {
+  it("prevents an author from voting on their own comment", () => {
+    expect(canVoteOnComment("user-1", "user-1")).toBe(false);
+    expect(canVoteOnComment("user-1", "user-2")).toBe(true);
   });
 });

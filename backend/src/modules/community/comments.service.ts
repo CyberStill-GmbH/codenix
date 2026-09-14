@@ -1,7 +1,7 @@
 import { prisma } from "../../db/prisma";
 import { redisCache } from "../../shared/cache/redis-cache";
 import { AppError } from "../../shared/errors/app-error";
-import { calculateReputation, toggleVote, type VoteType } from "./comments.domain";
+import { calculateReputation, canVoteOnComment, toggleVote, type VoteType } from "./comments.domain";
 import type { CommentListQuery } from "./comments.schema";
 
 const profileCacheTtl = 30;
@@ -75,6 +75,9 @@ export const commentsService = {
     return prisma.$transaction(async (tx) => {
       const comment = await tx.comment.findUnique({ where: { id: commentId }, select: { id: true, authorId: true, problemId: true, upvotes: true, downvotes: true } });
       if (!comment) throw new AppError(404, "COMMENT_NOT_FOUND", "Comment not found.");
+      if (!canVoteOnComment(comment.authorId, userId)) {
+        throw new AppError(403, "SELF_VOTE_NOT_ALLOWED", "You cannot vote on your own comment.");
+      }
       const current = await tx.commentVote.findUnique({ where: { commentId_userId: { commentId, userId } } });
       const nextVote = toggleVote((current?.voteType as VoteType | undefined) ?? null, vote);
       if (current && nextVote === null) await tx.commentVote.delete({ where: { id: current.id } });

@@ -7,3 +7,7 @@ export function toggleVote(current: VoteType | null, next: VoteType) {
 export function calculateReputation(upvotes: number, downvotes: number) {
   return Math.max(0, upvotes - downvotes);
 }
+
+export function canVoteOnComment(authorId: string, voterId: string) {
+  return authorId !== voterId;
+}
