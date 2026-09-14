@@ -1,5 +1,4 @@
 import { SectionContainer } from '@/features/landing/components/common/SectionContainer'
-import { HeroBadge } from '@/features/landing/components/hero/HeroBadge'
 import { HeroCTAs } from '@/features/landing/components/hero/HeroCTAs'
 import { HeroDescription } from '@/features/landing/components/hero/HeroDescription'
 import { HeroHeadline } from '@/features/landing/components/hero/HeroHeadline'
@@ -15,11 +14,9 @@ export function HeroSection() {
       aria-labelledby="hero-title"
     >
       <HeroFogCanvas />
-      <SectionContainer className="relative py-16 sm:py-20 lg:py-28">
+      <SectionContainer className="relative py-12 sm:py-16 lg:py-20">
         <div className={landingTokens.hero.grid}>
           <div className={landingTokens.hero.copyColumn}>
-            <HeroBadge>Iniciativa de IEEE Computer Society UNI</HeroBadge>
-
             <HeroHeadline id="hero-title">
               Practica algoritmos. Mejora con evidencia.
             </HeroHeadline>

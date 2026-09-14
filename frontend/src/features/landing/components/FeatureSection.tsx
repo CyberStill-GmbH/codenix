@@ -1,108 +1,28 @@
-import type { ReactNode } from 'react'
-import { motion } from 'framer-motion'
-import { BarChart3, BookOpen, Code2, Trophy } from 'lucide-react'
-
-import { features } from '@/features/landing/constants/landingContent'
-import type { FeatureIconKey, FeatureItem } from '@/features/landing/types/landing.types'
+import { CanvasText } from '@/components/ui/canvas-text'
+import FeaturesSectionDemo from '@/components/features-section-demo-3'
 import { LandingBadge } from '@/features/landing/components/common/LandingBadge'
 import { SectionContainer } from '@/features/landing/components/common/SectionContainer'
 
-const iconMap: Record<FeatureIconKey, ReactNode> = {
-  code2: <Code2 className="h-5 w-5" aria-hidden="true" />,
-  'bar-chart3': <BarChart3 className="h-5 w-5" aria-hidden="true" />,
-  trophy: <Trophy className="h-5 w-5" aria-hidden="true" />,
-  'book-open': <BookOpen className="h-5 w-5" aria-hidden="true" />,
-}
-
-const reveal = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0 },
-}
-
 export function FeatureSection() {
   return (
-    <section
-      className="relative z-10 border-b border-[var(--color-border-soft)] bg-transparent py-20 sm:py-28"
-      aria-labelledby="features-title"
-    >
+    <section className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-transparent py-20 sm:py-28" aria-labelledby="features-title">
       <SectionContainer>
-        <div className="grid items-start gap-16 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1fr)] lg:gap-24">
-          <motion.div
-            className="max-w-xl"
-            variants={reveal}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.18 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-          >
-            <LandingBadge>¿Qué es Codenix?</LandingBadge>
-            <motion.div
-              className="relative mt-7 flex w-fit items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 py-2 shadow-[var(--shadow-sm)]"
-              initial={{ opacity: 0, y: 8, scale: 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ delay: 0.12, duration: 0.45, ease: 'easeOut' }}
-            >
-              <span className="pointer-events-none absolute -inset-2 -z-10 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] opacity-50 blur-xl" aria-hidden="true" />
-              <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--color-border-strong)] bg-white p-1.5 shadow-[var(--shadow-sm)] motion-safe:animate-[codenix-mascot-hover_3.8s_ease-in-out_infinite]">
-                <img src="/ieee-logo.png" alt="" className="h-full w-full object-contain" />
-                <span className="pointer-events-none absolute -right-1 -top-1 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_0_3px_var(--color-surface),0_0_12px_var(--color-accent)]" aria-hidden="true" />
-              </span>
-              <span className="pr-1">
-                <span className="block text-xs font-bold text-[var(--color-text)]">IEEE Computer Society UNI</span>
-                <span className="mt-0.5 block text-[0.6875rem] text-[var(--color-text-muted)]">Una iniciativa para practicar en comunidad</span>
-              </span>
-            </motion.div>
-            <h2
-              id="features-title"
-              className="mt-6 max-w-[12ch] text-3xl font-black leading-[0.98] tracking-[-0.05em] text-[var(--color-text)] sm:text-4xl"
-            >
-              Entrena algoritmos con una señal clara de avance.
-            </h2>
-            <p className="mt-6 max-w-md text-base leading-7 text-[var(--color-text-soft)]">
-              Problemas, editor y veredictos en un solo flujo para practicar sin perder el hilo.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="divide-y divide-[var(--color-border-soft)] border-y border-[var(--color-border-soft)]"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.18 }}
-            transition={{ staggerChildren: 0.07 }}
-          >
-            {features.map((feature) => (
-              <FeatureRow key={feature.title} feature={feature} />
-            ))}
-          </motion.div>
+        <div className="relative mx-auto max-w-5xl text-center">
+          <LandingBadge>¿Qué es Codenix?</LandingBadge>
+          <h2 id="features-title" className="mx-auto mt-7 max-w-5xl text-balance text-4xl font-black leading-[0.98] tracking-[-0.055em] text-[var(--color-text)] sm:text-6xl lg:text-7xl">
+            Entrena algoritmos con una{' '}
+            <CanvasText text="señal clara" backgroundClassName="bg-[var(--color-primary)]" colors={['rgba(255,255,255,1)', 'rgba(224,242,254,0.92)', 'rgba(186,230,253,0.82)']} lineGap={4} animationDuration={20} />{' '}
+            de avance.
+          </h2>
+          <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-[var(--color-text-soft)] sm:text-lg">Problemas, editor y veredictos en un solo flujo para practicar sin perder el hilo.</p>
+          <div className="pointer-events-none absolute -right-2 top-0 hidden w-24 rotate-[-4deg] sm:block lg:right-8">
+            <img src="/ieee-logo.png" alt="IEEE Computer Society UNI" className="h-20 w-20 object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.2)]" />
+            <span className="-mt-1 block whitespace-nowrap font-[cursive] text-[0.68rem] font-semibold italic text-[#0b76b9]">¡Una iniciativa de IEEE CS UNI!</span>
+          </div>
         </div>
+
+        <FeaturesSectionDemo />
       </SectionContainer>
     </section>
-  )
-}
-
-function FeatureRow({ feature }: { feature: FeatureItem }) {
-  const isUpcoming = Boolean(feature.status === 'Próximamente' || feature.status === 'PrÃ³ximamente')
-
-  return (
-    <motion.article
-      className={`group flex items-center gap-4 py-5 sm:gap-5 ${isUpcoming ? 'opacity-60' : ''}`}
-      variants={reveal}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
-    >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center text-[var(--color-primary)] transition-colors duration-150 group-hover:text-[var(--color-accent)]">
-        {iconMap[feature.icon]}
-      </span>
-      <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
-        <p className="text-sm font-semibold text-[var(--color-text)] sm:text-base">
-          {feature.title}
-        </p>
-        {feature.status && (
-          <span className="shrink-0 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-[var(--color-text-subtle)]">
-            {feature.status}
-          </span>
-        )}
-      </div>
-    </motion.article>
   )
 }

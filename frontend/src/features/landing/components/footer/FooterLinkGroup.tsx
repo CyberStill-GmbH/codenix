@@ -9,13 +9,9 @@ export type FooterLinkGroupProps = {
 export function FooterLinkGroup({ group }: FooterLinkGroupProps) {
   return (
     <div>
-      <p
-        role="heading"
-        aria-level={3}
-        className={landingTokens.footer.heading}
-      >
+      <h3 className={landingTokens.footer.heading}>
         {group.title}
-      </p>
+      </h3>
 
       <ul className={landingTokens.footer.list} role="list">
         {group.links.map((link) => (

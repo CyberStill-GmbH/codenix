@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import logo from '@/assets/icons/logo.png'
 import { createHighlighter } from 'shiki'
 import {
@@ -15,8 +15,8 @@ import {
 
 import { previewProblems } from '@/features/landing/constants/landingContent'
 import type { PreviewProblem } from '@/features/landing/types/landing.types'
-import { LandingBadge } from '@/features/landing/components/common/LandingBadge'
 import { SectionContainer } from '@/features/landing/components/common/SectionContainer'
+import { ContainerScroll } from '@/components/ui/container-scroll-animation'
 
 const difficultyStyles: Record<PreviewProblem['difficulty'], string> = {
   Fácil:
@@ -83,7 +83,6 @@ const problemDetails: Record<string, { input: string; target: string; output: st
 }
 
 export function ProblemsSection() {
-  const editorContainerRef = useRef<HTMLDivElement>(null)
   const [activeProblemIndex, setActiveProblemIndex] = useState(0)
   const [activeTab, setActiveTab] = useState<'code' | 'tests'>('code')
   const [activeLanguage, setActiveLanguage] = useState<Language>('Python')
@@ -91,11 +90,6 @@ export function ProblemsSection() {
   const [isRunning, setIsRunning] = useState(false)
   const [runResult, setRunResult] = useState<string | null>(null)
   const reducedMotion = useReducedMotion()
-  const { scrollYProgress } = useScroll({ target: editorContainerRef, offset: ['start end', 'end start'] })
-  const revealProgress = useTransform(scrollYProgress, [0, 0.45, 1], [0, 1, 1])
-  const rotateX = useSpring(useTransform(revealProgress, [0, 1], [18, 0]), { stiffness: 180, damping: 28 })
-  const scale = useSpring(useTransform(revealProgress, [0, 1], [0.85, 1]), { stiffness: 180, damping: 28 })
-  const glowOpacity = useTransform(revealProgress, [0, 1], [0, 1])
 
   const activeProblem = previewProblems[activeProblemIndex] ?? previewProblems[0]
   const problemSlug = activeProblem?.title?.toLowerCase().replaceAll(' ', '-') ?? 'two-sum'
@@ -135,41 +129,34 @@ export function ProblemsSection() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
       <SectionContainer className="py-20 lg:py-28">
-        <motion.div className="mx-auto mb-12 flex max-w-3xl flex-col items-center text-center" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}>
-          <LandingBadge>
-            Problems engine
-          </LandingBadge>
-
-          <motion.h2
-            id="problems-title"
-            variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="mt-5 text-balance text-3xl font-black tracking-[-0.04em] text-[var(--color-text)] sm:text-4xl lg:text-5xl"
-          >
-            Practica con problemas claros, feedback rápido y progreso medible.
-          </motion.h2>
-
-          <motion.p variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.35, ease: 'easeOut' }} className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--color-text-soft)]">
-            La sección de problemas concentra el flujo principal de Codenix:
-            elegir un reto, entender restricciones, probar soluciones y medir
-            tu avance sin ruido.
-          </motion.p>
-        </motion.div>
-
-        <motion.div className="mb-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 border-y border-[var(--color-border-soft)] py-3 font-mono text-[0.6875rem] text-[var(--color-text-muted)]" initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: 0.1, duration: 0.3, ease: 'easeOut' }}>
-          <span><AnimatedMetric value={68.3} decimals={1} suffix="%" /> aceptación</span>
-          <span><AnimatedMetric value={2841} suffix="" /> envíos simulados</span>
-          <span><AnimatedMetric value={5} suffix="" /> lenguajes disponibles</span>
-        </motion.div>
-
         <div>
 
-          <div ref={editorContainerRef} className="relative [perspective:1200px]">
-            <motion.div style={{ opacity: reducedMotion ? 1 : glowOpacity }} className="pointer-events-none absolute -left-8 top-12 -z-10 h-44 w-44 rounded-full bg-[var(--color-primary-soft)] blur-3xl" />
+          <ContainerScroll
+            titleComponent={
+              <div className="mx-auto max-w-5xl px-4 text-center">
+                <h2
+                  id="problems-title"
+                  className="text-balance text-4xl font-black leading-[0.94] tracking-[-0.06em] text-[var(--color-text)] sm:text-6xl lg:text-8xl"
+                >
+                  Practica con problemas{' '}
+                  <span className="text-[var(--color-primary)]">claros.</span>
+                  <br />
+                  Mejora con evidencia.
+                </h2>
+                <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[var(--color-text-soft)] sm:text-lg">
+                  Elige un reto, prueba tu solución y recibe feedback sin perder el hilo.
+                </p>
+              </div>
+            }
+            className="h-[44rem] p-0 md:h-[56rem] md:p-0"
+            cardClassName="h-[36rem] p-0 md:h-[43rem] md:p-0"
+          >
+            <div className="relative h-full [perspective:1200px]">
+            <div className="pointer-events-none absolute -left-8 top-12 -z-10 h-44 w-44 rounded-full bg-[var(--color-primary-soft)] blur-3xl" />
             <div className="absolute -right-8 bottom-8 -z-10 h-48 w-48 rounded-full bg-[var(--color-accent-muted-soft)] blur-3xl" />
 
-            <motion.div style={reducedMotion ? { rotateX: 0, scale: 1 } : { rotateX, scale }} className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-bg-soft)] text-left shadow-[var(--shadow-xl)] [transform-style:preserve-3d]">
-              <div className="flex h-12 items-center justify-between border-b border-white/[0.07] bg-[rgba(7,11,20,0.78)] px-4">
+            <div className="problems-editor-light h-full overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-bg-soft)] text-left shadow-[var(--shadow-xl)] [transform-style:preserve-3d]">
+              <div className="flex h-12 items-center justify-between border-b border-[var(--color-border-soft)] bg-[var(--color-surface)] px-4">
                 <div className="flex min-w-0 items-center gap-2.5">
                     <span
                       className="h-6 w-6 shrink-0 bg-[var(--color-logo-mark)]"
@@ -181,15 +168,15 @@ export function ProblemsSection() {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 rounded-[var(--radius-md)] border border-white/[0.08] bg-white/[0.02] px-2.5 py-1 font-mono text-[0.6875rem] text-[var(--color-text-muted)]">
+                <div className="flex items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-2.5 py-1 font-mono text-[0.6875rem] text-[var(--color-text-muted)]">
                   {activeLanguage}
                   <ChevronDown className="h-3 w-3" aria-hidden="true" />
                 </div>
               </div>
 
               <div className="grid lg:grid-cols-[190px_minmax(230px,0.82fr)_minmax(0,1.18fr)]">
-                <aside className="border-b border-white/[0.07] lg:border-b-0 lg:border-r lg:border-white/[0.07]">
-                  <div className="border-b border-white/[0.07] p-3">
+                <aside className="border-b border-[var(--color-border-soft)] lg:border-b-0 lg:border-r lg:border-[var(--color-border-soft)]">
+                  <div className="border-b border-[var(--color-border-soft)] p-3">
                     <div className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-3 py-2">
                       <Search className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
                       <span className="font-mono text-[0.6875rem] text-[var(--color-text-subtle)]">
@@ -240,7 +227,7 @@ export function ProblemsSection() {
                   </div>
                 </aside>
 
-                <div className="border-b border-white/[0.07] p-4 lg:border-b-0 lg:border-r lg:border-white/[0.07]">
+                <div className="border-b border-[var(--color-border-soft)] p-4 lg:border-b-0 lg:border-r lg:border-[var(--color-border-soft)]">
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="truncate text-base font-semibold text-[var(--color-text)]">
@@ -278,7 +265,7 @@ export function ProblemsSection() {
                     {activeDetails.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="inline-flex rounded-[var(--radius-md)] border border-white/[0.07] bg-white/[0.02] px-2 py-1 font-mono text-[0.625rem] text-[var(--color-text-muted)]"
+                        className="inline-flex rounded-[var(--radius-md)] border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-2 py-1 font-mono text-[0.625rem] text-[var(--color-text-muted)]"
                       >
                         {tag}
                       </span>
@@ -302,7 +289,7 @@ export function ProblemsSection() {
                 </div>
 
                 <div className="min-w-0">
-                  <div className="border-b border-white/[0.07]">
+                  <div className="border-b border-[var(--color-border-soft)]">
                     <motion.div className="flex items-center gap-1 overflow-x-auto px-2 pt-1 [scrollbar-width:none]" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}>
                       {languages.map((language) => (
                         <motion.button key={language} type="button" onClick={() => setActiveLanguage(language)} variants={{ hidden: { opacity: 0, x: 8 }, visible: { opacity: 1, x: 0 } }} transition={{ duration: reducedMotion ? 0 : 0.2, ease: 'easeOut' }} className={`min-h-11 shrink-0 border-b-2 px-3 text-[0.6875rem] font-medium transition-colors ${activeLanguage === language ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`} aria-pressed={activeLanguage === language}>
@@ -310,7 +297,7 @@ export function ProblemsSection() {
                         </motion.button>
                       ))}
                     </motion.div>
-                  <div className="flex items-center border-t border-white/[0.07]">
+                  <div className="flex items-center border-t border-[var(--color-border-soft)]">
                     <button
                       type="button"
                       onClick={() => setActiveTab('code')}
@@ -387,45 +374,22 @@ export function ProblemsSection() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 border-t border-white/[0.07] bg-[rgba(7,11,20,0.78)] px-4 py-3">
-                <StatusPill icon={<CheckCircle2 className="h-3.5 w-3.5" />} label="Aceptación 68.3%" />
+              <div className="flex flex-wrap items-center gap-3 border-t border-[var(--color-border-soft)] bg-[var(--color-surface)] px-4 py-3">
                 <StatusPill icon={<ListChecks className="h-3.5 w-3.5" />} label="2 841 envíos" />
                               <StatusPill icon={<Trophy className="h-3.5 w-3.5" />} label="Progreso por problemas" />
               </div>
-            </motion.div>
-          </div>
+            </div>
+            </div>
+          </ContainerScroll>
         </div>
       </SectionContainer>
     </motion.section>
   )
 }
 
-function AnimatedMetric({ value, decimals = 0, suffix }: { value: number; decimals?: number; suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.8 })
-  const reducedMotion = useReducedMotion()
-  const progress = useMotionValue(reducedMotion ? value : 0)
-  const display = useTransform(progress, (latest) => {
-    const formatted = latest.toLocaleString('es-PE', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).replaceAll(',', ' ')
-    return `${formatted}${suffix}`
-  })
-
-  useEffect(() => {
-    if (!inView) return
-    if (reducedMotion) {
-      progress.set(value)
-      return
-    }
-    const controls = animate(progress, value, { duration: 0.85, ease: 'easeOut' })
-    return () => controls.stop()
-  }, [inView, progress, reducedMotion, value])
-
-  return <motion.strong ref={ref} className="text-[var(--color-text)]">{display}</motion.strong>
-}
-
 function StatusPill({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-[var(--radius-full)] border border-white/[0.07] bg-white/[0.02] px-2.5 py-1 font-mono text-[0.6875rem] text-[var(--color-text-muted)]">
+    <span className="inline-flex items-center gap-1.5 rounded-[var(--radius-full)] border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] px-2.5 py-1 font-mono text-[0.6875rem] text-[var(--color-text-muted)]">
       <span className="text-[var(--color-primary)]">{icon}</span>
       {label}
     </span>

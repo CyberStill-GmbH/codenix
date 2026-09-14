@@ -36,11 +36,13 @@ export const landingTokens = {
       'sticky top-0 z-50 border-b border-[var(--color-border-soft)] bg-[rgba(5,9,20,0.84)] shadow-[var(--shadow-xs)] backdrop-blur-xl',
     inner:
       'mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8',
-    link: 'inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-lg)] px-3 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
+    link: 'relative inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] px-3 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
     mobileLink:
-      'flex w-full items-center justify-between rounded-[var(--radius-lg)] px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
+      'relative flex w-full items-center justify-between rounded-[var(--radius-md)] px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]',
+    activeLink:
+      'bg-[var(--color-primary-soft)] text-[var(--color-text)] after:absolute after:inset-x-3 after:-bottom-px after:h-px after:bg-[var(--color-accent)]',
     badge:
-      'rounded-[var(--radius-full)] border border-[var(--color-nav-badge-border)] bg-[var(--color-nav-badge-bg)] px-2 py-0.5 text-[0.625rem] font-semibold text-[var(--color-nav-badge-text)]',
+      'font-[cursive] text-xs font-semibold italic leading-none tracking-[0.01em] text-[var(--color-accent-muted)]',
     cta: 'inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--color-primary)] bg-[var(--color-primary)] px-5 py-2 text-sm font-bold text-white shadow-[var(--shadow-sm)] transition-colors duration-200 hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
     mobileCta:
       'inline-flex min-h-11 items-center justify-center gap-1.5 rounded-[var(--radius-lg)] border border-[var(--color-primary)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white transition-colors duration-200 hover:border-[var(--color-primary-hover)] hover:bg-[var(--color-primary-hover)]',
@@ -57,7 +59,7 @@ export const landingTokens = {
     badge:
       'inline-flex items-center gap-2 rounded-[var(--radius-full)] border border-[var(--color-hero-badge-border)] bg-[var(--color-hero-badge-bg)] px-3 py-1.5 text-sm font-medium text-[var(--color-text-muted)]',
     headline:
-      'mt-7 max-w-[11ch] text-balance text-[clamp(3.25rem,15vw,7.5rem)] font-black leading-[0.88] tracking-[-0.075em] text-[var(--color-text)] motion-safe:animate-[codenix-hero-headline-reveal_700ms_cubic-bezier(0.16,1,0.3,1)_both] sm:mt-8',
+      'mt-0 max-w-[11ch] text-balance text-[clamp(3.25rem,15vw,7.5rem)] font-black leading-[0.88] tracking-[-0.075em] text-[var(--color-text)] motion-safe:animate-[codenix-hero-headline-reveal_700ms_cubic-bezier(0.16,1,0.3,1)_both]',
     description:
       'mt-5 max-w-xl text-base leading-relaxed text-[var(--color-text-soft)] sm:text-[1.0625rem]',
     ctas: 'mt-8 flex flex-col gap-3 sm:flex-row',
@@ -90,28 +92,31 @@ export const landingTokens = {
   },
   footer: {
     shell:
-      'border-t border-[var(--color-border-soft)] bg-[var(--color-footer-bg)]',
-    inner: 'mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12',
-    grid: 'grid gap-10 lg:grid-cols-[1.1fr_1fr]',
-    brand: 'max-w-sm',
+      'codenix-footer-shell border-t border-[var(--color-border-soft)]',
+    inner: 'relative z-10 mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16',
+    grid: 'grid gap-14 lg:grid-cols-[minmax(260px,1.05fr)_minmax(0,1.95fr)] lg:gap-20',
+    brand: 'max-w-md',
     brandLink:
       'inline-flex items-center gap-2 rounded-[var(--radius-md)] outline-none transition-opacity duration-200 hover:opacity-80',
-    brandText: 'text-sm font-bold tracking-tight text-[var(--color-text)]',
-    description: 'mt-4 text-xs leading-relaxed text-[var(--color-text-muted)]',
-    badgeRow: 'mt-5 flex flex-wrap gap-2',
+    brandText: 'text-base font-bold tracking-tight text-[var(--color-text)]',
+    description: 'mt-5 max-w-sm text-sm leading-6 text-[var(--color-text-muted)]',
+    badgeRow: 'mt-6 flex flex-wrap gap-2',
+    socialRow: 'mt-7 flex items-center gap-2.5',
+    socialLink:
+      'inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-full)] border border-[var(--color-footer-badge-border)] bg-[var(--color-footer-badge-bg)] text-[var(--color-text-muted)] transition-colors duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] hover:text-[var(--color-primary)]',
     badge:
-      'inline-flex items-center gap-1.5 rounded-[var(--radius-full)] border border-[var(--color-footer-badge-border)] bg-[var(--color-footer-badge-bg)] px-2.5 py-1 text-[0.6875rem] font-medium text-[var(--color-text-muted)]',
+      'inline-flex items-center gap-1.5 rounded-[var(--radius-full)] border border-[var(--color-footer-badge-border)] bg-[var(--color-footer-badge-bg)] px-3 py-1.5 text-xs font-medium text-[var(--color-text-muted)]',
     badgeIcon: 'text-[var(--color-primary)]',
-    groupGrid: 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4',
+    groupGrid: 'grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4',
     heading:
-      'text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]',
-    list: 'mt-3 space-y-2.5',
-    link: 'inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-muted)] transition-colors duration-200 hover:text-[var(--color-primary)]',
+      'text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-primary)]',
+    list: 'mt-5 space-y-3.5',
+    link: 'inline-flex min-h-7 items-center gap-1.5 text-sm font-medium leading-6 text-[var(--color-text-muted)] transition duration-200 hover:translate-x-px hover:text-[var(--color-text)]',
     linkBadge:
-      'rounded-[var(--radius-full)] border border-[var(--color-footer-badge-border)] bg-[var(--color-footer-badge-bg)] px-1.5 py-0.5 text-[0.5625rem] font-medium text-[var(--color-nav-badge-text)]',
+      'font-[cursive] text-xs font-semibold italic leading-none tracking-[0.01em] text-[var(--color-accent-muted)]',
     bottom:
-      'mt-10 flex flex-col gap-3 border-t border-[var(--color-border-soft)] pt-5 sm:flex-row sm:items-center sm:justify-between',
-    bottomText: 'text-xs text-[var(--color-text-subtle)]',
+      'mt-14 flex flex-col gap-3 border-t border-[var(--color-border-soft)] pt-6 sm:flex-row sm:items-center sm:justify-between',
+    bottomText: 'text-xs text-[var(--color-text-muted)]',
     bottomMeta:
       'flex items-center gap-1.5 text-xs text-[var(--color-text-subtle)]',
   },
