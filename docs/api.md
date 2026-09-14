@@ -18,8 +18,9 @@ La API se publica bajo el prefijo `/api`. Es un contrato HTTP versionado por com
 | Problemas | `GET /api/problems`, `/search`, `/topics`, `GET /api/problems/:slug`. |
 | Ejecución | `POST /api/problems/:problemId/run`, `GET /api/runs/:runId`. |
 | Envíos | `POST /api/problems/:problemId/submissions`, `GET /api/submissions`, `GET /api/submissions/:submissionId`. |
-| Progreso | `GET /api/users/me/stats`, `/progress` y `/activity`. |
-| Administración | Gestión de problemas, publicación y casos de prueba bajo `/api/admin/problems`. |
+| Progreso y perfiles | `GET /api/users/me/stats`, `/progress`, `/activity` y perfiles públicos bajo `/api/users/:userId/profile`. |
+| Comunidad | Comentarios, respuestas, votos y perfiles bajo `/api/community`. |
+| Administración | Gestión de problemas, publicación, casos y subidas bajo `/api/admin/problems` y `/api/admin/uploads`. |
 
 ## Integración de evaluación
 

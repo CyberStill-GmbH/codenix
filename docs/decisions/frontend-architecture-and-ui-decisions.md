@@ -1,9 +1,11 @@
 # Decisiones de arquitectura frontend y sistema visual
 
 **Proyecto:** Codenix Frontend  
-**Fecha:** 2026-06-17  
+**Fecha:** 2026-09-14
 **Estado:** Vigente  
-**Alcance:** Landing pública, autenticación, navegación interna, perfil de usuario y base visual del MVP.
+**Alcance:** Landing pública, autenticación, navegación interna, perfil de usuario y base visual del producto.
+
+> Nota de vigencia: este ADR conserva decisiones de la primera fase visual. Las referencias a mocks, MVP o integración futura son históricas; el estado operativo actual está en [frontend.md](../frontend.md) y [system-design.md](../system-design.md).
 
 ## 1. Propósito del documento
 
@@ -295,11 +297,13 @@ No se incluyeron capturas dentro de este documento porque no tengo una fuente vi
    - Ancho aproximado 390px.
    - Debe comprobar que todo se apila sin overflow.
 
-### Formato sugerido
+### Capturas de referencia versionadas
+
+Las capturas de producto se mantienen en [`docs/docs-img/`](../docs-img/) y se enlazan desde el README principal:
 
 ```md
-![Landing Hero](../docs-img/frontend-decisions/landing-hero-desktop.png)
-![Profile Mobile](../docs-img/frontend-decisions/profile-mobile.png)
+![Landing de Codenix](../docs-img/landing-home.png)
+![Espacio de resolución](../docs-img/problem-workspace.png)
 ```
 
 ## 16. Reglas para cambios futuros
@@ -309,16 +313,16 @@ Antes de crear una nueva pantalla o componente, revisar:
 1. Si existe un componente reutilizable.
 2. Si existe un token semántico aplicable.
 3. Si el componente pertenece a landing pública, auth o app interna.
-4. Si el mock data debe vivir en `constants` y no dentro del componente.
+4. Si los datos de presentación deben vivir en `constants` y no dentro del componente.
 5. Si el componente recibe datos por props para facilitar futura integración con API.
 
 ## 17. Riesgos conocidos
 
-- Algunas rutas internas todavía están en fase de ensamblaje.
-- Los mocks deben reemplazarse por hooks cuando exista backend.
+- Las nuevas rutas deben integrarse mediante los contratos actuales de la API y conservar estados de carga, error y vacío.
+- Las integraciones con API deben conservar estados de carga, error y vacío explícitos.
 - La documentación visual necesita capturas versionadas.
 - Se debe evitar que nuevas features introduzcan colores fuera del sistema.
 
 ## 18. Resumen ejecutivo
 
-Codenix ahora tiene una base frontend más sostenible: tokens, tipografía, componentes modulares, separación entre landing y app interna, mocks con intención de API y primeras pantallas autenticadas. La prioridad futura debe ser mantener esta disciplina mientras se conecta el backend y se completa el MVP.
+Codenix mantiene una base frontend sostenible: tokens, tipografía, componentes modulares, separación entre landing y aplicación autenticada, integración con API y pantallas de práctica operativas. La prioridad futura es conservar esta disciplina mientras se amplían problemas, métricas y experiencias responsive.
