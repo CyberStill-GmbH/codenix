@@ -87,6 +87,8 @@ export async function getUserStats(): Promise<UserStats> {
 export type PublicProfileStats = {
   reputation: number
   profileViews: number
+  reputationChange: number
+  profileViewsChange: number
 }
 
 export async function getPublicProfileStats(userId: string): Promise<PublicProfileStats> {
@@ -94,6 +96,8 @@ export async function getPublicProfileStats(userId: string): Promise<PublicProfi
   return {
     reputation: response.reputation ?? 0,
     profileViews: response.profileViews ?? 0,
+    reputationChange: response.reputationChange ?? 0,
+    profileViewsChange: response.profileViewsChange ?? 0,
   }
 }
 

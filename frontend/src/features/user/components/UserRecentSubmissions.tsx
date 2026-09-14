@@ -99,11 +99,13 @@ export function UserRecentSubmissions({ submissions }: UserRecentSubmissionsProp
             </p>
           </div>
 
-          <div className={`inline-flex rounded-lg p-1 ${profileInsetSurfaceClassName}`}>
+          <div className={`inline-flex rounded-lg p-1 ${profileInsetSurfaceClassName}`} role="tablist" aria-label="Filtrar envíos">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`h-8 rounded-md px-3 text-xs font-bold transition ${
                   activeTab === tab.id

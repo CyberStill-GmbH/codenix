@@ -9,9 +9,9 @@ type UserProgressPanelProps = {
 export function UserProgressPanel({ progress, stats }: UserProgressPanelProps) {
   return (
     <div className="flex h-full flex-col p-4">
-      <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
+      <h2 className="text-[0.6875rem] font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
         Problemas resueltos
-      </p>
+      </h2>
       <div className="mt-4">
         <SolvedDonutChart
           progress={progress}

@@ -106,8 +106,17 @@ export const commentsService = {
     if (cached) return cached;
     const user = await prisma.user.findUnique({ where: { id: profileUserId }, select: { id: true, username: true, name: true, avatarUrl: true, degree: true, createdAt: true, reputation: { select: { reputationScore: true } }, _count: { select: { submissions: true } } } });
     if (!user) throw new AppError(404, "USER_NOT_FOUND", "User not found.");
-    const views = await prisma.profileView.count({ where: { profileUserId } });
-    const profile = { ...user, reputation: user.reputation?.reputationScore ?? 0, solvedSubmissions: user._count.submissions, profileViews: views };
+    const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const [views, weeklyViews, weeklyVotes] = await Promise.all([
+      prisma.profileView.count({ where: { profileUserId } }),
+      prisma.profileView.count({ where: { profileUserId, createdAt: { gte: weekStart } } }),
+      prisma.commentVote.findMany({
+        where: { createdAt: { gte: weekStart }, comment: { authorId: profileUserId } },
+        select: { voteType: true },
+      }),
+    ]);
+    const reputationChange = weeklyVotes.reduce((total, vote) => total + (vote.voteType === "up" ? 1 : -1), 0);
+    const profile = { ...user, reputation: user.reputation?.reputationScore ?? 0, solvedSubmissions: user._count.submissions, profileViews: views, reputationChange, profileViewsChange: weeklyViews };
     await redisCache.set(key, profile, profileCacheTtl);
     return profile;
   },

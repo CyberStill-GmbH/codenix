@@ -149,10 +149,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 type UserProfileCardProps = {
   user: User
   submissions?: Submission[]
-  communityStats?: { reputation: number; profileViews: number }
+  communityStats?: { reputation: number; profileViews: number; reputationChange: number; profileViewsChange: number }
 }
 
-export function UserProfileCard({ user, submissions = [], communityStats = { reputation: 0, profileViews: 0 } }: UserProfileCardProps) {
+export function UserProfileCard({ user, submissions = [], communityStats = { reputation: 0, profileViews: 0, reputationChange: 0, profileViewsChange: 0 } }: UserProfileCardProps) {
   const navigate = useNavigate()
   const [showAllSkills, setShowAllSkills] = useState(false)
   const langEntries = buildLanguageStats(submissions)
@@ -190,7 +190,7 @@ export function UserProfileCard({ user, submissions = [], communityStats = { rep
             type="button"
             aria-label="Editar perfil"
             onClick={() => navigate('/settings')}
-            className="inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-3 text-xs font-semibold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]"
+            className="inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-soft)] px-3 text-xs font-semibold text-[var(--color-text-soft)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
           >
             <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
             Editar
@@ -232,28 +232,32 @@ export function UserProfileCard({ user, submissions = [], communityStats = { rep
         })}
       </div>
 
-      <div className="grid grid-cols-2 gap-2 px-4 pb-4" aria-label="Reputación y vistas del perfil">
-        <div className={`rounded-xl px-3 py-3 ${profileInsetSurfaceClassName}`}>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]">
+      <dl className="px-4 pb-4" aria-label="Reputación y vistas del perfil">
+        <div className="flex items-center gap-3 py-2.5">
+          <dt className="flex min-w-0 flex-1 items-center gap-2 text-sm font-medium text-[var(--color-text-muted)]">
             <Award className="h-3.5 w-3.5 text-[var(--color-accent)]" aria-hidden="true" />
             Reputación
-          </div>
-          <p className="mt-1 font-mono text-xl font-bold text-[var(--color-text)]">{communityStats.reputation}</p>
-          <p className="mt-0.5 text-[0.6875rem] text-[var(--color-text-muted)]">Por aportes recibidos</p>
+          </dt>
+          <dd className="flex items-baseline gap-2 font-mono text-lg font-bold text-[var(--color-text)]">
+            {communityStats.reputation}
+            {communityStats.reputationChange > 0 && <span className="font-sans text-xs font-semibold text-[var(--color-success)]">+{communityStats.reputationChange}</span>}
+          </dd>
         </div>
-        <div className={`rounded-xl px-3 py-3 ${profileInsetSurfaceClassName}`}>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-subtle)]">
+        <div className="flex items-center gap-3 border-t border-[var(--color-border-soft)] py-2.5">
+          <dt className="flex min-w-0 flex-1 items-center gap-2 text-sm font-medium text-[var(--color-text-muted)]">
             <Eye className="h-3.5 w-3.5 text-[var(--color-primary)]" aria-hidden="true" />
             Vistas
-          </div>
-          <p className="mt-1 font-mono text-xl font-bold text-[var(--color-text)]">{communityStats.profileViews}</p>
-          <p className="mt-0.5 text-[0.6875rem] text-[var(--color-text-muted)]">Visitas únicas</p>
+          </dt>
+          <dd className="flex items-baseline gap-2 font-mono text-lg font-bold text-[var(--color-text)]">
+            {communityStats.profileViews}
+            {communityStats.profileViewsChange > 0 && <span className="font-sans text-xs font-semibold text-[var(--color-success)]">+{communityStats.profileViewsChange}</span>}
+          </dd>
         </div>
-      </div>
+      </dl>
 
       <Divider />
       <div className="px-4 pb-4 pt-4">
-        <SectionLabel>Languages</SectionLabel>
+        <SectionLabel>Lenguajes</SectionLabel>
         <div className="flex flex-wrap gap-2">
           {langEntries.map((language) => (
             <span
@@ -270,7 +274,7 @@ export function UserProfileCard({ user, submissions = [], communityStats = { rep
 
       <Divider />
       <div className="px-4 pb-4 pt-4">
-        <SectionLabel>Skills</SectionLabel>
+        <SectionLabel>Habilidades</SectionLabel>
         <motion.div layout className="flex flex-col gap-4">
           {skillGroups.map((group) => {
             const visibleTags = showAllSkills ? group.tags : group.tags.slice(0, 3)
@@ -302,9 +306,9 @@ export function UserProfileCard({ user, submissions = [], communityStats = { rep
           <button
             type="button"
             onClick={() => setShowAllSkills((current) => !current)}
-            className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-accent)]"
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
           >
-            {showAllSkills ? 'Ver menos' : 'Ver mas'}
+            {showAllSkills ? 'Ver menos' : 'Ver más'}
             <ChevronDown
               className={`h-3.5 w-3.5 transition ${showAllSkills ? 'rotate-180' : ''}`}
               aria-hidden="true"
