@@ -100,7 +100,7 @@ export function AdminNavbar() {
             to="/problems"
             onMouseEnter={preloadProblemsRoute}
             onFocus={preloadProblemsRoute}
-            className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-3 text-xs font-semibold text-[var(--color-text-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-sky-400/50 hover:bg-slate-800/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:hidden"
+            className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-xs font-semibold text-[var(--color-text-soft)] transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:hidden"
           >
             Preview
           </Link>
@@ -120,8 +120,8 @@ export function AdminNavbar() {
                 className={cx(
                   'inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition duration-200',
                   isActive
-                    ? 'border-sky-400/45 bg-sky-400/12 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
-                    : 'border-slate-700/50 bg-slate-950/40 text-[var(--color-text-muted)] hover:-translate-y-0.5 hover:border-sky-400/45 hover:bg-slate-800/70 hover:text-white',
+                    ? 'border-[var(--color-primary)]/45 bg-[var(--color-primary-soft)] text-[var(--color-text)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
+                    : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:-translate-y-0.5 hover:border-[var(--color-primary)]/45 hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)]',
                   landingTokens.focus,
                 )}
                 aria-current={isActive ? 'page' : undefined}
@@ -132,13 +132,13 @@ export function AdminNavbar() {
             )
           })}
 
-          <span className="hidden h-6 w-px bg-slate-800 md:block" aria-hidden="true" />
+          <span className="hidden h-6 w-px bg-[var(--color-border-soft)] md:block" aria-hidden="true" />
 
           <Link
             to="/problems"
             onMouseEnter={preloadProblemsRoute}
             onFocus={preloadProblemsRoute}
-            className="hidden h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-950/50 px-3 text-sm font-semibold text-[var(--color-text-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-sky-400/50 hover:bg-slate-800/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:inline-flex"
+            className="hidden h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm font-semibold text-[var(--color-text-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/50 hover:bg-[var(--color-surface-soft)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] md:inline-flex"
           >
             <ShieldCheck className="h-4 w-4" aria-hidden="true" />
             Preview user app

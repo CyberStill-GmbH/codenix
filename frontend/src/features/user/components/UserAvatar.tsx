@@ -30,7 +30,7 @@ export function UserAvatar({ src, name, size = 'md' }: UserAvatarProps) {
 
   return (
     <span
-      className={`codenix-avatar inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-full)] font-display font-bold shadow-[0_14px_36px_rgba(14,165,233,0.18)] ${sizeClassNames[size]}`}
+      className={`codenix-avatar inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-full)] font-display font-bold ${sizeClassNames[size]}`}
       aria-label={name}
     >
       {showImage ? (

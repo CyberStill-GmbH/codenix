@@ -58,7 +58,7 @@ export function AppNavbar() {
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[var(--color-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">
         Saltar al contenido principal
       </a>
-    <header className="border-b border-[var(--color-border-soft)] bg-[var(--color-bg)] md:sticky md:top-0 md:z-50 md:bg-[rgba(5,9,20,0.92)] md:backdrop-blur-xl">
+    <header className="border-b border-[var(--color-border-soft)] bg-[var(--color-navbar-bg)] md:sticky md:top-0 md:z-50 md:bg-[var(--color-navbar-bg)] md:backdrop-blur-xl">
       <nav
         className={cx(
           'mx-auto hidden h-16 w-full items-center justify-between gap-6 px-6 md:flex',
@@ -148,7 +148,7 @@ export function AppNavbar() {
               id="navbar-user-avatar"
               type="button"
               className={cx(
-                'rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5 transition duration-200 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]',
+                'rounded-full transition duration-200 hover:opacity-85',
                 landingTokens.focus,
               )}
               aria-label="Abrir menú de usuario"
