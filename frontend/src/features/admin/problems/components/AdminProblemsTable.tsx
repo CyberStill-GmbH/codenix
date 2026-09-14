@@ -47,8 +47,8 @@ export function AdminProblemsTable({
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
-      <div className="hidden grid-cols-[minmax(16rem,1.4fr)_7rem_minmax(12rem,1fr)_8rem_7rem_8rem_minmax(18rem,1fr)] gap-4 border-b border-slate-800 px-5 py-3 xl:grid">
+    <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]">
+      <div className="hidden grid-cols-[minmax(16rem,1.4fr)_7rem_minmax(12rem,1fr)_8rem_7rem_8rem_minmax(18rem,1fr)] gap-4 border-b border-[var(--color-border-soft)] px-5 py-3 xl:grid">
         {['Title', 'Difficulty', 'Tags', 'Status', 'Testcases', 'Updated', 'Actions'].map(
           (heading) => (
             <span
@@ -63,12 +63,12 @@ export function AdminProblemsTable({
 
       <div className="space-y-2 p-3">
         {problems.map((problem, index) => {
-          const rowSurface = index % 2 === 0 ? 'bg-slate-900/55' : 'bg-transparent'
+          const rowSurface = index % 2 === 0 ? 'bg-[var(--color-surface-soft)]' : 'bg-transparent'
 
           return (
             <article
               key={problem.id}
-              className={`grid gap-4 rounded-xl px-4 py-4 transition hover:bg-slate-800/70 xl:grid-cols-[minmax(16rem,1.4fr)_7rem_minmax(12rem,1fr)_8rem_7rem_8rem_minmax(18rem,1fr)] xl:items-center ${rowSurface}`}
+              className={`grid gap-4 rounded-xl px-4 py-4 transition hover:bg-[var(--color-primary-soft)] xl:grid-cols-[minmax(16rem,1.4fr)_7rem_minmax(12rem,1fr)_8rem_7rem_8rem_minmax(18rem,1fr)] xl:items-center ${rowSurface}`}
             >
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-[var(--color-text)]">
@@ -89,7 +89,7 @@ export function AdminProblemsTable({
                 {problem.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-slate-700/60 bg-slate-900/70 px-2 py-1 text-xs font-medium text-[var(--color-text-muted)]"
+                    className="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-elevated)] px-2 py-1 text-xs font-medium text-[var(--color-text-muted)]"
                   >
                     {tag}
                   </span>

@@ -20,7 +20,7 @@ type AdminProblemFiltersProps = {
 }
 
 const selectClassName =
-  'h-10 rounded-full border border-slate-700/50 bg-slate-900/70 px-3 text-sm text-[var(--color-text-soft)] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]'
+  'h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm text-[var(--color-text-soft)] outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]'
 
 export function AdminProblemFilters({
   search,
@@ -37,7 +37,7 @@ export function AdminProblemFilters({
 }: AdminProblemFiltersProps) {
   return (
     <section
-      className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]"
+      className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]"
       aria-label="Admin problem filters"
     >
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -49,7 +49,7 @@ export function AdminProblemFilters({
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Search by title"
-            className="h-11 w-full rounded-full border border-slate-700/50 bg-slate-900/70 pl-10 pr-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]"
+            className="h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] pl-10 pr-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]"
           />
         </label>
 

@@ -49,7 +49,7 @@ export function AdminProblemExamplesEditor({
   }
 
   return (
-    <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
@@ -81,7 +81,7 @@ export function AdminProblemExamplesEditor({
         {examples.map((example, index) => (
           <article
             key={example.id}
-            className="rounded-2xl border border-slate-800 bg-slate-900/45 p-4"
+            className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-soft)] p-4"
           >
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-mono text-sm font-bold text-[var(--color-text-soft)]">

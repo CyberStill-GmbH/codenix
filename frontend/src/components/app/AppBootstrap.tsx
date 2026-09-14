@@ -51,8 +51,8 @@ export function AppBootstrap({ children }: AppBootstrapProps) {
     if (!isBootstrapped) return
 
     if (status === 'loading') {
-      setIsTransitionSplashMounted(true)
-      return
+      const mountTimer = window.setTimeout(() => setIsTransitionSplashMounted(true), 0)
+      return () => window.clearTimeout(mountTimer)
     }
 
     if (!isTransitionSplashMounted) return

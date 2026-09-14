@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import Globe from 'react-globe.gl'
 
 type CommunityGlobeProps = { active: boolean }
+type GlobeControls = { autoRotate: boolean; autoRotateSpeed: number; enabled: boolean; enableZoom: boolean }
+type GlobeRenderer = { setPixelRatio: (ratio: number) => void }
+type GlobeInstance = { controls?: () => GlobeControls; renderer?: () => GlobeRenderer }
 
 const pointsData = [{ lat: -12.0464, lng: -77.0428, label: 'IEEE Computer Society UNI — Lima, Perú' }]
 
 export default function CommunityGlobe({ active }: CommunityGlobeProps) {
-  const globeRef = useRef<any>(null)
+  const globeRef = useRef<GlobeInstance | null>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState(390)
   const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches

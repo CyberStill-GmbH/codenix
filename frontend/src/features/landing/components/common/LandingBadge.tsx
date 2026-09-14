@@ -21,6 +21,7 @@ export function LandingBadge({
 
   return (
     <span className={`font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.18em] ${textClass} ${className}`}>
+      {icon && <span className="mr-2 inline-flex align-middle" aria-hidden="true">{icon}</span>}
       {children}
     </span>
   )

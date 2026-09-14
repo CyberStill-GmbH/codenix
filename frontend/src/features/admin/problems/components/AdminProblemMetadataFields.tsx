@@ -15,7 +15,7 @@ type AdminProblemMetadataFieldsProps = {
 }
 
 const inputClassName =
-  'h-11 w-full rounded-2xl border border-slate-700/50 bg-slate-900/70 px-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]'
+  'h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(14,165,233,0.22)]'
 
 const difficultyOptions: Array<{ value: ProblemDifficulty; label: string }> = [
   { value: 'easy', label: 'Easy' },
@@ -29,7 +29,7 @@ export function AdminProblemMetadataFields({
   onChange,
 }: AdminProblemMetadataFieldsProps) {
   return (
-    <section className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
       <div>
         <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
           Metadata

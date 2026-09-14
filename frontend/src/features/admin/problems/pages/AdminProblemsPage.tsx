@@ -145,7 +145,7 @@ export function AdminProblemsPage() {
       <main className="codenix-app-shell codenix-user-main">
         <StaggerContainer>
           <PageSection>
-            <header className="flex flex-col gap-4 rounded-2xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.22)] md:flex-row md:items-center md:justify-between">
+            <header className="flex flex-col gap-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)] md:flex-row md:items-center md:justify-between">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
                   <ShieldCheck className="h-4 w-4 text-[var(--color-primary)]" />
@@ -240,7 +240,7 @@ const metricToneClassName: Record<NonNullable<AdminMetricProps['tone']>, string>
 
 function AdminMetric({ label, value, tone = 'default' }: AdminMetricProps) {
   return (
-    <div className="rounded-2xl border border-slate-700/50 bg-slate-950/60 p-4">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]">
       <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
         {label}
       </span>
@@ -256,19 +256,19 @@ function AdminMetric({ label, value, tone = 'default' }: AdminMetricProps) {
 
 function AdminProblemsLoadingState() {
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-950/60 p-3 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
+    <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-sm)]">
       {[0, 1, 2, 3].map((item) => (
         <div
           key={item}
-          className="mb-2 grid min-h-16 animate-pulse gap-4 rounded-xl bg-slate-900/55 px-4 py-4 xl:grid-cols-[minmax(16rem,1.4fr)_7rem_minmax(12rem,1fr)_8rem_7rem_8rem_minmax(18rem,1fr)]"
+          className="mb-2 grid min-h-16 animate-pulse gap-4 rounded-xl bg-[var(--color-surface-soft)] px-4 py-4 xl:grid-cols-[minmax(16rem,1.4fr)_7rem_minmax(12rem,1fr)_8rem_7rem_8rem_minmax(18rem,1fr)]"
         >
-          <span className="h-4 rounded-full bg-slate-800" />
-          <span className="h-4 rounded-full bg-slate-800" />
-          <span className="h-4 rounded-full bg-slate-800" />
-          <span className="h-4 rounded-full bg-slate-800" />
-          <span className="h-4 rounded-full bg-slate-800" />
-          <span className="h-4 rounded-full bg-slate-800" />
-          <span className="h-4 rounded-full bg-slate-800" />
+          <span className="h-4 rounded-full bg-[var(--color-border)]" />
+          <span className="h-4 rounded-full bg-[var(--color-border)]" />
+          <span className="h-4 rounded-full bg-[var(--color-border)]" />
+          <span className="h-4 rounded-full bg-[var(--color-border)]" />
+          <span className="h-4 rounded-full bg-[var(--color-border)]" />
+          <span className="h-4 rounded-full bg-[var(--color-border)]" />
+          <span className="h-4 rounded-full bg-[var(--color-border)]" />
         </div>
       ))}
     </section>
