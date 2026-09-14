@@ -5,14 +5,17 @@ type TopicDistributionProps = {
 }
 
 export function TopicDistribution({ submissions }: TopicDistributionProps) {
-  const topicCounts = submissions.reduce<Record<string, number>>((counts, submission) => {
+  const topicProblems = submissions.reduce<Record<string, Set<string | number>>>((counts, submission) => {
+    if (submission.result !== 'accepted') return counts
     for (const topic of submission.topics) {
-      counts[topic] = (counts[topic] ?? 0) + 1
+      counts[topic] ??= new Set()
+      counts[topic].add(submission.problemId)
     }
     return counts
   }, {})
 
-  const topics = Object.entries(topicCounts)
+  const topics = Object.entries(topicProblems)
+    .map(([topic, problemIds]) => [topic, problemIds.size] as const)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
   const max = Math.max(...topics.map(([, count]) => count), 1)
