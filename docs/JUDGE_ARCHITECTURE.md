@@ -1,3 +1,5 @@
+> Estado: referencia operativa. Para el contrato normativo consulta [Juez en línea](judge.md).
+
 # Code Judge Architecture
 
 ## Bitácora de implementación

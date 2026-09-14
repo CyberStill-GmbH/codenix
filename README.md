@@ -38,9 +38,20 @@ El proyecto prioriza una base sólida antes que features vistosas: arquitectura 
 
 ---
 
+## Vistas principales
+
+Estas capturas muestran la experiencia actual del producto en sus cuatro puntos de entrada principales:
+
+<div align="center">
+  <img src="docs/docs-img/landing-home.png" width="49%" alt="Landing de Codenix" />
+  <img src="docs/docs-img/login.png" width="49%" alt="Inicio de sesión de Codenix" />
+  <img src="docs/docs-img/problems-library.png" width="49%" alt="Biblioteca de problemas" />
+  <img src="docs/docs-img/problem-workspace.png" width="49%" alt="Espacio de resolución de problemas" />
+</div>
+
 ## Uso básico
 
-En esta etapa el frontend puede ejecutarse con datos simulados para construir y validar la experiencia de usuario mientras el backend y el juez terminan de integrarse.
+El flujo principal usa la API y el juez asíncrono; las pantallas de carga y resultado reflejan el estado real de cada operación.
 
 Flujo esperado:
 
@@ -50,7 +61,7 @@ Flujo esperado:
 4. Revisar el enunciado y la interfaz de solución.
 5. Enviar una solución y ver cómo se encola y se resuelve su resultado.
 
-A medida que avance el backend y el juez en línea, este flujo se conecta con datos reales y ejecución controlada de código a través de la cola de BullMQ.
+Las ejecuciones se validan en el backend y se procesan mediante la cola de BullMQ y el worker aislado.
 
 ---
 

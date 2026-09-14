@@ -1,6 +1,6 @@
 # Jenkins con Docker
 
-Este proyecto incluye una instalacion local de Jenkins sobre Docker para ejecutar el pipeline definido en `Jenkinsfile`.
+Este proyecto incluye una instalación local de Jenkins sobre Docker para ejecutar el pipeline definido en `Jenkinsfile`.
 
 ## Requisitos
 

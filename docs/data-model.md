@@ -10,6 +10,7 @@ PostgreSQL es la fuente de verdad del dominio y Prisma administra su esquema y m
 | Catálogo | `Problem`, `Topic`, `ProblemTopic`, `ProblemExample`, `ProblemCodeTemplate`, `Testcase` |
 | Evaluación oficial | `Submission`, `SubmissionTestcaseResult` |
 | Ejecución de prueba | `CodeRun`, `CodeRunTestcaseResult` |
+| Comunidad y perfiles | `Comment`, `CommentVote`, `UserReputation`, `ProfileView` |
 
 ## Principios de integridad
 
@@ -18,6 +19,7 @@ PostgreSQL es la fuente de verdad del dominio y Prisma administra su esquema y m
 - Las relaciones problema-tema y envío-caso de prueba tienen claves compuestas para evitar duplicados.
 - Los resultados por caso pertenecen a una única ejecución o envío y se eliminan junto a su padre cuando corresponde.
 - Los problemas publicados deben contar con casos y plantillas compatibles con los lenguajes que se exponen. Esta validación se aplica en la capa de administración y se cubre con pruebas.
+- Las respuestas usan `parentId`, los votos son únicos por comentario y usuario, y las vistas de perfil se deduplican temporalmente con Redis.
 
 ## Migraciones y semillas
 
