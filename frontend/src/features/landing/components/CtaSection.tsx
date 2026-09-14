@@ -12,7 +12,7 @@ const ctaFlipWords = ['sesión real hoy.', 'rutina constante.', 'señal de avanc
 export function CtaSection() {
   return (
     <motion.section
-      className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-auth-brand-bg)] py-28 sm:py-40"
+      className="relative z-10 overflow-hidden border-b border-[var(--color-border-soft)] bg-[var(--color-auth-brand-bg)] py-36 sm:py-52"
       aria-labelledby="cta-title"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -22,15 +22,15 @@ export function CtaSection() {
       <CtaGrid />
       <SectionContainer className="relative z-10 flex flex-col items-center">
         <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 opacity-[0.09]" style={{ mask: `url(${logo}) center / contain no-repeat`, WebkitMask: `url(${logo}) center / contain no-repeat`, backgroundColor: 'var(--color-accent)' }} aria-hidden="true" />
-        <div className="relative z-10 w-full max-w-4xl px-6 py-4 sm:px-12 sm:py-8">
-          <div className="relative mx-auto flex max-w-2xl flex-col items-center text-center">
+        <div className="relative z-10 w-full max-w-5xl px-6 py-6 sm:px-12 sm:py-10">
+          <div className="relative mx-auto flex max-w-4xl flex-col items-center text-center">
             <LandingBadge className="text-xs sm:text-sm">
               IEEE Computer Society UNI
             </LandingBadge>
 
             <h2
               id="cta-title"
-              className="mt-5 max-w-3xl text-balance text-4xl font-black leading-[0.98] tracking-[-0.045em] text-[var(--color-text)] sm:text-5xl lg:text-6xl"
+              className="mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.94] tracking-[-0.055em] text-[var(--color-text)] sm:text-6xl lg:text-7xl"
             >
               <span className="block">Convierte la intención de practicar en una</span>
               <span className="mt-2 block text-[var(--color-primary)]">
@@ -42,12 +42,12 @@ export function CtaSection() {
               </span>
             </h2>
 
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-[var(--color-text-soft)] sm:text-base">
+            <p className="mt-6 max-w-2xl text-base leading-7 text-[var(--color-text-soft)] sm:text-lg">
               Elige un problema, resuelve un caso y deja una señal de avance.
               La constancia empieza con el siguiente envío.
             </p>
 
-            <div className="mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+            <div className="mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
               <LandingButton
                 to="/login"
                 variant="primary"
