@@ -22,7 +22,9 @@ import {
 import { validateLoginForm } from '@/features/auth/utils/authValidation'
 import { landingTokens } from '@/features/landing/theme/tokens'
 
-const initialValues: LoginFormValues = { email: '', password: '', remember: false }
+// Una sesión persistente es la opción esperada para una plataforma de práctica:
+// permite abrir problemas en varias pestañas sin volver a autenticarse.
+const initialValues: LoginFormValues = { email: '', password: '', remember: true }
 
 type LocationState = {
   returnTo?: string
