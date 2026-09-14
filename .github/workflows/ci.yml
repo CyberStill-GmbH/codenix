@@ -50,6 +50,8 @@ jobs:
       - run: npm ci
       - run: npm run db:generate
       - run: npm run db:migrate:deploy
+      - name: Pull judge runtime images
+        run: docker pull python:3.12-alpine && docker pull node:20-alpine && docker pull gcc:13 && docker pull rust:1.75 && docker pull debian:bookworm-slim
       - run: npm run typecheck
       - run: npm test
       - run: npm run build

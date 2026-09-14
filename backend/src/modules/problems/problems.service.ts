@@ -285,7 +285,6 @@ export const problemService = {
         codeTemplates: {
           select: { language: true },
         },
-        parameters: true,
         testcases: {
           where: {
             visibility: "sample",
@@ -397,7 +396,6 @@ export const problemService = {
         codeTemplates: {
           select: { language: true },
         },
-        parameters: true,
         testcases: true,
       },
     });
