@@ -148,7 +148,7 @@ export function VisionSection() {
               ][]).map(([status, config]) => (
                 <span
                   key={status}
-                  className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]"
+                  className="flex items-center gap-1.5 font-[cursive] text-xs italic tracking-[0.02em] text-[var(--color-text-muted)]"
                 >
                   <span
                     className={`h-2 w-2 rounded-full ${config.dotClass}`}
@@ -203,7 +203,7 @@ function RoadmapRow({ item }: { item: RoadmapItem }) {
         />
       </div>
       <h4 className="mt-4 text-xs font-semibold leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-primary)] sm:min-h-8">{item.title}</h4>
-      <span className={`mt-2 text-[0.625rem] font-semibold ${config.badgeClass.replace('bg-[var(--color-success-soft)] ', '').replace('bg-[var(--color-primary-soft)] ', '').replace('bg-[var(--color-warning-soft)] ', '')}`}>{config.label}</span>
+      <span className={`mt-2 font-[cursive] text-[0.625rem] font-semibold italic tracking-[0.02em] ${config.badgeClass.replace('bg-[var(--color-success-soft)] ', '').replace('bg-[var(--color-primary-soft)] ', '').replace('bg-[var(--color-warning-soft)] ', '')}`}>{config.label}</span>
       <span id={tooltipId} role="tooltip" className={`pointer-events-none absolute left-1/2 top-full mt-3 w-[min(13rem,calc(100vw-3rem))] -translate-x-1/2 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface-elevated)] px-3 py-2 text-left text-xs leading-relaxed text-[var(--color-text-muted)] shadow-[var(--shadow-lg)] transition-[opacity,transform] duration-200 ease-out ${expanded ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-0'}`}>
         {item.description}
       </span>
