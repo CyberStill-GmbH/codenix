@@ -53,6 +53,10 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Problem: 'Problem',
+  Comment: 'Comment',
+  CommentVote: 'CommentVote',
+  UserReputation: 'UserReputation',
+  ProfileView: 'ProfileView',
   ProblemExample: 'ProblemExample',
   ProblemCodeTemplate: 'ProblemCodeTemplate',
   Topic: 'Topic',
@@ -121,6 +125,52 @@ export const ProblemScalarFieldEnum = {
 } as const
 
 export type ProblemScalarFieldEnum = (typeof ProblemScalarFieldEnum)[keyof typeof ProblemScalarFieldEnum]
+
+
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  problemId: 'problemId',
+  authorId: 'authorId',
+  parentId: 'parentId',
+  content: 'content',
+  upvotes: 'upvotes',
+  downvotes: 'downvotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const CommentVoteScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId',
+  voteType: 'voteType',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentVoteScalarFieldEnum = (typeof CommentVoteScalarFieldEnum)[keyof typeof CommentVoteScalarFieldEnum]
+
+
+export const UserReputationScalarFieldEnum = {
+  userId: 'userId',
+  reputationScore: 'reputationScore',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserReputationScalarFieldEnum = (typeof UserReputationScalarFieldEnum)[keyof typeof UserReputationScalarFieldEnum]
+
+
+export const ProfileViewScalarFieldEnum = {
+  id: 'id',
+  viewerId: 'viewerId',
+  profileUserId: 'profileUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type ProfileViewScalarFieldEnum = (typeof ProfileViewScalarFieldEnum)[keyof typeof ProfileViewScalarFieldEnum]
 
 
 export const ProblemExampleScalarFieldEnum = {

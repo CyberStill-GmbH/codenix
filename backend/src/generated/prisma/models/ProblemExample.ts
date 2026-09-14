@@ -425,10 +425,6 @@ export type ProblemExampleUncheckedUpdateManyWithoutProblemNestedInput = {
   deleteMany?: Prisma.ProblemExampleScalarWhereInput | Prisma.ProblemExampleScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type ProblemExampleCreateWithoutProblemInput = {
   id?: string
   input: string

@@ -52,6 +52,17 @@ class RedisCache {
     }
   }
 
+  /** Returns true only for the first request in the deduplication window. */
+  async setIfAbsent(key: string, value: string, ttlSeconds: number) {
+    try {
+      await this.connect();
+      const result = await this.client.set(key, value, "EX", ttlSeconds, "NX");
+      return result === "OK";
+    } catch {
+      return true;
+    }
+  }
+
   async invalidate(prefix: string) {
     try {
       await this.connect();

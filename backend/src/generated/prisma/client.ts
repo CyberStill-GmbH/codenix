@@ -52,6 +52,26 @@ export type User = Prisma.UserModel
  */
 export type Problem = Prisma.ProblemModel
 /**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model CommentVote
+ * 
+ */
+export type CommentVote = Prisma.CommentVoteModel
+/**
+ * Model UserReputation
+ * 
+ */
+export type UserReputation = Prisma.UserReputationModel
+/**
+ * Model ProfileView
+ * 
+ */
+export type ProfileView = Prisma.ProfileViewModel
+/**
  * Model ProblemExample
  * 
  */

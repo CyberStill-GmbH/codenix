@@ -16,6 +16,7 @@ import { submissionsRoutes } from "./modules/submissions/submissions.routes";
 import { adminProblemsRoutes } from "./modules/admin/problems/admin-problems.routes";
 import { usersRoutes } from "./modules/users/users.routes";
 import { runsRoutes } from "./modules/runs/runs.routes";
+import { commentsRoutes } from "./modules/community/comments.routes";
 
 export const app = express();
 
@@ -47,6 +48,7 @@ app.use("/api/problems", problemsRoutes);
 app.use("/api/submissions", submissionsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/runs", runsRoutes);
+app.use("/api/community", commentsRoutes);
 app.use("/api/admin/problems", adminProblemsRoutes);
 app.use("/api/admin/uploads", adminUploadsRoutes);
 
