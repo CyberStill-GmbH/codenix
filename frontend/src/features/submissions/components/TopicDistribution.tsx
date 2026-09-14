@@ -20,6 +20,8 @@ export function TopicDistribution({ submissions }: TopicDistributionProps) {
     .slice(0, 10)
   const max = Math.max(...topics.map(([, count]) => count), 1)
 
+  if (topics.length === 0) return null
+
   return (
     <section className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
       <div className="mb-5">

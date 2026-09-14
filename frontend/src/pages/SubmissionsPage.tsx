@@ -176,9 +176,11 @@ export function SubmissionsPage() {
             <PageSection delay={200}>
               <SubmissionSummary submissions={submissions} />
             </PageSection>
-            <PageSection delay={300}>
-              <TopicDistribution submissions={submissions} />
-            </PageSection>
+            {submissions.some((submission) => submission.result === 'accepted') && (
+              <PageSection delay={300}>
+                <TopicDistribution submissions={submissions} />
+              </PageSection>
+            )}
           </aside>
         </div>
       </main>
