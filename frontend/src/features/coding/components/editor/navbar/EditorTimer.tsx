@@ -74,8 +74,8 @@ export function EditorTimer({ problemId }: EditorTimerProps) {
   return (
     <div ref={rootRef} className="relative">
       {isFinishedNoticeVisible && (
-        <div className="absolute right-0 top-11 z-[60] w-64 rounded-xl border border-[var(--color-warning)]/40 bg-[var(--color-surface-elevated)] px-3 py-2.5 text-xs shadow-[var(--shadow-lg)]" role="status">
-          <p className="font-semibold text-[var(--color-warning)]">Tiempo finalizado</p>
+        <div className="absolute right-0 top-11 z-[60] w-64 animate-pulse rounded-xl border border-[var(--color-error)]/60 bg-[var(--color-error-soft)] px-3 py-2.5 text-xs shadow-[var(--shadow-lg)] motion-reduce:animate-none" role="status">
+          <p className="font-semibold text-[var(--color-error)]">Tiempo finalizado</p>
           <p className="mt-0.5 text-[var(--color-text-muted)]">Tómate un momento y revisa tu solución.</p>
           <button type="button" onClick={() => setIsFinishedNoticeVisible(false)} className="mt-2 text-xs font-semibold text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]">Cerrar aviso</button>
         </div>

@@ -352,7 +352,7 @@ export function ResultPanel({
         {activeTab === 'testcases' ? (
           <section className="space-y-3">
             <p className="text-xs text-[var(--color-text-subtle)]">
-              Escribe los argumentos como en LeetCode. El servidor serializa los valores y ejecuta tu función de forma segura.
+              Introduce los argumentos de la función. Codenix prepara los valores y ejecuta tu solución de forma segura.
             </p>
             {testcases.map((testcase, index) => {
               const result = resultByCaseId.get(testcase.id)
