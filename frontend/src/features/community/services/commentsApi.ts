@@ -10,9 +10,9 @@ export type PublicComment = {
   replies: PublicComment[]
 }
 
-export async function getComments(problemId: string) {
+export async function getComments(problemId: string, sort: 'best' | 'newest' = 'best') {
   return apiRequest<{ data: PublicComment[]; hasMore: boolean; nextCursor: string | null }>(
-    `/community/problems/${problemId}/comments?sort=best&limit=20`,
+    `/community/problems/${problemId}/comments?sort=${sort}&limit=20`,
   )
 }
 
