@@ -91,6 +91,20 @@ export type PublicProfileStats = {
   profileViewsChange: number
 }
 
+export type PublicProfile = PublicProfileStats & {
+  id: string
+  username: string
+  name: string
+  avatarUrl?: string
+  degree?: string
+  createdAt: string
+  solvedSubmissions: number
+}
+
+export async function getPublicProfile(username: string): Promise<PublicProfile> {
+  return apiRequest<PublicProfile>(`/community/users/${encodeURIComponent(username)}/profile`)
+}
+
 export async function getPublicProfileStats(userId: string): Promise<PublicProfileStats> {
   const response = await apiRequest<PublicProfileStats>(`/community/users/${userId}/profile`)
   return {

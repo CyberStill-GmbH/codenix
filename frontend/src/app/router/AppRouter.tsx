@@ -11,6 +11,7 @@ import { PrivacyPage } from '@/pages/PrivacyPage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
 import { TermsPage } from '@/pages/TermsPage'
+import { PublicProfilePage } from '@/pages/PublicProfilePage'
 import {
   LazyAdminProblemFormPage,
   LazyAdminProblemTestcasesPage,
@@ -28,6 +29,7 @@ export function AppRouter() {
       <Route path="/" element={<HomePage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms" element={<TermsPage />} />
+      <Route path="/u/:username" element={<PublicProfilePage />} />
       <Route
         path="/problems"
         element={
