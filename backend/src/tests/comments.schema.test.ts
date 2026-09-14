@@ -18,4 +18,10 @@ describe("comments API contracts", () => {
     });
     expect(result.success).toBe(true);
   });
+
+  it("accepts only server-owned comment image paths", () => {
+    expect(createCommentSchema.safeParse({ content: "Mira esto", imageUrl: "/uploads/images/comments/123e4567-e89b-12d3-a456-426614174000.webp" }).success).toBe(true);
+    expect(createCommentSchema.safeParse({ content: "remote", imageUrl: "https://example.com/image.png" }).success).toBe(false);
+    expect(createCommentSchema.safeParse({ content: "svg", imageUrl: "/uploads/images/comments/123e4567-e89b-12d3-a456-426614174000.svg" }).success).toBe(false);
+  });
 });

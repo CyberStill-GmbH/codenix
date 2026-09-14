@@ -11,6 +11,7 @@ export const problemCommentsParamsSchema = z.object({ problemId: z.string().uuid
 export const createCommentSchema = z.object({
   content: z.string().trim().min(1).max(10_000),
   parentId: z.string().uuid().nullable().optional(),
+  imageUrl: z.string().regex(/^\/uploads\/images\/comments\/[a-f0-9-]+\.(?:jpg|png|webp)$/i, "Invalid comment image.").optional(),
 });
 export const voteCommentSchema = z.object({ vote: z.enum(["up", "down"]) });
 

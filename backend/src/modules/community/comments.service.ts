@@ -14,6 +14,7 @@ function serializeComment(comment: any, viewerVote: VoteType | null = null) {
     problemId: comment.problemId,
     parentId: comment.parentId,
     content: comment.deletedAt ? "Este comentario fue eliminado." : comment.content,
+    imageUrl: comment.deletedAt ? null : comment.imageUrl ?? null,
     isDeleted: Boolean(comment.deletedAt),
     score: comment.upvotes - comment.downvotes,
     upvotes: comment.upvotes,
@@ -58,7 +59,7 @@ export const commentsService = {
     return { data: page.map((comment) => serializeComment(comment, voteMap.get(comment.id) ?? null)), nextCursor, hasMore };
   },
 
-  async create(problemId: string, authorId: string, content: string, parentId?: string | null) {
+  async create(problemId: string, authorId: string, content: string, parentId?: string | null, imageUrl?: string) {
     const problem = await prisma.problem.findUnique({ where: { id: problemId }, select: { id: true } });
     if (!problem) throw new AppError(404, "PROBLEM_NOT_FOUND", "Problem not found.");
     if (parentId) {
@@ -66,7 +67,7 @@ export const commentsService = {
       if (!parent) throw new AppError(404, "PARENT_COMMENT_NOT_FOUND", "Parent comment not found.");
     }
     const comment = await prisma.comment.create({
-      data: { problemId, authorId, content, parentId: parentId ?? null },
+      data: { problemId, authorId, content, imageUrl: imageUrl ?? null, parentId: parentId ?? null },
       include: { author: { select: { id: true, username: true, name: true, avatarUrl: true } } },
     });
     await redisCache.invalidate(`codenix:comments:${problemId}:`);

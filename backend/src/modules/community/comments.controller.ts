@@ -16,7 +16,7 @@ export const commentsController = {
     return res.json(result);
   },
   async create(req: Request, res: Response) {
-    const result = await commentsService.create(String(req.params.problemId), userId(req), req.body.content, req.body.parentId);
+    const result = await commentsService.create(String(req.params.problemId), userId(req), req.body.content, req.body.parentId, req.body.imageUrl);
     return res.status(201).json(result);
   },
   async vote(req: Request, res: Response) {

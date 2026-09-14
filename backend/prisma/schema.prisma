@@ -146,6 +146,7 @@ model Comment {
   authorId   String
   parentId   String?
   content    String    @db.Text
+  imageUrl   String?
   upvotes    Int       @default(0)
   downvotes  Int       @default(0)
   createdAt  DateTime  @default(now())
