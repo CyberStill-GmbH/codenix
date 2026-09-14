@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BadgeCheck, ChevronDown, FileText, ListChecks, Tags } from "lucide-react";
+import { ArrowLeft, BadgeCheck, ChevronDown, FileText, ListChecks, MessageCircle, Tags } from "lucide-react";
+import { CommentsSection } from "@/features/community/components/CommentsSection";
 
 import { JudgeStatusBadge } from "@/features/coding/components/JudgeStatusBadge";
 import {
@@ -35,11 +36,12 @@ type ProblemContentTabsProps = {
   }) => void;
 };
 
-type ContentTab = "description" | "submissions";
+type ContentTab = "description" | "submissions" | "community";
 
 const tabItems = [
   { id: "description", label: "Descripción" },
   { id: "submissions", label: "Mis envíos" },
+  { id: "community", label: "Discusión" },
 ] satisfies Array<{ id: ContentTab; label: string }>;
 
 const difficultyClassName = {
@@ -212,7 +214,7 @@ export function ProblemContentTabs({
                     : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                 }`}
               >
-                {tab.id === 'description' ? <FileText className="h-3.5 w-3.5" aria-hidden="true" /> : <ListChecks className="h-3.5 w-3.5" aria-hidden="true" />}
+                {tab.id === 'description' ? <FileText className="h-3.5 w-3.5" aria-hidden="true" /> : tab.id === 'submissions' ? <ListChecks className="h-3.5 w-3.5" aria-hidden="true" /> : <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />}
                 {tab.label}
               </button>
             ))}
@@ -394,6 +396,8 @@ export function ProblemContentTabs({
               ))}
           </section>
         )}
+
+        {activeTab === "community" && <CommentsSection problemId={problem.apiId} />}
       </div>
     </aside>
   );
