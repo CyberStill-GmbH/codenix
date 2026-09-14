@@ -302,7 +302,7 @@ export function ProblemForm({
               <button
                 type="button"
                 onClick={onCancel}
-                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 px-4 text-sm font-bold text-[var(--color-text-soft)]"
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-border)] px-4 text-sm font-bold text-[var(--color-text-soft)]"
               >
                 <X className="h-4 w-4" />
                 Cancelar
@@ -310,7 +310,7 @@ export function ProblemForm({
               <button
                 type="button"
                 onClick={() => setIsPreviewVisible((current) => !current)}
-                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 px-4 text-sm font-bold text-[var(--color-text-soft)]"
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-border)] px-4 text-sm font-bold text-[var(--color-text-soft)]"
               >
                 <Eye className="h-4 w-4" />
                 Vista previa
@@ -319,7 +319,7 @@ export function ProblemForm({
                 type="button"
                 disabled={isSaving}
                 onClick={saveDraft}
-                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] disabled:opacity-60"
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 text-sm font-bold text-[var(--color-text-soft)] disabled:opacity-60"
               >
                 <Save className="h-4 w-4" />
                 {isSaving ? "Guardando..." : "Guardar"}
@@ -358,7 +358,7 @@ export function ProblemForm({
         )}
 
         <div className="min-w-0 space-y-4">
-          <nav className="flex gap-1 rounded-xl border border-slate-700/50 bg-slate-950/70 p-1.5 shadow-[0_18px_50px_rgba(2,8,23,0.18)]">
+          <nav className="flex gap-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-1.5 shadow-[var(--shadow-sm)]">
             <FormTabButton
               active={activeTab === "statement"}
               onClick={() => setActiveTab("statement")}
@@ -384,13 +384,13 @@ export function ProblemForm({
           </nav>
 
           {activeTab === "statement" && (
-            <section className="min-w-0 overflow-hidden rounded-xl border border-slate-700/50 bg-slate-950/60 shadow-[0_18px_50px_rgba(2,8,23,0.22)]">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 p-3">
+            <section className="min-w-0 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] shadow-[var(--shadow-sm)]">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-border-soft)] p-3">
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setIsSidebarOpen((current) => !current)}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/60 text-[var(--color-text-muted)] hover:text-white"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                     aria-label={
                       isSidebarOpen ? "Ocultar metadata" : "Mostrar metadata"
                     }
@@ -418,7 +418,7 @@ export function ProblemForm({
                 onDrop={handleDrop}
                 onDragOver={(event) => event.preventDefault()}
               >
-                <div className="min-w-0 border-b border-slate-800 lg:border-b-0 lg:border-r">
+                <div className="min-w-0 border-b border-[var(--color-border)] lg:border-b-0 lg:border-r">
                   <MDEditor
                     value={values.descriptionMarkdown}
                     onChange={(nextValue, event) => {
@@ -435,7 +435,7 @@ export function ProblemForm({
                 </div>
 
                 {isPreviewVisible && (
-                  <div className="min-h-[680px] min-w-0 overflow-auto bg-slate-950/45 p-5">
+                  <div className="min-h-[680px] min-w-0 overflow-auto bg-[var(--color-surface-soft)] p-5">
                     <ProblemDescription
                       markdown={values.descriptionMarkdown || markdownPlaceholder}
                     />
@@ -493,14 +493,14 @@ function FormTabButton({
       onClick={onClick}
       className={`inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-bold transition ${
         active
-          ? "bg-slate-800 text-white shadow-sm"
-          : "text-[var(--color-text-muted)] hover:bg-slate-900/60 hover:text-[var(--color-text-soft)]"
+          ? "bg-[var(--color-surface-soft)] text-[var(--color-text)] shadow-sm"
+          : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text-soft)]"
       }`}
     >
       {icon}
       {label}
       {count !== undefined && count > 0 && (
-        <span className="rounded-full bg-slate-700/60 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-[var(--color-text-subtle)]">
+        <span className="rounded-full bg-[var(--color-surface-soft)] px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-[var(--color-text-subtle)]">
           {count}
         </span>
       )}
@@ -525,7 +525,7 @@ function CompletionBadge({
       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
         complete
           ? "bg-[var(--color-success-soft)] text-[var(--color-success)]"
-          : "bg-slate-800/60 text-[var(--color-text-subtle)]"
+          : "bg-[var(--color-surface-soft)] text-[var(--color-text-subtle)]"
       }`}
     >
       {complete ? (
@@ -563,7 +563,7 @@ function MetadataSidebar({
   }
 
   return (
-    <aside className="h-fit rounded-xl border border-slate-700/50 bg-slate-950/70 p-4 shadow-[0_18px_50px_rgba(2,8,23,0.18)] xl:sticky xl:top-36">
+    <aside className="h-fit rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] xl:sticky xl:top-36">
       <div className="space-y-4">
         <TextField
           label="Título del problema"
@@ -589,7 +589,7 @@ function MetadataSidebar({
           <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
             Dificultad
           </span>
-          <div className="grid grid-cols-3 rounded-lg border border-slate-800 bg-slate-950/70 p-1">
+          <div className="grid grid-cols-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-1">
             {difficultyOptions.map((option) => (
               <button
                 key={option.value}
@@ -597,8 +597,8 @@ function MetadataSidebar({
                 onClick={() => onChange("difficulty", option.value)}
                 className={`h-9 rounded-md text-xs font-bold transition ${
                   values.difficulty === option.value
-                    ? "bg-slate-800 text-white"
-                    : "text-[var(--color-text-muted)] hover:text-white"
+                    ? "bg-[var(--color-surface-soft)] text-[var(--color-text)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                 }`}
               >
                 {option.label}
@@ -653,7 +653,7 @@ function MetadataSidebar({
             {availableLanguages.map((language) => (
               <label
                 key={language.value}
-                className="flex min-h-9 items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/45 px-3 text-sm font-semibold text-[var(--color-text-soft)]"
+                className="flex min-h-9 items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm font-semibold text-[var(--color-text-soft)]"
               >
                 <input
                   type="checkbox"
@@ -779,7 +779,7 @@ function EditorToolbar({
           key={label}
           type="button"
           onClick={action}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-[var(--color-text-muted)] transition hover:bg-slate-900 hover:text-white"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]"
           aria-label={label}
           title={label}
         >
@@ -787,7 +787,7 @@ function EditorToolbar({
         </button>
       ))}
       <label
-        className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-[var(--color-text-muted)] transition hover:bg-slate-900 hover:text-white"
+        className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-text)]"
         title="Image"
       >
         <ImagePlus className="h-4 w-4" />
@@ -836,7 +836,7 @@ function TextField({
         disabled={disabled}
         maxLength={maxLength}
         onChange={(event) => onChange(event.target.value)}
-        className={`h-10 rounded-lg border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50 ${mono ? "font-mono" : ""}`}
+        className={`h-10 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50 ${mono ? "font-mono" : ""}`}
         placeholder={placeholder}
       />
       {error && <FieldError>{error}</FieldError>}
@@ -886,7 +886,7 @@ function NumberField({
         value={value}
         disabled={disabled}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="h-10 rounded-lg border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-10 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50"
       />
       {error && <FieldError>{error}</FieldError>}
     </label>
@@ -905,7 +905,7 @@ function StatusControl({
       <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
         Visibilidad
       </span>
-      <div className="grid grid-cols-2 rounded-lg border border-slate-800 bg-slate-950/60 p-1">
+      <div className="grid grid-cols-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-1">
         {(["draft", "published"] as ProblemStatus[]).map((option) => (
           <button
             key={option}
@@ -915,8 +915,8 @@ function StatusControl({
               value === option
                 ? option === "published"
                   ? "bg-[var(--color-success-soft)] text-[var(--color-success)]"
-                  : "bg-slate-800 text-[var(--color-text)]"
-                : "text-[var(--color-text-muted)] hover:text-white"
+                  : "bg-[var(--color-surface-soft)] text-[var(--color-text)]"
+                : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
             }`}
           >
             {option === "published" ? "Publicado" : "Borrador"}

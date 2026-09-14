@@ -23,7 +23,7 @@ export function TagInput({ value, suggestions, onChange }: TagInputProps) {
         ref={inputRef}
         list="admin-problem-tags"
         placeholder="Array, Graph, DP..."
-        className="h-11 rounded-xl border border-slate-700/50 bg-slate-900/70 px-4 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+        className="h-11 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
         onKeyDown={(event) => {
           if (event.key !== 'Enter') return
           event.preventDefault()
@@ -46,14 +46,14 @@ export function TagInput({ value, suggestions, onChange }: TagInputProps) {
         {value.map((tag) => (
           <span
             key={tag}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-3 py-1 text-xs font-bold text-[var(--color-text-soft)]"
+            className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1 text-xs font-bold text-[var(--color-text-soft)]"
           >
             {tag}
             <button
               type="button"
               aria-label={`Quitar tag ${tag}`}
               onClick={() => onChange(value.filter((currentTag) => currentTag !== tag))}
-              className="text-[var(--color-text-muted)] hover:text-white"
+              className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
             >
               <X className="h-3 w-3" aria-hidden="true" />
             </button>

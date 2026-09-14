@@ -37,8 +37,8 @@ export function DifficultySelector({ value, onChange }: DifficultySelectorProps)
             option.className
           } ${
             value === option.value
-              ? 'bg-slate-900 shadow-[0_10px_24px_rgba(2,8,23,0.24)]'
-              : 'bg-slate-950/50 opacity-75 hover:opacity-100'
+              ? 'bg-[var(--color-surface-elevated)] shadow-[var(--shadow-sm)]'
+              : 'bg-[var(--color-surface-soft)] opacity-75 hover:opacity-100'
           }`}
         >
           {option.label}

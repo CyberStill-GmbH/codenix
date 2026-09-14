@@ -8,7 +8,7 @@ type FormSectionProps = {
 
 export function FormSection({ title, description, children }: FormSectionProps) {
   return (
-    <section className="rounded-xl border border-slate-700/50 bg-slate-950/60 p-5 shadow-[0_18px_50px_rgba(2,8,23,0.18)]">
+    <section className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-5 shadow-[var(--shadow-sm)]">
       <div>
         <h2 className="font-display text-xl font-bold text-[var(--color-text)]">
           {title}

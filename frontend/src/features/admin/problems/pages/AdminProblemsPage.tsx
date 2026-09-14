@@ -162,7 +162,7 @@ export function AdminProblemsPage() {
               <button
                 type="button"
                 onClick={() => navigate('/admin/problems/new')}
-                className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-sky-300/30 bg-[linear-gradient(135deg,var(--color-primary)_0%,var(--color-accent)_100%)] px-5 text-sm font-bold text-white shadow-[0_10px_28px_rgba(14,165,233,0.22)] transition-colors duration-150 hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+                className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-primary)] bg-[var(--color-primary)] px-5 text-sm font-bold text-white shadow-[var(--shadow-sm)] transition-colors duration-150 hover:bg-[var(--color-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
               >
                 <Plus className="h-4 w-4" aria-hidden="true" />
                 Crear problema

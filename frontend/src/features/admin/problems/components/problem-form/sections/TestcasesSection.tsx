@@ -118,13 +118,13 @@ export function TestcasesSection({
       </div>
 
       <div className="space-y-6">
-        <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-4">
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-bold text-[var(--color-text)]">Esquema de parámetros</h3>
             <button
               type="button"
               onClick={() => onParametersChange([...parameters, createEmptyParameter()])}
-              className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-700/60 px-3 text-xs font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--color-border)] px-3 text-xs font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
             >
               <Plus className="h-4 w-4" />
               Parámetro
@@ -138,7 +138,7 @@ export function TestcasesSection({
                   value={parameter.name}
                   onChange={(event) => updateParameter(parameter.id, { name: event.target.value })}
                   placeholder="nums"
-                  className="h-10 rounded-xl border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+                  className="h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
                 />
                 <select
                   value={parameter.type}
@@ -147,7 +147,7 @@ export function TestcasesSection({
                       type: event.target.value as ProblemParameterType,
                     })
                   }
-                  className="h-10 rounded-xl border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+                  className="h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
                 >
                   {parameterTypes.map((type) => (
                     <option key={type} value={type}>{type}</option>
@@ -159,7 +159,7 @@ export function TestcasesSection({
                     updateParameter(parameter.id, { description: event.target.value })
                   }
                   placeholder="Descripción opcional"
-                  className="h-10 rounded-xl border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+                  className="h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
                 />
                 <button type="button" aria-label="Eliminar parametro" onClick={() => onParametersChange(parameters.filter((item) => item.id !== parameter.id))} className="h-10 w-10 rounded-lg text-[var(--color-error)] hover:bg-[var(--color-error-soft)]">
                   <Trash2 className="mx-auto h-4 w-4" />
@@ -175,7 +175,7 @@ export function TestcasesSection({
             <select
               value={outputType}
               onChange={(event) => onOutputTypeChange(event.target.value as ProblemParameterType)}
-              className="h-10 rounded-xl border border-slate-800 bg-slate-900/70 px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+              className="h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
             >
               {parameterTypes.map((type) => (
                 <option key={type} value={type}>{type}</option>
@@ -188,7 +188,7 @@ export function TestcasesSection({
           <button
             type="button"
             onClick={() => onTestcasesChange([...testcases, createEmptyTestcase(parameters)])}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 text-sm font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
           >
             <Plus className="h-4 w-4" />
             Agregar caso de prueba
@@ -196,7 +196,7 @@ export function TestcasesSection({
           <button
             type="button"
             onClick={() => setIsImportOpen((current) => !current)}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 text-sm font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 text-sm font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
           >
             <Upload className="h-4 w-4" />
             Importar lote avanzado
@@ -204,15 +204,15 @@ export function TestcasesSection({
         </div>
 
         {isImportOpen && (
-          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-4">
             <textarea
               value={importText}
               onChange={(event) => setImportText(event.target.value)}
-              className="min-h-44 w-full rounded-xl border border-slate-800 bg-slate-900/70 p-3 font-mono text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+              className="min-h-44 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3 font-mono text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
               placeholder='[{"id":"case-1","input":{"nums":[2,7],"target":9},"expectedOutput":[0,1],"isSample":true}]'
             />
             {importError && <p className="mt-2 text-xs font-semibold text-[var(--color-error)]">{importError}</p>}
-            <button type="button" onClick={importJson} className="mt-3 h-9 rounded-full bg-[var(--color-primary)] px-4 text-sm font-bold text-white">
+            <button type="button" onClick={importJson} className="mt-3 h-9 rounded-full bg-[var(--color-primary)] px-4 text-sm font-bold text-[var(--color-text)]">
               Importar
             </button>
           </div>
@@ -225,11 +225,11 @@ export function TestcasesSection({
             <div className="space-y-3">
               {testcases.map((testcase, index) => (
                 <SortableItem key={testcase.id} id={testcase.id}>
-            <article className="rounded-xl border border-slate-800 bg-slate-950/55 p-4 pr-14">
+            <article className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-4 pr-14">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-[var(--color-text)]">Caso {index + 1}</h3>
-                  <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${testcase.isSample ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]' : 'bg-slate-800 text-[var(--color-text-muted)]'}`}>
+                  <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${testcase.isSample ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]' : 'bg-[var(--color-surface-soft)] text-[var(--color-text-muted)]'}`}>
                     {testcase.isSample ? 'VISIBLE' : 'OCULTO'}
                   </span>
                 </div>
@@ -255,7 +255,7 @@ export function TestcasesSection({
                         onBlur={(event) => {
                           event.currentTarget.value = formatJsonValue(currentValue)
                         }}
-                        className="min-h-20 rounded-xl border border-slate-800 bg-slate-900/70 p-3 font-mono text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+                        className="min-h-20 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3 font-mono text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
                       />
                       {!isValid && (
                         <span className="text-xs font-semibold text-[var(--color-error)]">
@@ -277,7 +277,7 @@ export function TestcasesSection({
                         expectedOutput: parseJsonValue(event.target.value),
                       })
                     }
-                    className="min-h-20 rounded-xl border border-slate-800 bg-slate-900/70 p-3 font-mono text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+                    className="min-h-20 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3 font-mono text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
                   />
                 </label>
               </div>

@@ -9,7 +9,7 @@ type LanguageCodeEditorProps = {
 
 export function LanguageCodeEditor({ language, value, onChange }: LanguageCodeEditorProps) {
   return (
-    <div className="h-72 overflow-hidden rounded-xl border border-slate-700/50 bg-slate-950">
+    <div className="h-72 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
       <CodeEditor language={language} value={value} onChange={onChange} />
     </div>
   )

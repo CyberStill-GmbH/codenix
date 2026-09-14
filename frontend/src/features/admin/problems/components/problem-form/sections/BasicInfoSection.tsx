@@ -53,7 +53,7 @@ export function BasicInfoSection({
               onChange('title', event.target.value)
               onChange('slug', slugify(event.target.value))
             }}
-            className="h-11 rounded-xl border border-slate-700/50 bg-slate-900/70 px-4 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+            className="h-11 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
             placeholder="Suma de Pares"
             aria-describedby="problem-title-help"
           />
@@ -74,7 +74,7 @@ export function BasicInfoSection({
           <input
             value={values.slug}
             onChange={(event) => onChange('slug', event.target.value)}
-            className="h-11 rounded-xl border border-slate-700/50 bg-slate-900/70 px-4 font-mono text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
+            className="h-11 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-4 font-mono text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)]"
             placeholder="suma-de-pares"
           />
           <span className="text-xs text-[var(--color-text-subtle)]">
@@ -122,7 +122,7 @@ export function BasicInfoSection({
           {availableLanguages.map((language) => (
             <label
               key={language.value}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/60 px-3 text-sm font-semibold text-[var(--color-text-soft)]"
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm font-semibold text-[var(--color-text-soft)]"
             >
               <input
                 type="checkbox"

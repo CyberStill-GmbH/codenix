@@ -55,7 +55,7 @@ export function StarterCodeSection({
                   className={`h-9 rounded-full px-3 text-xs font-bold transition ${
                     activeSupportedLanguage === language
                       ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
-                      : 'bg-slate-900/70 text-[var(--color-text-muted)] hover:text-white'
+                      : 'bg-[var(--color-surface-elevated)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
                   }`}
                 >
                   {label}
@@ -85,7 +85,7 @@ export function StarterCodeSection({
                 [activeSupportedLanguage]: defaultStarterCode[activeSupportedLanguage],
               })
             }
-            className="mt-3 h-9 rounded-full border border-slate-700/60 px-4 text-xs font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
+            className="mt-3 h-9 rounded-full border border-[var(--color-border)] px-4 text-xs font-bold text-[var(--color-text-soft)] hover:border-[var(--color-primary)]"
           >
             Restaurar plantilla
           </button>

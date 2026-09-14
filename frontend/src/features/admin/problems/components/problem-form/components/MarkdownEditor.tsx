@@ -46,14 +46,14 @@ export function MarkdownEditor({ value, onChange, onUploadImage }: MarkdownEdito
                 className="absolute inset-0 cursor-pointer opacity-0"
                 aria-label="Subir imagen"
               />
-              <span className="inline-flex h-8 items-center gap-2 rounded-lg border border-slate-700/60 bg-slate-900/80 px-3 text-xs font-bold text-[var(--color-text-soft)]">
+              <span className="inline-flex h-8 items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-xs font-bold text-[var(--color-text-soft)]">
                 <ImagePlus className="h-3.5 w-3.5" aria-hidden="true" />
                 Imagen
               </span>
             </span>
           )}
         </span>
-        <div className="min-h-[400px] resize-y overflow-hidden rounded-xl border border-slate-700/50 bg-slate-950">
+        <div className="min-h-[400px] resize-y overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
           <MDEditor
             value={value}
             onChange={(nextValue) => onChange(nextValue ?? '')}
@@ -67,7 +67,7 @@ export function MarkdownEditor({ value, onChange, onUploadImage }: MarkdownEdito
         </div>
       </label>
 
-      <div className="min-h-[400px] overflow-auto rounded-xl border border-slate-700/50 bg-slate-950/70 p-4">
+      <div className="min-h-[400px] overflow-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
         <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-subtle)]">
           Vista previa segura
         </p>
